@@ -19,7 +19,10 @@ router.route('/')
 router.route('/:entryId')
     .get(async function(req, res, next) {
       try {
-        res.json(await DiaryEntry.findById(req.params.entryId).exec());
+        res.json(
+            await DiaryEntry.findById(req.params.entryId)
+                .populate('images')
+                .exec());
       } catch (err) {
         next(err);
       }
