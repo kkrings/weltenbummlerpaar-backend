@@ -1,8 +1,23 @@
-const debug = require('debug')('weltenbummlerpaar-server:server');
+const debug = require('debug')('weltenbummlerpaar-backend:server');
+const mongoose = require('mongoose');
 const http = require('http');
 
 const app = require('../app');
 
+
+// connect to MongoDB
+const mongooseUrl = 'mongodb://localhost:27017/weltenbummlerpaar';
+
+const mongooseOptions = {
+  // useCreateIndex: true,
+  // useFindAndModify: false,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+};
+
+mongoose.connect(mongooseUrl, mongooseOptions).then(
+    () => debug(`Connected to ${mongooseUrl}.`),
+    (err) => console.error(err));
 
 // get port from environment and store in Express
 const port = normalizePort(process.env.PORT || '3000');
@@ -59,11 +74,11 @@ function onError(error) {
   let exit = false;
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
+      console.error(bind + ' requires elevated privileges.');
       exit = true;
       break;
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
+      console.error(bind + ' is already in use.');
       exit = true;
       break;
     default:
@@ -85,5 +100,5 @@ function onListening() {
     'pipe ' + addr :
     'port ' + addr.port;
 
-  debug('Listening on ' + bind);
+  debug(`Listening on ${bind}.`);
 }
