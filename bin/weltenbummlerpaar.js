@@ -6,18 +6,14 @@ const app = require('../app');
 
 
 // connect to MongoDB
-const mongooseUrl = 'mongodb://localhost:27017/weltenbummlerpaar';
+const mongodbUri = process.env.MONGODBURI ||
+    'mongodb://localhost:27017/weltenbummlerpaar';
 
-const mongooseOptions = {
-  // useCreateIndex: true,
-  // useFindAndModify: false,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
+connectDB(mongodbUri);
 
-mongoose.connect(mongooseUrl, mongooseOptions).then(
-    () => debug(`Connected to ${mongooseUrl}.`),
-    (err) => console.error(err));
+// listen to MongoDB connection errors
+mongoose.connection.on(
+    'error', console.error.bind(console, 'Data base connection error: '));
 
 // get port from environment and store in Express
 const port = normalizePort(process.env.PORT || '3000');
@@ -32,7 +28,39 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 /**
+ * Connect to MongoDB.
+ *
+ * @param {string} uri
+ *   MongoDB URI
+ */
+async function connectDB(uri) {
+  try {
+    await mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
+    debug(`Connected to ${uri}.`);
+  } catch (error) {
+    handleDBError(error);
+  }
+}
+
+/**
+ * Handle error on initial connection to MongoDB.
+ *
+ * @param {Error} error
+ *   Error event
+ */
+function handleDBError(error) {
+  console.error(`Failed to connect to ${mongodbUri}.`);
+  console.error(error);
+  process.exit(1);
+}
+
+/**
  * Normalize a port into a number, string, or false.
+ *
  * @param {string} val
  *   Port number
  *
