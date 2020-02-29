@@ -9,7 +9,7 @@ const diaryEntrySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  country: {
+  locationName: {
     type: String,
     required: true,
   },
@@ -17,6 +17,7 @@ const diaryEntrySchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Image',
   }],
+  tags: [String],
 }, {
   timestamps: true,
 });
