@@ -1,6 +1,8 @@
 const debug = require('debug')('weltenbummlerpaar-backend:server');
 const mongoose = require('mongoose');
+const https = require('https');
 const http = require('http');
+const fs = require('fs');
 
 const app = require('../app');
 
@@ -19,8 +21,19 @@ mongoose.connection.on(
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-// create HTTP server
-const server = http.createServer(app);
+// if possible, create HTTPS server, otherwise fall back to HTTP server
+let server;
+
+if (process.env.CERT && process.env.KEY) {
+  const options = {
+    cert: fs.readFileSync(process.env.CERT),
+    key: fs.readFileSync(process.env.KEY),
+  };
+
+  server = https.createServer(options, app);
+} else {
+  server = http.createServer(app);
+}
 
 // listen on provided port, on all network interfaces
 server.listen(port);
