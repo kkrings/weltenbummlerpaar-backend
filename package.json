@@ -1,6 +1,6 @@
 {
   "name": "weltenbummlerpaar-backend",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Travel diary web application - Express-based backend",
   "private": true,
   "scripts": {
