@@ -60,8 +60,11 @@ typings/
 # next.js build output
 .next
 
-# Test MongoDB
+# Test database
 mongodb
 
 # Static files
 public/
+
+# pm2 ecosystem file
+app.config.js
