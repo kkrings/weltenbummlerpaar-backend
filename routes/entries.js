@@ -11,7 +11,7 @@ router.route('/')
     .get(async function(req, res, next) {
       try {
         res.json(
-            await DiaryEntry.find(req.query)
+            await DiaryEntry.find(req.query.filter, null, req.query.options)
                 .populate('images')
                 .exec());
       } catch (err) {

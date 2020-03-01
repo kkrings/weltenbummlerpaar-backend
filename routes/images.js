@@ -10,7 +10,9 @@ router.use(bodyParser.json());
 router.route('/')
     .get(async function(req, res, next) {
       try {
-        res.json(await Image.find(req.query).exec());
+        res.json(
+            await Image.find(req.query.filter, null, req.query.options)
+                .exec());
       } catch (err) {
         next(err);
       }
