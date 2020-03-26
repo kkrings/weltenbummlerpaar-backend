@@ -67,7 +67,6 @@ router.route('/:entryId')
       try {
         res.json(
             await DiaryEntry.findByIdAndRemove(req.params.entryId)
-                .populate('images')
                 .exec());
       } catch (err) {
         next(err);
