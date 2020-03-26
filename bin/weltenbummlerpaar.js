@@ -4,12 +4,12 @@ const https = require('https');
 const http = require('http');
 const fs = require('fs');
 
+const config = require('../config');
 const app = require('../app');
 
 
 // connect to MongoDB
-const mongodbUri = process.env.MONGODBURI ||
-    'mongodb://localhost:27017/weltenbummlerpaar';
+const mongodbUri = config.mongodbUri;
 
 connectDB(mongodbUri);
 
@@ -17,8 +17,8 @@ connectDB(mongodbUri);
 mongoose.connection.on(
     'error', console.error.bind(console, 'Data base connection error: '));
 
-// get port from environment and store in Express
-const port = normalizePort(process.env.PORT || '3000');
+// get port and store in Express
+const port = normalizePort(config.port);
 app.set('port', port);
 
 // if possible, create HTTPS server, otherwise fall back to HTTP server
