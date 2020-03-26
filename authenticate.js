@@ -2,7 +2,7 @@
  * Admin authentication module
  * @module authenticate
  *
- * The application supports two authentication strategies: admin users can
+ * This application supports two authentication strategies: admin users can
  * either authenticate themselves with their username and password (local
  * authentication strategy) or via a JSON web token. Every time an admin user
  * uses the local authentication strategy a new JSON web token is signed for
