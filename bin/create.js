@@ -5,6 +5,8 @@ const yargs = require('yargs');
 
 const DiaryEntry = require('../models/entry');
 const Image = require('../models/image');
+const User = require('../models/user');
+
 
 /**
  * Connect to data base.
@@ -24,6 +26,7 @@ async function connect(uri) {
   } catch (err) {
     console.error('Cannot connect to database.');
     console.error(err);
+    process.exit(1);
   }
 }
 
@@ -46,6 +49,7 @@ async function createEntry(uri, entry) {
   } catch (err) {
     console.error('Diary entry could not been saved.');
     console.error(err);
+    process.exit(1);
   }
 }
 
@@ -67,6 +71,33 @@ async function createImage(uri, image) {
   } catch (err) {
     console.error('Image could not been saved.');
     console.error(err);
+    process.exit(1);
+  }
+}
+
+/**
+ * Save new admin user to data base.
+ *
+ * @param {string} uri
+ *   MongoDB URI
+ * @param {string} username
+ *   Admin user's username
+ * @param {string} password
+ *   Admin user's password
+ */
+async function createAdmin(uri, username, password) {
+  const admin = new User({username: username});
+
+  try {
+    await connect(uri);
+    await admin.setPassword(password);
+    await admin.save();
+    console.log(`Admin user ${username} has been saved.`);
+    await mongoose.connection.close();
+  } catch (err) {
+    console.error(`Admin user ${username} could not been saved.`);
+    console.error(err);
+    process.exit(1);
   }
 }
 
@@ -122,5 +153,19 @@ yargs
       createImage(args.uri, {
         description: args.description,
       });
+    })
+    .command('admin [options]', 'Save new admin user.', (yargs) => {
+      yargs.options({
+        username: {
+          describe: 'Admin user\'s username',
+          demandOption: true,
+        },
+        password: {
+          describe: 'Admin user\'s password',
+          demandOption: true,
+        },
+      });
+    }, (args) => {
+      createAdmin(args.uri, args.username, args.password);
     })
     .argv;
