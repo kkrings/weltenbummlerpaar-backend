@@ -63,7 +63,7 @@ function createJwtStrategy() {
 // local strategy
 passport.use(Admin.createStrategy());
 // JSON web token strategy
-passport.use(createJwtStrategy);
+passport.use(createJwtStrategy());
 
 passport.serializeUser(Admin.serializeUser());
 passport.deserializeUser(Admin.deserializeUser());
@@ -77,3 +77,8 @@ passport.deserializeUser(Admin.deserializeUser());
 exports.initialize = function() {
   return passport.initialize();
 };
+
+/**
+ * Authorize admin user via JSON web token.
+ */
+exports.authorizeJwt = passport.authenticate('jwt', {session: false});

@@ -49,6 +49,7 @@ server.on('listening', onListening);
 async function connectDB(uri) {
   try {
     await mongoose.connect(uri, {
+      useFindAndModify: false,
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

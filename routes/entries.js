@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const authenticate = require('../authenticate');
 const DiaryEntry = require('../models/entry');
 
 const router = new express.Router();
@@ -17,6 +18,26 @@ router.route('/')
       } catch (err) {
         next(err);
       }
+    })
+    .post(authenticate.authorizeJwt, async function(req, res, next) {
+      try {
+        let diaryEntry = new DiaryEntry(req.body);
+        diaryEntry = await diaryEntry.save();
+
+        res.json(
+            await DiaryEntry.findById(diaryEntry._id)
+                .populate('images')
+                .exec());
+      } catch (err) {
+        next(err);
+      }
+    })
+    .delete(authenticate.authorizeJwt, async function(_req, res, next) {
+      try {
+        res.json(await DiaryEntry.deleteMany({}).exec());
+      } catch (err) {
+        next(err);
+      }
     });
 
 router.route('/:entryId')
@@ -24,6 +45,28 @@ router.route('/:entryId')
       try {
         res.json(
             await DiaryEntry.findById(req.params.entryId)
+                .populate('images')
+                .exec());
+      } catch (err) {
+        next(err);
+      }
+    })
+    .put(authenticate.authorizeJwt, async function(req, res, next) {
+      try {
+        res.json(
+            await DiaryEntry.findByIdAndUpdate(
+                req.params.entryId, {$set: req.body}, {new: true},
+            )
+                .populate('images')
+                .exec());
+      } catch (err) {
+        next(err);
+      }
+    })
+    .delete(authenticate.authorizeJwt, async function(req, res, next) {
+      try {
+        res.json(
+            await DiaryEntry.findByIdAndRemove(req.params.entryId)
                 .populate('images')
                 .exec());
       } catch (err) {
