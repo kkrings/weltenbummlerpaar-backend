@@ -24,10 +24,10 @@ app.set('port', port);
 // if possible, create HTTPS server, otherwise fall back to HTTP server
 let server;
 
-if (process.env.CERT && process.env.KEY) {
+if (process.env.SSLCERT && process.env.SSLKEY) {
   const options = {
-    cert: fs.readFileSync(process.env.CERT),
-    key: fs.readFileSync(process.env.KEY),
+    cert: fs.readFileSync(process.env.SSLCERT),
+    key: fs.readFileSync(process.env.SSLKEY),
   };
 
   server = https.createServer(options, app);
