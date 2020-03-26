@@ -13,7 +13,7 @@ const router = new express.Router();
 
 router.use(bodyParser.json());
 
-router.route('/login').post(
+router.post('/login',
     passport.authenticate('local', {session: false}),
     function(req, res) {
       debug(req.user);

@@ -5,7 +5,7 @@ const yargs = require('yargs');
 
 const DiaryEntry = require('../models/entry');
 const Image = require('../models/image');
-const User = require('../models/user');
+const Admin = require('../models/admin');
 
 
 /**
@@ -86,7 +86,7 @@ async function createImage(uri, image) {
  *   Admin user's password
  */
 async function createAdmin(uri, username, password) {
-  const admin = new User({username: username});
+  const admin = new Admin({username: username});
 
   try {
     await connect(uri);
