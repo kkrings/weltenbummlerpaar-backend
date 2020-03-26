@@ -1,17 +1,17 @@
 /**
- * Authentication module
+ * Admin authentication module
  * @module authenticate
  */
 
 const passport = require('passport');
 
-const User = require('./models/user');
+const Admin = require('./models/admin');
 
 
 // local strategy
-passport.use(User.createStrategy());
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.use(Admin.createStrategy());
+passport.serializeUser(Admin.serializeUser());
+passport.deserializeUser(Admin.deserializeUser());
 
 /**
  * Initialize passport.

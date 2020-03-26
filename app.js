@@ -5,7 +5,7 @@ const helmet = require('helmet');
 
 const authenticate = require('./authenticate');
 
-const userRouter = require('./routes/users');
+const adminRouter = require('./routes/admins');
 const entryRouter = require('./routes/entries');
 const imageRouter = require('./routes/images');
 
@@ -19,7 +19,7 @@ app.use(helmet());
 app.use(cookieParser());
 app.use(authenticate.initialize());
 
-app.use('/db/users', userRouter);
+app.use('/db/admins', adminRouter);
 app.use('/db/entries', entryRouter);
 app.use('/db/images', imageRouter);
 
