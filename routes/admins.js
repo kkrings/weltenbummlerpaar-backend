@@ -29,7 +29,7 @@ router.post('/login', function(req, res, next) {
         res.json({success: true, token: token});
       } else {
         // wrong username or password
-        res.status(403).json({success: false, token: ''});
+        res.json({success: false, token: ''});
       }
     }
   })(req, res, next);
