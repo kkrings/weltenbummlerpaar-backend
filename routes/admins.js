@@ -1,6 +1,6 @@
 /**
  * User authentication routes
- * @module router/users
+ * @module routes/admins
  */
 
 const express = require('express');
