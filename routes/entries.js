@@ -4,8 +4,10 @@
  */
 
 const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
+const multer = require('multer');
 
 const authenticate = require('../authenticate');
 const DiaryEntry = require('../models/entry');
@@ -75,6 +77,46 @@ router.route('/:entryId')
 
         // send deleted diary entry
         res.json(diaryEntry);
+      } catch (err) {
+        next(err);
+      }
+    });
+
+const imageUpload = multer({dest: 'public/images/'});
+
+router.post('/:entryId/images', authenticate.authorizeJwt,
+    imageUpload.single('image'), async function(req, res, next) {
+      try {
+        const image = new Image(req.body);
+
+        // rename uploaded image given its ID
+        fs.renameSync(
+            req.file.path,
+            path.join(req.file.destination, `${image._id}.jpg`));
+
+        // link image to diary entry
+        await DiaryEntry.findByIdAndUpdate(
+            req.params.entryId, {$push: {images: image._id}});
+
+        res.json(await image.save());
+      } catch (err) {
+        next(err);
+      }
+    });
+
+router.delete('/:entryId/images/:imageId', authenticate.authorizeJwt,
+    async function(req, res, next) {
+      try {
+        const image = await Image.findByIdAndRemove(req.params.imageId).exec();
+
+        // remove image from disk
+        fs.unlinkSync(`public/images/${image._id}.jpg`);
+
+        // unlink image from diary entry
+        await DiaryEntry.findByIdAndUpdate(
+            req.params.entryId, {$pull: {images: image._id}});
+
+        res.json(image);
       } catch (err) {
         next(err);
       }
