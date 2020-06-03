@@ -8,6 +8,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const multer = require('multer');
+const jimp = require('jimp');
 
 const authenticate = require('../authenticate');
 const DiaryEntry = require('../models/entry');
@@ -89,10 +90,16 @@ router.post('/:entryId/images', authenticate.authorizeJwt,
       try {
         const image = new Image(req.body);
 
-        // rename uploaded image given its ID
-        fs.renameSync(
-            req.file.path,
-            path.join(req.file.destination, `${image._id}.jpg`));
+        // compress and rename uploaded image given its ID
+        const imageManipulator = await jimp.read(req.file.path);
+
+        imageManipulator
+            .resize(2500, jimp.AUTO)
+            .quality(75)
+            .write(path.join(req.file.destination, `${image._id}.jpg`));
+
+        // remove uncompressed image from disk
+        fs.unlinkSync(req.file.path);
 
         // link image to diary entry
         await DiaryEntry.findByIdAndUpdate(
