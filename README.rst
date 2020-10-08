@@ -1,6 +1,9 @@
 Weltenbummlerpaar
 =================
 
+.. image:: https://travis-ci.com/kkrings/weltenbummlerpaar-backend.svg?branch=master
+    :target: https://travis-ci.com/kkrings/weltenbummlerpaar-backend
+
 This project contains the Express_-based back end of the *Weltenbummlerpaar*
 travel diary web application. The corresponding Angular_-based back end can be
 found in the weltenbummlerpaar_ project.
