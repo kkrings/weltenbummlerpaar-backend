@@ -65,6 +65,3 @@ mongodb
 
 # Static files
 public/
-
-# pm2 ecosystem file
-app.config.js
