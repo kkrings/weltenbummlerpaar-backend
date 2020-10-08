@@ -17,24 +17,19 @@ before_install:
   - git clone https://github.com/kkrings/weltenbummlerpaar.git
 
 install:
+  - npm install pm2 -g
   - cd weltenbummlerpaar
   - npm install
-  - cd ..
-  - cd weltenbummlerpaar-backend
+  - cd ../weltenbummlerpaar-backend
   - npm install
-  - cd ..
-  - npm install pm2 -g
 
 before_script:
-  - cd weltenbummlerpaar-backend
   - node bin/create.js admin --username admin --password admin
   - pm2 start app.config.js
-  - cd ..
+  - cd ../weltenbummlerpaar
 
 script:
-  - cd weltenbummlerpaar
   - npm run e2e -- --protractor-config=e2e/protractor-ci.conf.js
-  - cd ..
 
 after_script:
   - pm2 stop weltenbummlerpaar-backend
