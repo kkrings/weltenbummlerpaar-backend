@@ -1,6 +1,5 @@
 /**
  * Configuration module
- * @module config
  *
  * In production mode, this application expects the following environment
  * variables to be set:
@@ -14,8 +13,10 @@
  * This module provides default values for most of the above variables for
  * development purposes.
  *
- * Note that if `SSLCERT` or `SSLKEY` are not set, a HTTP server is created
- * instead of a HTTPS server. This should not be done in production.
+ * If `SSLCERT` or `SSLKEY` are not set, a HTTP server is created instead of a
+ * HTTPS server. This should not be done in production.
+ *
+ * @module config
  */
 
 // default configuration values for development

@@ -1,12 +1,12 @@
 /**
  * Admin authentication module
- * @module authenticate
  *
- * This application supports two authentication strategies: admin users can
- * either authenticate themselves with their username and password (local
- * authentication strategy) or via a JSON web token. Every time an admin user
- * uses the local authentication strategy a new JSON web token is signed for
- * this user.
+ * This application supports two authentication strategies: local or via a JSON
+ * web token. The former is based on a username and password. Every time an
+ * admin user uses the local authentication strategy a new JSON web token is
+ * signed for this user.
+ *
+ * @module authenticate
  */
 
 const passport = require('passport');

@@ -1,25 +1,18 @@
 /**
  * Application module
- * @module app
  *
  * In this module, the actual Express application is initialized and exported,
- * third-party middleware like {@link https://www.npmjs.com/package/morgan
- * morgan} for logging is loaded, and routes are mounted.
+ * third-party middleware is loaded, and routes are mounted.
+ *
+ * If the `NODE_ENV` environment variable is set to `development`, cross-origin
+ * resource sharing ({@link https://www.npmjs.com/package/cors CORS}) is
+ * enabled.
  *
  * The routes provide the REST API for performing operations on the MongoDB
- * that stores admin users, diary entries, and images:
- * @see module:routes/admins
- * @see module:routes/entries
- * @see module:routes/images
+ * that stores admin users, diary entries, and images; the object modeling is
+ * done via {@link https://mongoosejs.com/ Mongoose}.
  *
- * The object modeling is done via {@link https://mongoosejs.com/ Mongoose}:
- * @see module:models/admin
- * @see module:models/entry
- * @see module:models/image
- *
- * Note that if the `NODE_ENV` environment variable is set to `development`,
- * cross-origin resource sharing ({@link https://www.npmjs.com/package/cors
- * CORS}) is enabled.
+ * @module app
  */
 
 const debug = require('debug')('weltenbummlerpaar-backend:app');
