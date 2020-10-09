@@ -28,6 +28,7 @@
   "devDependencies": {
     "cors": "^2.8.5",
     "eslint": "^7.10.0",
-    "eslint-config-google": "^0.14.0"
+    "eslint-config-google": "^0.14.0",
+    "jsdoc": "^3.6.6"
   }
 }
