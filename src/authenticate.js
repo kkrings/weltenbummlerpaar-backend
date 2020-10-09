@@ -6,6 +6,9 @@
  * admin user uses the local authentication strategy a new JSON web token is
  * signed for this user.
  *
+ * Both authentication strategies are implemented via {@link
+ * https://www.npmjs.com/package/passport Passport}.
+ *
  * @module authenticate
  */
 
@@ -45,7 +48,7 @@ async function verifyJwt(token, done) {
  * Create JSON web token strategy.
  *
  * The JSON web token will be extracted from the authentication header as a
- * bearer token. The strategy expects an environment variable `JWTSECRET` that
+ * bearer token. The strategy expects an environment variable JWTSECRET that
  * holds a secret for encrypting and decrypting the JSON web token.
  *
  * @return {Object}

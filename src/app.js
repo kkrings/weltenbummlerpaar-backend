@@ -1,10 +1,10 @@
 /**
  * Application module
  *
- * In this module, the actual Express application is initialized and exported,
- * third-party middleware is loaded, and routes are mounted.
+ * In this module, the Express application is initialized, third-party
+ * middleware is loaded, and routes are mounted.
  *
- * If the `NODE_ENV` environment variable is set to `development`, cross-origin
+ * If the NODE_ENV environment variable is set to development, cross-origin
  * resource sharing ({@link https://www.npmjs.com/package/cors CORS}) is
  * enabled.
  *
@@ -52,4 +52,7 @@ app.use('/db/admins', adminRouter);
 app.use('/db/entries', entryRouter);
 app.use('/db/images', imageRouter);
 
+/**
+ * The initialized Express application
+ */
 module.exports = app;

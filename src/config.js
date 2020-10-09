@@ -13,7 +13,7 @@
  * This module provides default values for most of the above variables for
  * development purposes.
  *
- * If `SSLCERT` or `SSLKEY` are not set, a HTTP server is created instead of a
+ * If SSLCERT or SSLKEY are not set, a HTTP server is created instead of a
  * HTTPS server. This should not be done in production.
  *
  * @module config
@@ -27,7 +27,16 @@ const defaults = {
 };
 
 module.exports = {
+  /**
+   * Secret for encrypting and decrypting JSON web tokens
+   */
   jwtSecret: process.env.JWTSECRET || defaults.jwtSecret,
+  /**
+   * MongoDB's URI
+   */
   mongodbUri: process.env.MONGODBURI || defaults.mongodbUri,
+  /**
+   * Port number the HTTP(s) server should list to
+   */
   port: process.env.PORT || defaults.port,
 };
