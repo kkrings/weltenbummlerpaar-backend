@@ -4,8 +4,8 @@ const https = require('https');
 const http = require('http');
 const fs = require('fs');
 
-const config = require('../config');
-const app = require('../app');
+const config = require('../src/config');
+const app = require('../src/app');
 
 
 // connect to MongoDB

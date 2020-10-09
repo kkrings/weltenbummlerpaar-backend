@@ -3,9 +3,9 @@
 const mongoose = require('mongoose');
 const yargs = require('yargs');
 
-const DiaryEntry = require('../models/entry');
-const Image = require('../models/image');
-const Admin = require('../models/admin');
+const DiaryEntry = require('../src/models/entry');
+const Image = require('../src/models/image');
+const Admin = require('../src/models/admin');
 
 
 /**
