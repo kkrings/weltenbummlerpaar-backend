@@ -15,7 +15,7 @@
  * development purposes.
  *
  * Note that if `SSLCERT` or `SSLKEY` are not set, a HTTP server is created
- * instead of a HTTPS server. This should be done in production.
+ * instead of a HTTPS server. This should not be done in production.
  */
 
 // default configuration values for development

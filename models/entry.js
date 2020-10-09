@@ -1,4 +1,10 @@
+/**
+ * Diary entry model
+ * @module models/entry
+ */
+
 const mongoose = require('mongoose');
+
 
 const diaryEntrySchema = new mongoose.Schema({
   title: {

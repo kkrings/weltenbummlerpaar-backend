@@ -1,4 +1,10 @@
+/**
+ * Image model
+ * @module models/image
+ */
+
 const mongoose = require('mongoose');
+
 
 const imageSchema = new mongoose.Schema({
   description: {
