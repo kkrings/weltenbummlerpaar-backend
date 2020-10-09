@@ -4,7 +4,7 @@
   "description": "Travel diary web application - Express-based backend",
   "private": true,
   "scripts": {
-    "start": "node ./bin/weltenbummlerpaar.js"
+    "start": "node ./bin/weltenbummlerpaar-backend.js"
   },
   "repository": "github:kkrings/weltenbummlerpaar-backend",
   "author": "Kai Krings",
