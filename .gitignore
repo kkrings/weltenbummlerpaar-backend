@@ -64,4 +64,4 @@ typings/
 mongodb
 
 # Static files
-public/
+src/public/
