@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>Weltenbummlerpaar Backend</h1>
+<p><a href="https://travis-ci.com/kkrings/weltenbummlerpaar-backend"><img src="https://travis-ci.com/kkrings/weltenbummlerpaar-backend.svg?branch=master" alt="Build Status"></a></p>
+<p>This project contains the <a href="https://expressjs.com/">Express</a>-based back end of the <em>Weltenbummlerpaar</em>
+travel diary web application. It provides a <em>RESTful API</em> for e.g. reading and
+storing diary entries from or to a <a href="https://www.mongodb.com/">MongoDB</a> database, respectively.</p>
+<p>The corresponding <a href="https://angular.io/">Angular</a>-based front-end application can be found
+<a href="https://kkrings.github.io/weltenbummlerpaar/">here</a>.</p>
+<h2>Deployment</h2>
+<p>This section shows how to deploy the back-end application on a server running
+<a href="https://ubuntu.com/">Ubuntu</a> 18.04 via <a href="https://www.nginx.com/">NGINX</a>. It is not shown how to generally install and
+configure the required <em>NGINX</em> server and <em>MongoDB</em> database.</p>
+<p>The first step is to download the back-end application's latest
+<a href="https://github.com/kkrings/weltenbummlerpaar-backend/releases">release</a> and to extract it:</p>
+<pre><code>tar -xzvf weltenbummlerpaar-backend-vx.x.x.tar.gz
+mkdir -p www/weltenbummlerpaar/static
+mv weltenbummlerpaar-backend-vx.x.x www/weltenbummlerpaar/rest
+rm weltenbummlerpaar-backend-vx.x.x.tar.gz
+</code></pre>
+<p>In this example, the <code>static</code> sub folder would contain the front-end
+application.</p>
+<p>The second step is to install the application's dependencies:</p>
+<pre><code>cd www/weltenbummlerpaar/rest
+npm install --production
+</code></pre>
+<p>The third step is to inject an administration user into the <em>MongoDB</em> database
+via the provided <code>create.js</code> script:</p>
+<pre><code>node bin/create.js admin \
+  --uri 'some MongoDB URI' \
+  --username 'some user name' \
+  --password 'some password'
+</code></pre>
+<p>The fourth step is to start the application via the <a href="https://pm2.keymetrics.io/">PM2</a> process manager. It
+allows to configure all of the application's required environment variables in
+its <em>ecosystem</em> file; see <code>app.config.js</code>:</p>
+<pre><code>module.exports = {
+  apps : [{
+    name: 'weltenbummlerpaar-backend',
+    script: 'bin/weltenbummlerpaar-backend.js',
+    instances: 1,
+    autorestart: true,
+    watch: false,
+    max_memory_restart: '1G',
+    env: {
+      NODE_ENV: 'production',
+      PORT: some port number,
+      MONGODBURI: 'same MongoDB URI as above',
+      SSLCERT: 'path to SSL cert',
+      SSLKEY: 'path to SSL key',
+      JWTSECRET: 'some JWT secret',
+    },
+  }],
+};
+</code></pre>
+<p>The <em>MongoDB URI</em> usually contains both the user name and password of the
+<em>MongoDB</em> user that is allowed to read and write from and to the dedicated
+database containing the diary entries, respectively. This user should not be
+mistaken with the application's administration user, which was created in the
+third step.</p>
+<p>You also have to make sure that the user that is running the application, which
+should not be <em>root</em>, is allowed to read both the public <em>SSL</em> cert and the
+private <em>SSL</em> key.</p>
+<p>After its configuration, the application can be started:</p>
+<pre><code>./node_modules/pm2/bin/pm2 start app.config.js
+</code></pre>
+<p>The last step is to change the configuration of the <em>NGINX</em> server in way that
+requests to the <code>rest</code> endpoint are redirected to the port the application is
+listening on:</p>
+<pre><code>server {
+  ...
+
+  location /rest/ {
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_pass https://localhost:same port number as above;
+  }
+
+  ...
+}
+</code></pre>
+<h2>Development</h2>
+<p>The back-end application's source code is hosted on <a href="https://github.com/kkrings/weltenbummlerpaar-backend/">GitHub</a>:</p>
+<pre><code>git clone https://github.com/kkrings/weltenbummlerpaar-backend.git
+cd weltenbummlerpaar-backend
+npm install
+</code></pre>
+<p>It is tested via the end-to-end tests of the front-end application. These tests
+require the back-end application to be running, preferable with an empty local
+<em>MongoDB</em> database:</p>
+<pre><code>mongod --dbpath 'path to directory for creating local database'
+node bin/create.js admin --username admin --password admin
+DEBUG=weltenbummlerpaar-backend:* NODE_ENV=development npm start
+</code></pre>
+<p>The back-end application's documentation can be build locally at <code>docs</code> via
+<a href="https://jsdoc.app/">JSDoc</a>:</p>
+<pre><code>./node_modules/.bin/jsdoc -c jsdoc.conf.json -R README.md -d docs -r src
+</code></pre></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-app.html">app</a></li><li><a href="module-authenticate.html">authenticate</a></li><li><a href="module-config.html">config</a></li><li><a href="module-models_admin.html">models/admin</a></li><li><a href="module-models_entry.html">models/entry</a></li><li><a href="module-models_image.html">models/image</a></li><li><a href="module-routes_admins.html">routes/admins</a></li><li><a href="module-routes_entries.html">routes/entries</a></li><li><a href="module-routes_images.html">routes/images</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Thu Oct 15 2020 08:27:14 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
