@@ -22,6 +22,7 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const path = require('path');
 
+const config = require('./config');
 const authenticate = require('./authenticate');
 
 const adminRouter = require('./routes/admins');
@@ -45,7 +46,8 @@ if (app.get('env') === 'development') {
 }
 
 // serve static files
-app.use(express.static(path.join(__dirname, 'public')));
+debug(`Static files are served from ${config.publicFolder}.`);
+app.use(express.static(config.publicFolder));
 
 // routes
 app.use('/db/admins', adminRouter);

@@ -10,6 +10,7 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const jimp = require('jimp');
 
+const config = require('../config');
 const authenticate = require('../authenticate');
 const DiaryEntry = require('../models/entry');
 const Image = require('../models/image');
@@ -71,7 +72,7 @@ router.route('/:entryId')
 
         // remove diary entry's images from disk
         deleteImages.cursor().on('data', function(image) {
-          fs.unlinkSync(`public/images/${image._id}.jpg`);
+          fs.unlinkSync(`${config.publicFolder}/images/${image._id}.jpg`);
         });
 
         await deleteImages.exec();
@@ -83,7 +84,7 @@ router.route('/:entryId')
       }
     });
 
-const imageUpload = multer({dest: 'public/images/'});
+const imageUpload = multer({dest: `${config.publicFolder}/images/`});
 
 router.post('/:entryId/images', authenticate.authorizeJwt,
     imageUpload.single('image'), async function(req, res, next) {
@@ -94,8 +95,8 @@ router.post('/:entryId/images', authenticate.authorizeJwt,
         const imageManipulator = await jimp.read(req.file.path);
 
         imageManipulator
-            .resize(2500, jimp.AUTO)
-            .quality(75)
+            .resize(config.jimp.imageWidth, jimp.AUTO)
+            .quality(config.jimp.imageQuality)
             .write(path.join(req.file.destination, `${image._id}.jpg`));
 
         // remove uncompressed image from disk
@@ -117,7 +118,7 @@ router.delete('/:entryId/images/:imageId', authenticate.authorizeJwt,
         const image = await Image.findByIdAndRemove(req.params.imageId).exec();
 
         // remove image from disk
-        fs.unlinkSync(`public/images/${image._id}.jpg`);
+        fs.unlinkSync(`${config.publicFolder}/images/${image._id}.jpg`);
 
         // unlink image from diary entry
         await DiaryEntry.findByIdAndUpdate(

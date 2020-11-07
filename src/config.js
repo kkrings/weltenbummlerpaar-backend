@@ -19,11 +19,15 @@
  * @module config
  */
 
+const path = require('path');
+
+
 // default configuration values for development
 const defaults = {
   jwtSecret: 'default JWT secret',
   mongodbUri: 'mongodb://localhost:27017/weltenbummlerpaar',
   port: '3000',
+  publicFolder: path.join(__dirname, 'public'),
 };
 
 module.exports = {
@@ -39,4 +43,24 @@ module.exports = {
    * Port number the HTTP(s) server should list to
    */
   port: process.env.PORT || defaults.port,
+
+  /**
+   * Folder static content is served from
+   */
+  publicFolder: path.resolve(
+      process.env.PUBLICFOLDER || defaults.publicFolder),
+
+  /**
+   * JIMP configuration
+   */
+  jimp: {
+    /**
+     * Width uploaded images are resized to
+     */
+    imageWidth: 2500,
+    /**
+     * Quality uploaded images are saved with
+     */
+    imageQuality: 75,
+  },
 };

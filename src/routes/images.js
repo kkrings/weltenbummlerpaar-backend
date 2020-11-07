@@ -10,6 +10,7 @@ const jimp = require('jimp');
 const path = require('path');
 const fs = require('fs');
 
+const config = require('../config');
 const authenticate = require('../authenticate');
 const Image = require('../models/image');
 
@@ -18,7 +19,7 @@ const router = new express.Router();
 
 router.use(bodyParser.json());
 
-const imageUpload = multer({dest: 'public/images/'});
+const imageUpload = multer({dest: `${config.publicFolder}/images/`});
 
 router.put('/:imageId', authenticate.authorizeJwt, imageUpload.single('image'),
     async function(req, res, next) {
@@ -31,8 +32,8 @@ router.put('/:imageId', authenticate.authorizeJwt, imageUpload.single('image'),
           const imageManipulator = await jimp.read(req.file.path);
 
           imageManipulator
-              .resize(2500, jimp.AUTO)
-              .quality(75)
+              .resize(config.jimp.imageWidth, jimp.AUTO)
+              .quality(config.jimp.imageQuality)
               .write(path.join(req.file.destination, `${image._id}.jpg`));
 
           // remove uncompressed image from disk
