@@ -129,6 +129,6 @@ require the back-end application to be running, preferable with an empty local
 The back-end application's documentation can be build locally at `docs` via
 [JSDoc][]:
 
-    ./node_modules/.bin/jsdoc -c jsdoc.conf.json -R README.md -d docs -r src
+    ./node_modules/.bin/jsdoc -c jsdoc.conf.json
 
 [JSDoc]: https://jsdoc.app/

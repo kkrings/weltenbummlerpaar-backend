@@ -4,6 +4,7 @@
     ],
     "recurseDepth": 10,
     "source": {
+        "include": "src",
         "includePattern": ".+\\.js(doc|x)?$",
         "excludePattern": "(^|\\/|\\\\)_"
     },
@@ -18,5 +19,10 @@
     "templates": {
         "cleverLinks": false,
         "monospaceLinks": false
+    },
+    "opts": {
+        "destination": "docs",
+        "readme": "README.md",
+        "recurse": true
     }
 }
