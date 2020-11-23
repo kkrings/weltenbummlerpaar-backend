@@ -1,14 +1,22 @@
 {
   "name": "weltenbummlerpaar-backend",
-  "version": "0.0.0",
-  "description": "Travel diary web application - Express-based backend",
-  "private": true,
+  "version": "1.0.0",
+  "description": "Travel diary web application - Express-based back end",
+  "keywords": [
+      "web-application",
+      "back-end",
+      "restful-api",
+      "express"
+  ],
+  "homepage": "https://github.com/kkrings/weltenbummlerpaar-backend",
+  "bugs": "https://github.com/kkrings/weltenbummlerpaar-backend/issues",
+  "license": "GPL-3.0-only",
+  "author": "Kai Krings <kai.krings@posteo.de>",
+  "repository": "github:kkrings/weltenbummlerpaar-backend",
   "scripts": {
     "start": "node ./bin/weltenbummlerpaar-backend.js"
   },
-  "repository": "github:kkrings/weltenbummlerpaar-backend",
-  "author": "Kai Krings",
-  "license": "GPL-3.0",
+  "private": true,
   "dependencies": {
     "cookie-parser": "^1.4.5",
     "debug": "~2.6.9",
