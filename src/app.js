@@ -20,7 +20,6 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const helmet = require('helmet');
-const path = require('path');
 
 const config = require('./config');
 const authenticate = require('./authenticate');
