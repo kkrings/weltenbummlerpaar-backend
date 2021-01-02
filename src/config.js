@@ -40,16 +40,18 @@ module.exports = {
    */
   mongodbUri: process.env.MONGODBURI || defaults.mongodbUri,
   /**
+   * If true check for and create indices when connection to the MongoDB.
+   */
+  mongodbAutoIndex: process.env.NODE_ENV === 'development',
+  /**
    * Port number the HTTP(s) server should list to
    */
   port: process.env.PORT || defaults.port,
-
   /**
    * Folder static content is served from
    */
   publicFolder: path.resolve(
       process.env.PUBLICFOLDER || defaults.publicFolder),
-
   /**
    * JIMP configuration
    */

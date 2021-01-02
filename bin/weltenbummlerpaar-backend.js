@@ -49,12 +49,14 @@ server.on('listening', onListening);
 async function connectDB(uri) {
   try {
     await mongoose.connect(uri, {
+      autoIndex: config.mongodbAutoIndex,
+      useCreateIndex: true,
       useFindAndModify: false,
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
 
-    debug(`Connected to ${uri}.`);
+    debug(`Connected to ${uri}; auto index: ${config.mongodbAutoIndex}`);
   } catch (error) {
     handleDBError(error);
   }

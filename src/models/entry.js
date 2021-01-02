@@ -23,9 +23,14 @@ const diaryEntrySchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Image',
   }],
-  tags: [String],
+  tags: {
+    type: [String],
+    index: true,
+  },
 }, {
   timestamps: true,
 });
+
+diaryEntrySchema.index({createdAt: -1});
 
 module.exports = mongoose.model('DiaryEntry', diaryEntrySchema);
