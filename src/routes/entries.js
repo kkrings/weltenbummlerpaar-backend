@@ -23,8 +23,17 @@ router.use(bodyParser.json());
 router.route('/')
     .get(async function(req, res, next) {
       try {
-        const findEntries = DiaryEntry.find(
-            req.query.filter, null, req.query.options);
+        const {skip, limit, ...filter} = req.query;
+
+        let findEntries = DiaryEntry.find(filter).sort({createdAt: -1});
+
+        if (skip) {
+          findEntries = findEntries.skip(parseInt(skip));
+        }
+
+        if (limit) {
+          findEntries = findEntries.limit(parseInt(limit));
+        }
 
         res.json(await findEntries.populate('images').exec());
       } catch (err) {
@@ -40,6 +49,18 @@ router.route('/')
         next(err);
       }
     });
+
+router.get('/count', async function(req, res, next) {
+  try {
+    const count = req.query ?
+      DiaryEntry.countDocuments(req.query) :
+      DiaryEntry.estimatedDocumentCount();
+
+    res.json(await count.exec());
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.route('/:entryId')
     .get(async function(req, res, next) {
