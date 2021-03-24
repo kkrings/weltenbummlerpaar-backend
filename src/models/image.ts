@@ -3,10 +3,22 @@
  * @module models/image
  */
 
-const mongoose = require('mongoose');
+import { Document, model, Schema } from 'mongoose';
+
+import { TimeStamps } from './timestamps';
 
 
-const imageSchema = new mongoose.Schema({
+/**
+ * Image model
+ */
+export interface Image extends Document, TimeStamps {
+  /**
+   * Image's description: what is shown on the picture, where was it taken, ...
+   */
+  description: string;
+}
+
+const imageSchema = new Schema({
   description: {
     type: String,
     required: true,
@@ -15,4 +27,4 @@ const imageSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-module.exports = mongoose.model('Image', imageSchema);
+export default model<Image>('Image', imageSchema);

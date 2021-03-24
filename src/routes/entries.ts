@@ -3,22 +3,22 @@
  * @module routes/entries
  */
 
-const fs = require('fs');
-const path = require('path');
-const express = require('express');
-const bodyParser = require('body-parser');
-const multer = require('multer');
-const jimp = require('jimp');
+import * as path from 'path';
+import * as fs from 'fs';
+import * as express from 'express';
+import * as mongoose from 'mongoose';
+import * as multer from 'multer';
+import * as jimp from 'jimp';
 
-const config = require('../config');
-const authenticate = require('../authenticate');
-const DiaryEntry = require('../models/entry');
-const Image = require('../models/image');
+import * as authenticate from '../authenticate';
+import config from '../config';
+import DiaryEntry from '../models/entry';
+import Image from '../models/image';
 
 
-const router = new express.Router();
+const router = express.Router();
 
-router.use(bodyParser.json());
+router.use(express.json());
 
 router.route('/')
     .get(async function(req, res, next) {
@@ -28,11 +28,11 @@ router.route('/')
         let findEntries = DiaryEntry.find(filter).sort({createdAt: -1});
 
         if (skip) {
-          findEntries = findEntries.skip(parseInt(skip));
+          findEntries = findEntries.skip(parseInt(skip as string));
         }
 
         if (limit) {
-          findEntries = findEntries.limit(parseInt(limit));
+          findEntries = findEntries.limit(parseInt(limit as string));
         }
 
         res.json(await findEntries.populate('images').exec());
@@ -42,7 +42,7 @@ router.route('/')
     })
     .post(authenticate.authorizeJwt, async function(req, res, next) {
       try {
-        const diaryEntry = await (new DiaryEntry(req.body)).save();
+        const diaryEntry = await DiaryEntry.create(req.body);
         const findEntry = DiaryEntry.findById(diaryEntry._id);
         res.json(await findEntry.populate('images').exec());
       } catch (err) {
@@ -92,7 +92,7 @@ router.route('/:entryId')
         });
 
         // remove diary entry's images from disk
-        deleteImages.cursor().on('data', function(image) {
+        deleteImages.cursor().on('data', function(image: mongoose.Document) {
           fs.unlinkSync(`${config.publicFolder}/images/${image._id}.jpg`);
         });
 
@@ -151,4 +151,4 @@ router.delete('/:entryId/images/:imageId', authenticate.authorizeJwt,
       }
     });
 
-module.exports = router;
+export default router;

@@ -12,11 +12,14 @@
  * @module authenticate
  */
 
-const passport = require('passport');
-const passportJwt = require('passport-jwt');
+import * as passport from 'passport';
+import * as passportJwt from 'passport-jwt';
 
-const config = require('./config');
-const Admin = require('./models/admin');
+import { Handler } from 'express';
+import { Document } from 'mongoose';
+
+import config from './config';
+import Admin from './models/admin';
 
 
 /**
@@ -25,12 +28,12 @@ const Admin = require('./models/admin');
  * The `token` is expected to hold the ID of an admin user. The ID is used to
  * search for the corresponding admin user in the underlying MongoDB database.
  *
- * @param {Object} token
+ * @param token
  *   JSON web token
- * @param {callback} done
+ * @param done
  *   Errors or the found admin user are passed to this callback function.
  */
-async function verifyJwt(token, done) {
+async function verifyJwt(token: Document, done: passportJwt.VerifiedCallback): Promise<void> {
   try {
     const admin = await Admin.findById(token._id).exec();
 
@@ -51,10 +54,10 @@ async function verifyJwt(token, done) {
  * bearer token. The strategy expects an environment variable JWTSECRET that
  * holds a secret for encrypting and decrypting the JSON web token.
  *
- * @return {Object}
+ * @return
  *   JSON web token strategy instance
  */
-function createJwtStrategy() {
+function createJwtStrategy(): passportJwt.Strategy {
   const options = {
     secretOrKey: config.jwtSecret,
     jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -74,14 +77,12 @@ passport.deserializeUser(Admin.deserializeUser());
 /**
  * Initialize passport.
  *
- * @return {function}
+ * @return
  *   Passport's initialization middleware.
  */
-exports.initialize = function() {
-  return passport.initialize();
-};
+export const initialize = (): Handler => passport.initialize();
 
 /**
  * Authorize admin user via JSON web token.
  */
-exports.authorizeJwt = passport.authenticate('jwt', {session: false});
+export const authorizeJwt = passport.authenticate('jwt', {session: false});

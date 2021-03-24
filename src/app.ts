@@ -15,19 +15,21 @@
  * @module app
  */
 
-const debug = require('debug')('weltenbummlerpaar-backend:app');
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const morgan = require('morgan');
-const helmet = require('helmet');
+import debug from 'debug';
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import morgan from 'morgan';
+import helmet from 'helmet';
+import cors from 'cors';
 
-const config = require('./config');
-const authenticate = require('./authenticate');
+import * as authenticate from './authenticate';
+import config from './config';
+import adminRouter from './routes/admins';
+import entryRouter from './routes/entries';
+import imageRouter from './routes/images';
 
-const adminRouter = require('./routes/admins');
-const entryRouter = require('./routes/entries');
-const imageRouter = require('./routes/images');
 
+const logDebug = debug('weltenbummlerpaar-backend:app');
 
 const app = express();
 
@@ -40,12 +42,12 @@ app.use(cookieParser());
 app.use(authenticate.initialize());
 
 if (app.get('env') === 'development') {
-  debug('Enable CORS for development purposes.');
-  app.use(require('cors')());
+  logDebug('Enable CORS for development purposes.');
+  app.use(cors());
 }
 
 // serve static files
-debug(`Static files are served from ${config.publicFolder}.`);
+logDebug(`Static files are served from ${config.publicFolder}.`);
 app.use(express.static(config.publicFolder));
 
 // routes
@@ -56,4 +58,4 @@ app.use('/db/images', imageRouter);
 /**
  * The initialized Express application
  */
-module.exports = app;
+export default app;

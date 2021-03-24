@@ -3,17 +3,16 @@
  * @module routes/admins
  */
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const jsonwebtoken = require('jsonwebtoken');
-const passport = require('passport');
+import * as express from 'express';
+import * as jsonwebtoken from 'jsonwebtoken';
+import * as passport from 'passport';
 
-const config = require('../config');
+import config from '../config';
 
 
-const router = new express.Router();
+const router = express.Router();
 
-router.use(bodyParser.json());
+router.use(express.json());
 
 // user login via username and password; signs a new JSON web token
 router.post('/login', function(req, res, next) {
@@ -35,4 +34,4 @@ router.post('/login', function(req, res, next) {
   })(req, res, next);
 });
 
-module.exports = router;
+export default router;

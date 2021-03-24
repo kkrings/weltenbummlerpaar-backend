@@ -19,7 +19,7 @@
  * @module config
  */
 
-const path = require('path');
+import * as path from 'path';
 
 
 // default configuration values for development
@@ -30,7 +30,7 @@ const defaults = {
   publicFolder: path.join(__dirname, 'public'),
 };
 
-module.exports = {
+export default {
   /**
    * Secret for encrypting and decrypting JSON web tokens
    */
