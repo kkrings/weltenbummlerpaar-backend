@@ -12,11 +12,10 @@
  * @module authenticate
  */
 
+import express from 'express'
+import mongoose from 'mongoose';
 import passport from 'passport';
 import passportJwt from 'passport-jwt';
-
-import { Handler } from 'express';
-import { Document } from 'mongoose';
 
 import config from './config';
 import Admin from './models/admin';
@@ -33,7 +32,7 @@ import Admin from './models/admin';
  * @param done
  *   Errors or the found admin user are passed to this callback function.
  */
-async function verifyJwt(token: Document, done: passportJwt.VerifiedCallback): Promise<void> {
+async function verifyJwt(token: mongoose.Document, done: passportJwt.VerifiedCallback): Promise<void> {
   try {
     const admin = await Admin.findById(token._id).exec();
 
@@ -80,7 +79,7 @@ passport.deserializeUser(Admin.deserializeUser());
  * @return
  *   Passport's initialization middleware.
  */
-export const initialize = (): Handler => passport.initialize();
+export const initialize = (): express.Handler => passport.initialize();
 
 /**
  * Authorize admin user via JSON web token.

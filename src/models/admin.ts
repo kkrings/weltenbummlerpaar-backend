@@ -3,11 +3,11 @@
  * @module models/admin
  */
 
-import { model, PassportLocalDocument, PassportLocalSchema, Schema } from 'mongoose';
+import mongoose from 'mongoose';
 import passportLocalMongoose from 'passport-local-mongoose';
 
 
-const adminSchema: PassportLocalSchema = new Schema({});
+const adminSchema: mongoose.PassportLocalSchema = new mongoose.Schema({});
 adminSchema.plugin(passportLocalMongoose);
 
-export default model<PassportLocalDocument>('Admin', adminSchema);
+export default mongoose.model<mongoose.PassportLocalDocument>('Admin', adminSchema);

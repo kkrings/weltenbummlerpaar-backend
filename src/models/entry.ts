@@ -3,7 +3,7 @@
  * @module models/entry
  */
 
-import { Document, model, Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
 import { Image } from './image';
 import { TimeStamps } from './timestamps';
@@ -12,7 +12,7 @@ import { TimeStamps } from './timestamps';
 /**
  * Diary entry model
  */
-export interface DiaryEntry extends Document, TimeStamps {
+export interface DiaryEntry extends mongoose.Document, TimeStamps {
   /**
    * Diary entry's title
    */
@@ -36,7 +36,7 @@ export interface DiaryEntry extends Document, TimeStamps {
   tags: string[];
 }
 
-const diaryEntrySchema = new Schema({
+const diaryEntrySchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -50,7 +50,7 @@ const diaryEntrySchema = new Schema({
     required: true,
   },
   images: [{
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Image',
   }],
   tags: {
@@ -63,4 +63,4 @@ const diaryEntrySchema = new Schema({
 
 diaryEntrySchema.index({createdAt: -1});
 
-export default model<DiaryEntry>('DiaryEntry', diaryEntrySchema);
+export default mongoose.model<DiaryEntry>('DiaryEntry', diaryEntrySchema);
