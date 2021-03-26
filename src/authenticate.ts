@@ -6,8 +6,8 @@
  * admin user uses the local authentication strategy a new JSON web token is
  * signed for this user.
  *
- * Both authentication strategies are implemented via {@link
- * https://www.npmjs.com/package/passport Passport}.
+ * Both authentication strategies are implemented via
+ * [Passport](https://www.npmjs.com/package/passport/).
  *
  * @module authenticate
  */

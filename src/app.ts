@@ -5,12 +5,11 @@
  * middleware is loaded, and routes are mounted.
  *
  * If the NODE_ENV environment variable is set to development, cross-origin
- * resource sharing ({@link https://www.npmjs.com/package/cors CORS}) is
- * enabled.
+ * resource sharing [CORS](https://www.npmjs.com/package/cors/) is enabled.
  *
  * The routes provide the REST API for performing operations on the MongoDB
  * that stores admin users, diary entries, and images; the object modeling is
- * done via {@link https://mongoosejs.com/ Mongoose}.
+ * done via [Mongoose](https://mongoosejs.com/).
  *
  * @module app
  */
