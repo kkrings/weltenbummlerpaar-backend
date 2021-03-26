@@ -14,7 +14,8 @@
   "author": "Kai Krings <kai.krings@posteo.de>",
   "repository": "github:kkrings/weltenbummlerpaar-backend",
   "scripts": {
-    "start": "node ./bin/weltenbummlerpaar-backend.js"
+    "build": "tsc",
+    "start": "node ./dist/index.js"
   },
   "private": true,
   "dependencies": {
@@ -34,6 +35,7 @@
     "yargs": "^16.2.0"
   },
   "devDependencies": {
+    "@tsconfig/recommended": "^1.0.1",
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.10",
     "@types/debug": "^4.1.5",
@@ -46,6 +48,7 @@
     "@types/passport-jwt": "^3.0.5",
     "@types/passport-local": "^1.0.33",
     "@types/passport-local-mongoose": "^4.0.13",
+    "@types/yargs": "^16.0.1",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "cors": "^2.8.5",

@@ -3,9 +3,9 @@
  * @module routes/admins
  */
 
-import * as express from 'express';
-import * as jsonwebtoken from 'jsonwebtoken';
-import * as passport from 'passport';
+import express from 'express';
+import jsonwebtoken from 'jsonwebtoken';
+import passport from 'passport';
 
 import config from '../config';
 

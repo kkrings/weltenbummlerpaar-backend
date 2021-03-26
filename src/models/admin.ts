@@ -4,7 +4,7 @@
  */
 
 import { model, PassportLocalDocument, PassportLocalSchema, Schema } from 'mongoose';
-import * as passportLocalMongoose from 'passport-local-mongoose';
+import passportLocalMongoose from 'passport-local-mongoose';
 
 
 const adminSchema: PassportLocalSchema = new Schema({});

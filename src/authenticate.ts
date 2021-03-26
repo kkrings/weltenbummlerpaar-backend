@@ -12,8 +12,8 @@
  * @module authenticate
  */
 
-import * as passport from 'passport';
-import * as passportJwt from 'passport-jwt';
+import passport from 'passport';
+import passportJwt from 'passport-jwt';
 
 import { Handler } from 'express';
 import { Document } from 'mongoose';

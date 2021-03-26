@@ -1,14 +1,15 @@
 /**
  * Application's entry point
  *
- * Here, the HTTP(s) server is started and the 
+ * Here, the HTTP(S) server is started and the connection to the MongoDB
+ * database is established.
  */
-import * as https from 'https';
-import * as http from 'http';
-import * as fs from 'fs';
-import * as mongoose from 'mongoose';
 
+import https from 'https';
+import http from 'http';
+import fs from 'fs';
 import debug from 'debug';
+import mongoose from 'mongoose';
 
 import config from './config';
 import app from './app';
@@ -150,7 +151,7 @@ function onListening(): void {
 
   const bind = typeof addr === 'string' ?
     'pipe ' + addr :
-    'port ' + addr.port;
+    'port ' + (addr?.port ?? port);
 
   debugLog(`Listening on ${bind}.`);
 }

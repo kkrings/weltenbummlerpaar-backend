@@ -3,11 +3,11 @@
  * @module routes/images
  */
 
-import * as path from 'path'
-import * as fs from 'fs';
-import * as express from 'express';
-import * as multer from 'multer';
-import * as jimp from 'jimp';
+import path from 'path'
+import fs from 'fs';
+import express from 'express';
+import jimp from 'jimp';
+import multer from 'multer';
 
 import * as authenticate from '../authenticate';
 import config from '../config';
