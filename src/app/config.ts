@@ -71,7 +71,7 @@ const defaults = {
   jwtSecret: 'default JWT secret',
   mongodbUri: 'mongodb://localhost:27017/weltenbummlerpaar',
   port: '3000',
-  publicFolder: path.join(__dirname, 'public')
+  publicFolder: path.join(__dirname, '../../src/public')
 };
 
 const config: Config = {
