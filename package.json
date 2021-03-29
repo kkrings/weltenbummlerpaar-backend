@@ -14,7 +14,11 @@
   "author": "Kai Krings <kai.krings@posteo.de>",
   "repository": "github:kkrings/weltenbummlerpaar-backend",
   "scripts": {
-    "start": "node ./bin/weltenbummlerpaar-backend.js"
+    "build": "tsc",
+    "build:docs": "typedoc",
+    "bin:admin": "node dist/bin/admin.js",
+    "start:dev": "node -r dotenv/config dist/index.js dotenv_config_path=src/env/dev.env",
+    "start": "node dist/index.js"
   },
   "private": true,
   "dependencies": {
@@ -34,9 +38,26 @@
     "yargs": "^16.2.0"
   },
   "devDependencies": {
+    "@tsconfig/recommended": "^1.0.1",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/cors": "^2.8.10",
+    "@types/debug": "^4.1.5",
+    "@types/express": "^4.17.11",
+    "@types/mongoose": "^5.10.3",
+    "@types/morgan": "^1.9.2",
+    "@types/multer": "^1.4.5",
+    "@types/node": "^14.14.35",
+    "@types/passport": "^1.0.6",
+    "@types/passport-jwt": "^3.0.5",
+    "@types/passport-local": "^1.0.33",
+    "@types/passport-local-mongoose": "^4.0.13",
+    "@types/yargs": "^16.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/parser": "^4.18.0",
     "cors": "^2.8.5",
-    "eslint": "^7.22.0",
-    "eslint-config-google": "^0.14.0",
-    "jsdoc": "^3.6.6"
+    "dotenv": "^8.2.0",
+    "eslint": "^7.17.0",
+    "typedoc": "^0.20.34",
+    "typescript": "^4.2.3"
   }
 }

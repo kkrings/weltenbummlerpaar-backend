@@ -3,21 +3,20 @@
  * @module routes/images
  */
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const multer = require('multer');
-const jimp = require('jimp');
-const path = require('path');
-const fs = require('fs');
+import path from 'path'
+import fs from 'fs';
+import express from 'express';
+import jimp from 'jimp';
+import multer from 'multer';
 
-const config = require('../config');
-const authenticate = require('../authenticate');
-const Image = require('../models/image');
+import * as authenticate from '../authenticate';
+import config from '../config';
+import Image from '../models/image';
 
 
-const router = new express.Router();
+const router = express.Router();
 
-router.use(bodyParser.json());
+router.use(express.json());
 
 const imageUpload = multer({dest: `${config.publicFolder}/images/`});
 
@@ -46,4 +45,4 @@ router.put('/:imageId', authenticate.authorizeJwt, imageUpload.single('image'),
       }
     });
 
-module.exports = router;
+export default router;

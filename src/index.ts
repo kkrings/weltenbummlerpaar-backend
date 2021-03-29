@@ -1,12 +1,21 @@
-const debug = require('debug')('weltenbummlerpaar-backend:server');
-const mongoose = require('mongoose');
-const https = require('https');
-const http = require('http');
-const fs = require('fs');
+/**
+ * Application's entry point
+ *
+ * Here, the HTTP(S) server is started and the connection to the MongoDB
+ * database is established.
+ */
 
-const config = require('../src/config');
-const app = require('../src/app');
+import https from 'https';
+import http from 'http';
+import fs from 'fs';
+import debug from 'debug';
+import mongoose from 'mongoose';
 
+import config from './app/config';
+import app from './app/app';
+
+
+const debugLog = debug('weltenbummlerpaar-backend:server');
 
 // connect to MongoDB
 const mongodbUri = config.mongodbUri;
@@ -22,7 +31,7 @@ const port = normalizePort(config.port);
 app.set('port', port);
 
 // if possible, create HTTPS server, otherwise fall back to HTTP server
-let server;
+let server: http.Server;
 
 if (process.env.SSLCERT && process.env.SSLKEY) {
   const options = {
@@ -43,10 +52,10 @@ server.on('listening', onListening);
 /**
  * Connect to MongoDB.
  *
- * @param {string} uri
+ * @param uri
  *   MongoDB URI
  */
-async function connectDB(uri) {
+async function connectDB(uri: string): Promise<void> {
   try {
     await mongoose.connect(uri, {
       autoIndex: config.mongodbAutoIndex,
@@ -56,7 +65,7 @@ async function connectDB(uri) {
       useUnifiedTopology: true,
     });
 
-    debug(`Connected to ${uri}; auto index: ${config.mongodbAutoIndex}`);
+    debugLog(`Connected to ${uri}; auto index: ${config.mongodbAutoIndex}`);
   } catch (error) {
     handleDBError(error);
   }
@@ -65,10 +74,10 @@ async function connectDB(uri) {
 /**
  * Handle error on initial connection to MongoDB.
  *
- * @param {Error} error
+ * @param error
  *   Error event
  */
-function handleDBError(error) {
+function handleDBError(error: Error): void {
   console.error(`Failed to connect to ${mongodbUri}.`);
   console.error(error);
   process.exit(1);
@@ -77,13 +86,13 @@ function handleDBError(error) {
 /**
  * Normalize a port into a number, string, or false.
  *
- * @param {string} val
+ * @param val
  *   Port number
  *
- * @return {number | string | boolean}
+ * @return
  *   Normalized port number
  */
-function normalizePort(val) {
+function normalizePort(val: string): number | string | boolean {
   const port = parseInt(val, 10);
 
   if (isNaN(port)) {
@@ -102,10 +111,10 @@ function normalizePort(val) {
 /**
  * Event listener for HTTP server "error" event.
  *
- * @param {Error} error
+ * @param error
  *   Error event
  */
-function onError(error) {
+function onError(error: NodeJS.ErrnoException): void {
   if (error.syscall !== 'listen') {
     throw error;
   }
@@ -137,12 +146,12 @@ function onError(error) {
 /**
  * Event listener for HTTP server "listening" event.
  */
-function onListening() {
+function onListening(): void {
   const addr = server.address();
 
   const bind = typeof addr === 'string' ?
     'pipe ' + addr :
-    'port ' + addr.port;
+    'port ' + (addr?.port ?? port);
 
-  debug(`Listening on ${bind}.`);
+  debugLog(`Listening on ${bind}.`);
 }
