@@ -15,6 +15,8 @@
   "repository": "github:kkrings/weltenbummlerpaar-backend",
   "scripts": {
     "build": "tsc",
+    "build:docs": "typedoc",
+    "create:admin": "node ./dist/bin/admin.js",
     "start": "node ./dist/index.js"
   },
   "private": true,
@@ -32,6 +34,7 @@
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^6.1.0",
     "pm2": "^4.5.5",
+    "typedoc": "^0.20.34",
     "yargs": "^16.2.0"
   },
   "devDependencies": {
@@ -53,7 +56,6 @@
     "@typescript-eslint/parser": "^4.18.0",
     "cors": "^2.8.5",
     "eslint": "^7.17.0",
-    "jsdoc": "^3.6.6",
     "typescript": "^4.2.3"
   }
 }

@@ -44,22 +44,26 @@ The second step is to install the application's dependencies:
     cd www/weltenbummlerpaar/rest
     npm install --production
 
-The third step is to inject an administration user into the *MongoDB* database
-via the provided `create.js` script:
+The third step is to compile the application:
 
-    node bin/create.js admin \
+    npm run build
+
+The fourth step is to inject an administration user into the *MongoDB* database
+via the provided `admin.js` script:
+
+    npm run create:admin -- \
       --uri 'some MongoDB URI' \
       --username 'some user name' \
       --password 'some password'
 
-The fourth step is to start the application via the [PM2][] process manager. It
+The fifth step is to start the application via the [PM2][] process manager. It
 allows to configure all of the application's required environment variables in
 its *ecosystem* file; see `app.config.js`:
 
     module.exports = {
       apps : [{
         name: 'weltenbummlerpaar-backend',
-        script: 'bin/weltenbummlerpaar-backend.js',
+        script: 'dist/index.js',
         instances: 1,
         autorestart: true,
         watch: false,
@@ -123,12 +127,12 @@ require the back-end application to be running, preferable with an empty local
 *MongoDB* database:
 
     mongod --dbpath 'path to directory for creating local database'
-    node bin/create.js admin --username admin --password admin
+    npm run create:admin -- --username admin --password admin
     DEBUG=weltenbummlerpaar-backend:* NODE_ENV=development npm start
 
 The back-end application's documentation can be build locally at `docs` via
-[JSDoc][]:
+[TypeDoc][]:
 
-    ./node_modules/.bin/jsdoc -c jsdoc.conf.json
+    npm run build:docs
 
-[JSDoc]: https://jsdoc.app/
+[TypeDoc]: https://typedoc.org/
