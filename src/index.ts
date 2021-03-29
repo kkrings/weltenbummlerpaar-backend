@@ -11,8 +11,8 @@ import fs from 'fs';
 import debug from 'debug';
 import mongoose from 'mongoose';
 
-import config from './config';
-import app from './app';
+import config from './app/config';
+import app from './app/app';
 
 
 const debugLog = debug('weltenbummlerpaar-backend:server');

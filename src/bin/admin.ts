@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import yargs from 'yargs';
 
-import Admin from '../models/admin';
+import Admin from '../app/models/admin';
 
 
 /**
