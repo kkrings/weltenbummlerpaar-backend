@@ -22,47 +22,71 @@
 import * as path from 'path';
 
 
+/**
+ * Application's configuration
+ */
+export interface Config {
+  /**
+   * Secret for encrypting and decrypting JSON web tokens
+   */
+  jwtSecret: string;
+  /**
+   * MongoDB's URI
+   */
+  mongodbUri: string;
+  /**
+   * If true check for and create indices when connection to the MongoDB.
+   */
+  mongodbAutoIndex: boolean;
+  /**
+   * Port number the HTTP(s) server should list to
+   */
+  port: string;
+  /**
+   * Folder static content is served from
+   */
+  publicFolder: string;
+  /**
+   * JIMP configuration
+   */
+  jimp: JimpConfig;
+}
+
+/**
+ * JIMP configuration
+ */
+export interface JimpConfig {
+  /**
+   * Width uploaded images are resized to
+   */
+  imageWidth: number;
+  /**
+   * Quality uploaded images are saved with
+   */
+  imageQuality: number;
+}
+
 // default configuration values for development
 const defaults = {
   jwtSecret: 'default JWT secret',
   mongodbUri: 'mongodb://localhost:27017/weltenbummlerpaar',
   port: '3000',
-  publicFolder: path.join(__dirname, 'public'),
+  publicFolder: path.join(__dirname, 'public')
 };
 
-export default {
-  /**
-   * Secret for encrypting and decrypting JSON web tokens
-   */
+const config: Config = {
   jwtSecret: process.env.JWTSECRET || defaults.jwtSecret,
-  /**
-   * MongoDB's URI
-   */
   mongodbUri: process.env.MONGODBURI || defaults.mongodbUri,
-  /**
-   * If true check for and create indices when connection to the MongoDB.
-   */
   mongodbAutoIndex: process.env.NODE_ENV === 'development',
-  /**
-   * Port number the HTTP(s) server should list to
-   */
-  port: process.env.PORT || defaults.port,
-  /**
-   * Folder static content is served from
-   */
-  publicFolder: path.resolve(
-      process.env.PUBLICFOLDER || defaults.publicFolder),
-  /**
-   * JIMP configuration
-   */
+  port: process.env.PORT ||defaults.port,
+  publicFolder: path.resolve(process.env.PUBLICFOLDER || defaults.publicFolder),
   jimp: {
-    /**
-     * Width uploaded images are resized to
-     */
     imageWidth: 2500,
-    /**
-     * Quality uploaded images are saved with
-     */
-    imageQuality: 75,
-  },
+    imageQuality: 75
+  }
 };
+
+/**
+ * Applicaton's configuration
+ */
+export default config;
