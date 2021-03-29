@@ -24,7 +24,8 @@ install:
   - npm install
 
 before_script:
-  - node bin/create.js admin --username admin --password admin
+  - npm run build
+  - npm run bin:admin -- --username admin --password admin
   - pm2 start app.config.js
   - cd ../weltenbummlerpaar
 

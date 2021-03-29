@@ -1,7 +1,7 @@
 module.exports = {
   apps: [{
     name: 'weltenbummlerpaar-backend',
-    script: 'bin/weltenbummlerpaar-backend.js',
+    script: 'dist/index.js',
     instances: 1,
     autorestart: true,
     watch: false,
