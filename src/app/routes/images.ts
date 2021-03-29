@@ -26,6 +26,10 @@ router.put('/:imageId', authenticate.authorizeJwt, imageUpload.single('image'),
         const image = await Image.findByIdAndUpdate(
             req.params.imageId, {$set: req.body}, {new: true}).exec();
 
+        if (image === null) {
+          throw new Error(`An image with ID ${req.params.imageId} could not be found.`);
+        }
+
         if (req.file) {
           // compress and rename uploaded image given its ID
           const imageManipulator = await jimp.read(req.file.path);

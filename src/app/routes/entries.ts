@@ -87,6 +87,10 @@ router.route('/:entryId')
         const diaryEntry = await DiaryEntry.findByIdAndRemove(
             req.params.entryId).exec();
 
+        if (diaryEntry === null) {
+          throw new Error(`A diary entry with ID ${req.params.entryId} could not be found.`);
+        }
+
         const deleteImages = Image.deleteMany({
           _id: {$in: diaryEntry.images},
         });
@@ -137,6 +141,10 @@ router.delete('/:entryId/images/:imageId', authenticate.authorizeJwt,
     async function(req, res, next) {
       try {
         const image = await Image.findByIdAndRemove(req.params.imageId).exec();
+
+        if (image === null) {
+          throw new Error(`An image with ID ${req.params.imageId} could not be found.`);
+        }
 
         // remove image from disk
         fs.unlinkSync(`${config.publicFolder}/images/${image._id}.jpg`);
