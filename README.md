@@ -128,7 +128,7 @@ require the back-end application to be running, preferable with an empty local
 
     mongod --dbpath 'path to directory for creating local database'
     npm run bin:admin -- --username admin --password admin
-    DEBUG=weltenbummlerpaar-backend:* NODE_ENV=development npm start
+    npm run start:dev
 
 The back-end application's documentation can be build locally at `docs` via
 [TypeDoc][]:
