@@ -51,7 +51,7 @@ The third step is to compile the application:
 The fourth step is to inject an administration user into the *MongoDB* database
 via the provided `admin.js` script:
 
-    npm run create:admin -- \
+    npm run bin:admin -- \
       --uri 'some MongoDB URI' \
       --username 'some user name' \
       --password 'some password'
@@ -127,7 +127,7 @@ require the back-end application to be running, preferable with an empty local
 *MongoDB* database:
 
     mongod --dbpath 'path to directory for creating local database'
-    npm run create:admin -- --username admin --password admin
+    npm run bin:admin -- --username admin --password admin
     DEBUG=weltenbummlerpaar-backend:* NODE_ENV=development npm start
 
 The back-end application's documentation can be build locally at `docs` via
