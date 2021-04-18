@@ -19,8 +19,7 @@
  * @module config
  */
 
-import * as path from 'path';
-
+import * as path from 'path'
 
 /**
  * Application's configuration
@@ -29,27 +28,27 @@ export interface Config {
   /**
    * Secret for encrypting and decrypting JSON web tokens
    */
-  jwtSecret: string;
+  jwtSecret: string
   /**
    * MongoDB's URI
    */
-  mongodbUri: string;
+  mongodbUri: string
   /**
    * If true check for and create indices when connection to the MongoDB.
    */
-  mongodbAutoIndex: boolean;
+  mongodbAutoIndex: boolean
   /**
    * Port number the HTTP(s) server should list to
    */
-  port: string;
+  port: string
   /**
    * Folder static content is served from
    */
-  publicFolder: string;
+  publicFolder: string
   /**
    * JIMP configuration
    */
-  jimp: JimpConfig;
+  jimp: JimpConfig
 }
 
 /**
@@ -59,11 +58,11 @@ export interface JimpConfig {
   /**
    * Width uploaded images are resized to
    */
-  imageWidth: number;
+  imageWidth: number
   /**
    * Quality uploaded images are saved with
    */
-  imageQuality: number;
+  imageQuality: number
 }
 
 // default configuration values for development
@@ -72,21 +71,25 @@ const defaults = {
   mongodbUri: 'mongodb://localhost:27017/weltenbummlerpaar',
   port: '3000',
   publicFolder: path.join(__dirname, '../../src/public')
-};
+}
+
+function getConfigValue (value: string | undefined, defaultValue: string): string {
+  return value === undefined ? defaultValue : value
+}
 
 const config: Config = {
-  jwtSecret: process.env.JWTSECRET || defaults.jwtSecret,
-  mongodbUri: process.env.MONGODBURI || defaults.mongodbUri,
+  jwtSecret: getConfigValue(process.env.JWTSECRET, defaults.jwtSecret),
+  mongodbUri: getConfigValue(process.env.MONGODBURI, defaults.mongodbUri),
   mongodbAutoIndex: process.env.NODE_ENV === 'development',
-  port: process.env.PORT ||defaults.port,
-  publicFolder: path.resolve(process.env.PUBLICFOLDER || defaults.publicFolder),
+  port: getConfigValue(process.env.PORT, defaults.port),
+  publicFolder: path.resolve(getConfigValue(process.env.PUBLICFOLDER, defaults.publicFolder)),
   jimp: {
     imageWidth: 2500,
     imageQuality: 75
   }
-};
+}
 
 /**
  * Applicaton's configuration
  */
-export default config;
+export default config

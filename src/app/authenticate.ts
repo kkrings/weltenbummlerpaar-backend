@@ -13,13 +13,12 @@
  */
 
 import express from 'express'
-import mongoose from 'mongoose';
-import passport from 'passport';
-import passportJwt from 'passport-jwt';
+import mongoose from 'mongoose'
+import passport from 'passport'
+import passportJwt from 'passport-jwt'
 
-import config from './config';
-import Admin from './models/admin';
-
+import config from './config'
+import Admin from './models/admin'
 
 /**
  * Verify JSON web token.
@@ -32,18 +31,16 @@ import Admin from './models/admin';
  * @param done
  *   Errors or the found admin user are passed to this callback function.
  */
-async function verifyJwt(token: mongoose.Document, done: passportJwt.VerifiedCallback): Promise<void> {
-  try {
-    const admin = await Admin.findById(token._id).exec();
-
-    if (admin) {
-      done(null, admin);
-    } else {
-      done(null, false);
-    }
-  } catch (err) {
-    done(err, false);
-  }
+function verifyJwt (token: mongoose.Document, done: passportJwt.VerifiedCallback): void {
+  Admin.findById(token._id).exec().then(
+    admin => {
+      if (admin !== null) {
+        done(null, admin)
+      } else {
+        done(null, false)
+      }
+    },
+    err => done(err, false))
 }
 
 /**
@@ -56,22 +53,22 @@ async function verifyJwt(token: mongoose.Document, done: passportJwt.VerifiedCal
  * @return
  *   JSON web token strategy instance
  */
-function createJwtStrategy(): passportJwt.Strategy {
+function createJwtStrategy (): passportJwt.Strategy {
   const options = {
     secretOrKey: config.jwtSecret,
-    jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
-  };
+    jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken()
+  }
 
-  return new passportJwt.Strategy(options, verifyJwt);
+  return new passportJwt.Strategy(options, verifyJwt)
 }
 
 // local strategy
-passport.use(Admin.createStrategy());
+passport.use(Admin.createStrategy())
 // JSON web token strategy
-passport.use(createJwtStrategy());
+passport.use(createJwtStrategy())
 
-passport.serializeUser(Admin.serializeUser());
-passport.deserializeUser(Admin.deserializeUser());
+passport.serializeUser(Admin.serializeUser())
+passport.deserializeUser(Admin.deserializeUser())
 
 /**
  * Initialize passport.
@@ -79,9 +76,9 @@ passport.deserializeUser(Admin.deserializeUser());
  * @return
  *   Passport's initialization middleware.
  */
-export const initialize = (): express.Handler => passport.initialize();
+export const initialize = (): express.Handler => passport.initialize()
 
 /**
  * Authorize admin user via JSON web token.
  */
-export const authorizeJwt = passport.authenticate('jwt', {session: false});
+export const authorizeJwt = passport.authenticate('jwt', { session: false })

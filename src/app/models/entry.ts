@@ -3,11 +3,10 @@
  * @module models/entry
  */
 
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-import { Image } from './image';
-import { TimeStamps } from './timestamps';
-
+import { Image } from './image'
+import { TimeStamps } from './timestamps'
 
 /**
  * Diary entry model
@@ -16,51 +15,51 @@ export interface DiaryEntry extends mongoose.Document, TimeStamps {
   /**
    * Diary entry's title
    */
-  title: string;
+  title: string
   /**
    * Diary entry's body
    */
-  body: string;
+  body: string
   /**
    * Location the diary entry refers to, e.g.:
    * city, state, country
    */
-  locationName: string;
+  locationName: string
   /**
    * Optional: list of images
    */
-  images: Image['_id'][];
+  images: Array<Image['_id']>
   /**
    * Optional: list of search tags
    */
-  tags: string[];
+  tags: string[]
 }
 
 const diaryEntrySchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true,
+    required: true
   },
   body: {
     type: String,
-    required: true,
+    required: true
   },
   locationName: {
     type: String,
-    required: true,
+    required: true
   },
   images: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Image',
+    ref: 'Image'
   }],
   tags: {
     type: [String],
-    index: true,
-  },
+    index: true
+  }
 }, {
-  timestamps: true,
-});
+  timestamps: true
+})
 
-diaryEntrySchema.index({createdAt: -1});
+diaryEntrySchema.index({ createdAt: -1 })
 
-export default mongoose.model<DiaryEntry>('DiaryEntry', diaryEntrySchema);
+export default mongoose.model<DiaryEntry>('DiaryEntry', diaryEntrySchema)

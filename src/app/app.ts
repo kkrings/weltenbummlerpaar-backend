@@ -14,47 +14,46 @@
  * @module app
  */
 
-import debug from 'debug';
-import express from 'express';
-import cookieParser from 'cookie-parser';
-import morgan from 'morgan';
-import helmet from 'helmet';
-import cors from 'cors';
+import debug from 'debug'
+import express from 'express'
+import cookieParser from 'cookie-parser'
+import morgan from 'morgan'
+import helmet from 'helmet'
+import cors from 'cors'
 
-import * as authenticate from './authenticate';
-import config from './config';
-import adminRouter from './routes/admins';
-import entryRouter from './routes/entries';
-import imageRouter from './routes/images';
+import * as authenticate from './authenticate'
+import config from './config'
+import adminRouter from './routes/admins'
+import entryRouter from './routes/entries'
+import imageRouter from './routes/images'
 
+const logDebug = debug('weltenbummlerpaar-backend:app')
 
-const logDebug = debug('weltenbummlerpaar-backend:app');
-
-const app = express();
+const app = express()
 
 // third-party middleware
-app.use(morgan('dev'));
-app.use(express.json());
-app.use(express.urlencoded({extended: false}));
-app.use(helmet());
-app.use(cookieParser());
-app.use(authenticate.initialize());
+app.use(morgan('dev'))
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+app.use(helmet())
+app.use(cookieParser())
+app.use(authenticate.initialize())
 
 if (app.get('env') === 'development') {
-  logDebug('Enable CORS for development purposes.');
-  app.use(cors());
+  logDebug('Enable CORS for development purposes.')
+  app.use(cors())
 }
 
 // serve static files
-logDebug(`Static files are served from ${config.publicFolder}.`);
-app.use(express.static(config.publicFolder));
+logDebug(`Static files are served from ${config.publicFolder}.`)
+app.use(express.static(config.publicFolder))
 
 // routes
-app.use('/db/admins', adminRouter);
-app.use('/db/entries', entryRouter);
-app.use('/db/images', imageRouter);
+app.use('/db/admins', adminRouter)
+app.use('/db/entries', entryRouter)
+app.use('/db/images', imageRouter)
 
 /**
  * The initialized Express application
  */
-export default app;
+export default app

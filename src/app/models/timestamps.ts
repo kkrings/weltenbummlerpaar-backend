@@ -13,9 +13,9 @@ export interface TimeStamps {
   /**
    * Document's creation date and time
    */
-  createdAt: Date;
+  createdAt: Date
   /**
    * Date and time the document was last updated
    */
-  updatedAt: Date;
+  updatedAt: Date
 }
