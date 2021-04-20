@@ -15,14 +15,7 @@ async function connect (uri: string): Promise<void> {
     useUnifiedTopology: true
   }
 
-  try {
-    await mongoose.connect(uri, mongooseOptions)
-    console.log(`Connected to ${uri}.`)
-  } catch (err) {
-    console.error('Cannot connect to database.')
-    console.error(err)
-    process.exit(1)
-  }
+  await mongoose.connect(uri, mongooseOptions)
 }
 
 /**
@@ -38,17 +31,11 @@ async function connect (uri: string): Promise<void> {
 async function createAdmin (uri: string, username: string, password: string): Promise<void> {
   const admin = new Admin({ username: username })
 
-  try {
-    await connect(uri)
-    await admin.setPassword(password)
-    await admin.save()
-    console.log(`Admin user ${username} has been saved.`)
-    await mongoose.connection.close()
-  } catch (err) {
-    console.error(`Admin user ${username} could not been saved.`)
-    console.error(err)
-    process.exit(1)
-  }
+  await connect(uri)
+  await admin.setPassword(password)
+  await admin.save()
+
+  await mongoose.connection.close()
 }
 
 // command-line arguments
@@ -72,4 +59,10 @@ const args = yargs
   })
   .argv
 
-createAdmin(args.uri, args.username, args.password).then(undefined, undefined)
+createAdmin(args.uri, args.username, args.password).then(
+  _ => console.log(`Admin user ${args.username} has been saved.`),
+  err => {
+    console.error(`Admin user ${args.username} could not be saved.`)
+    console.error(err)
+    process.exit(1)
+  })
