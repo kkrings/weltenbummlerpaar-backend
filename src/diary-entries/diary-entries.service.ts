@@ -1,11 +1,19 @@
+import { Model } from 'mongoose'
 import { Injectable } from '@nestjs/common'
+import { InjectModel } from '@nestjs/mongoose'
+import { DiaryEntry, DiaryEntryDocument } from './schema/diary-entry.schema'
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto'
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto'
 
 @Injectable()
 export class DiaryEntriesService {
-  create (createDiaryEntryDto: CreateDiaryEntryDto): string {
-    return 'This action adds a new diaryEntry'
+  constructor (
+    @InjectModel(DiaryEntry.name)
+    private readonly diaryEntryModel: Model<DiaryEntryDocument>
+  ) {}
+
+  async create (createDiaryEntryDto: CreateDiaryEntryDto): Promise<DiaryEntry> {
+    return await this.diaryEntryModel.create(createDiaryEntryDto)
   }
 
   findAll (): string {

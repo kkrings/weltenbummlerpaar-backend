@@ -8,17 +8,20 @@ import {
   Delete
 } from '@nestjs/common'
 
+import { ApiTags } from '@nestjs/swagger'
 import { DiaryEntriesService } from './diary-entries.service'
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto'
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto'
+import { DiaryEntry } from './schema/diary-entry.schema'
 
+@ApiTags('Diary entries')
 @Controller('diary-entries')
 export class DiaryEntriesController {
   constructor (private readonly diaryEntriesService: DiaryEntriesService) {}
 
   @Post()
-  create (@Body() createDiaryEntryDto: CreateDiaryEntryDto): string {
-    return this.diaryEntriesService.create(createDiaryEntryDto)
+  async create (@Body() createDiaryEntryDto: CreateDiaryEntryDto): Promise<DiaryEntry> {
+    return await this.diaryEntriesService.create(createDiaryEntryDto)
   }
 
   @Get()
