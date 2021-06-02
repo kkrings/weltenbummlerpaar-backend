@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 import { SearchTagsService } from './search-tags.service'
 import { SearchTagsController } from './search-tags.controller'
-import { SearchTag, SearchTagSchema } from './schema/search-tag.schema'
+import { SearchTag, SearchTagSchema } from './entities/search-tag.entity'
 
 @Module({
   imports: [

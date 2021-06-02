@@ -1,8 +1,8 @@
 import { Model } from 'mongoose'
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { SearchTag, SearchTagDocument } from './schema/search-tag.schema'
-import { DiaryEntry } from '../schema/diary-entry.schema'
+import { SearchTag, SearchTagDocument } from './entities/search-tag.entity'
+import { DiaryEntry } from '../entities/diary-entry.entity'
 
 @Injectable()
 export class SearchTagsService {

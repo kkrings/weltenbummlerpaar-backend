@@ -12,7 +12,7 @@ import { ApiTags } from '@nestjs/swagger'
 import { DiaryEntriesService } from './diary-entries.service'
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto'
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto'
-import { DiaryEntry } from './schema/diary-entry.schema'
+import { DiaryEntry } from './entities/diary-entry.entity'
 
 @ApiTags('Diary entries')
 @Controller('diary-entries')

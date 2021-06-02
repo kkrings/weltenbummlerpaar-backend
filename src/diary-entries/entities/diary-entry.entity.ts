@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { SearchTag } from '../search-tags/schema/search-tag.schema'
+import { SearchTag } from '../search-tags/entities/search-tag.entity'
 
 export type DiaryEntryDocument = DiaryEntry & mongoose.Document
 
