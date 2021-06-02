@@ -6,7 +6,10 @@ import { DiaryEntriesModule } from './diary-entries/diary-entries.module'
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/weltenbummlerpaar'),
+    MongooseModule.forRoot('mongodb://localhost:27017/weltenbummlerpaar', {
+      useCreateIndex: true,
+      useFindAndModify: false
+    }),
     DiaryEntriesModule
   ],
   controllers: [AppController],
