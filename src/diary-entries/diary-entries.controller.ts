@@ -25,8 +25,8 @@ export class DiaryEntriesController {
   }
 
   @Get()
-  findAll (): string {
-    return this.diaryEntriesService.findAll()
+  async findAll (): Promise<DiaryEntry[]> {
+    return await this.diaryEntriesService.findAll()
   }
 
   @Get(':id')

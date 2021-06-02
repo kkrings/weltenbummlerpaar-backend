@@ -11,6 +11,7 @@ import { SearchTag, SearchTagSchema } from './schema/search-tag.schema'
     ])
   ],
   controllers: [SearchTagsController],
-  providers: [SearchTagsService]
+  providers: [SearchTagsService],
+  exports: [SearchTagsService]
 })
 export class SearchTagsModule {}
