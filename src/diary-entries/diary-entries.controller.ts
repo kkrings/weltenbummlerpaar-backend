@@ -14,6 +14,7 @@ import { SearchTagsService } from './search-tags/search-tags.service'
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto'
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto'
 import { DiaryEntry } from './entities/diary-entry.entity'
+import { MongoIdParams } from '../dto/mongo-id-params.dto'
 
 @ApiTags('Diary entries')
 @Controller('diary-entries')
@@ -53,8 +54,8 @@ export class DiaryEntriesController {
   }
 
   @Delete(':id')
-  async remove (@Param('id') id: string): Promise<DiaryEntry> {
-    const diaryEntry = await this.diaryEntriesService.remove(id)
+  async remove (@Param() params: MongoIdParams): Promise<DiaryEntry> {
+    const diaryEntry = await this.diaryEntriesService.remove(params.id)
 
     await this.searchTagsService.removeDiaryEntryFromSearchTags(
       diaryEntry,
