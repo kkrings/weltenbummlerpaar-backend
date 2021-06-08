@@ -1,0 +1,23 @@
+{
+	"name": "Weltenbummlerpaar Backend",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspace",
+	"settings": {
+		"editor.renderWhitespace": "all", 
+		"editor.rulers": [
+			88
+		],
+		"files.autoSave": "off",
+		"standard.engine": "ts-standard",
+		"standard.autoFixOnSave": true,
+		"typescript.format.enable": false,
+		"typescript.validate.enable": false
+	},
+	"extensions": [
+		"standard.vscode-standard"
+	],
+	"forwardPorts": [3000],
+	"postCreateCommand": "npm install",
+	"remoteUser": "node"
+}
