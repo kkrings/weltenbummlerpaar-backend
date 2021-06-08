@@ -10,6 +10,7 @@ import {
 
 import { ApiTags } from '@nestjs/swagger'
 import { DiaryEntriesService } from './diary-entries.service'
+import { SearchTagsService } from './search-tags/search-tags.service'
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto'
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto'
 import { DiaryEntry } from './entities/diary-entry.entity'
@@ -17,11 +18,21 @@ import { DiaryEntry } from './entities/diary-entry.entity'
 @ApiTags('Diary entries')
 @Controller('diary-entries')
 export class DiaryEntriesController {
-  constructor (private readonly diaryEntriesService: DiaryEntriesService) {}
+  constructor (
+    private readonly diaryEntriesService: DiaryEntriesService,
+    private readonly searchTagsService: SearchTagsService
+  ) {}
 
   @Post()
   async create (@Body() createDiaryEntryDto: CreateDiaryEntryDto): Promise<DiaryEntry> {
-    return await this.diaryEntriesService.create(createDiaryEntryDto)
+    const diaryEntry = await this.diaryEntriesService.create(createDiaryEntryDto)
+
+    await this.searchTagsService.addDiaryEntryToSearchTags(
+      diaryEntry,
+      createDiaryEntryDto.searchTags
+    )
+
+    return diaryEntry
   }
 
   @Get()

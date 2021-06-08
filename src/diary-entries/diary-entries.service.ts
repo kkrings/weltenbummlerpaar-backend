@@ -4,37 +4,20 @@ import { InjectModel } from '@nestjs/mongoose'
 import { DiaryEntry, DiaryEntryDocument } from './entities/diary-entry.entity'
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto'
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto'
-import { SearchTagsService } from './search-tags/search-tags.service'
 
 @Injectable()
 export class DiaryEntriesService {
   constructor (
     @InjectModel(DiaryEntry.name)
-    private readonly diaryEntryModel: Model<DiaryEntryDocument>,
-    private readonly searchTagsService: SearchTagsService
+    private readonly diaryEntryModel: Model<DiaryEntryDocument>
   ) {}
 
   async create (createDiaryEntryDto: CreateDiaryEntryDto): Promise<DiaryEntry> {
-    const diaryEntry = await this.diaryEntryModel.create({
-      title: createDiaryEntryDto.title,
-      location: createDiaryEntryDto.location,
-      body: createDiaryEntryDto.body
-    })
-
-    const searchTags = await this.searchTagsService.addDiaryEntryToSearchTags(
-      diaryEntry,
-      createDiaryEntryDto.searchTags
-    )
-
-    diaryEntry.searchTags.push(...searchTags)
-
-    return await diaryEntry.save()
+    return await this.diaryEntryModel.create(createDiaryEntryDto)
   }
 
   async findAll (): Promise<DiaryEntry[]> {
-    return await this.diaryEntryModel.find()
-      .populate('searchTags')
-      .exec()
+    return await this.diaryEntryModel.find().exec()
   }
 
   findOne (id: number): string {

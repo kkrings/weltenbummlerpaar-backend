@@ -1,6 +1,5 @@
 import * as mongoose from 'mongoose'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { SearchTag } from '../search-tags/entities/search-tag.entity'
 
 export type DiaryEntryDocument = DiaryEntry & mongoose.Document
 
@@ -32,13 +31,8 @@ export class DiaryEntry {
   /**
    * Search tags the diary entry can be found with
    */
-  @Prop({
-    type: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'SearchTag'
-    }]
-  })
-  searchTags: SearchTag[]
+  @Prop()
+  searchTags: string[]
 
   /**
    * Diary entry's creation date-time
