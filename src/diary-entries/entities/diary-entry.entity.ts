@@ -8,7 +8,7 @@ export class DiaryEntry {
   /**
    * Diary entry's unique identifier
    */
-  id: string
+  _id: string
 
   /**
    * Diary entry's title

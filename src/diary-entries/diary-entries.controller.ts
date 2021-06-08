@@ -53,7 +53,14 @@ export class DiaryEntriesController {
   }
 
   @Delete(':id')
-  remove (@Param('id') id: string): string {
-    return this.diaryEntriesService.remove(+id)
+  async remove (@Param('id') id: string): Promise<DiaryEntry> {
+    const diaryEntry = await this.diaryEntriesService.remove(id)
+
+    await this.searchTagsService.removeDiaryEntryFromSearchTags(
+      diaryEntry,
+      diaryEntry.searchTags
+    )
+
+    return diaryEntry
   }
 }
