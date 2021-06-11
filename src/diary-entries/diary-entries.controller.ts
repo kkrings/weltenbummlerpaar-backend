@@ -42,15 +42,37 @@ export class DiaryEntriesController {
   }
 
   @Get(':id')
-  findOne (@Param('id') id: string): string {
-    return this.diaryEntriesService.findOne(+id)
+  async findOne (@Param() params: MongoIdParams): Promise<DiaryEntry> {
+    return await this.diaryEntriesService.findOne(params.id)
   }
 
   @Patch(':id')
-  update (
-    @Param('id') id: string, @Body() updateDiaryEntry: UpdateDiaryEntryDto
-  ): string {
-    return this.diaryEntriesService.update(+id, updateDiaryEntry)
+  async update (
+    @Param() params: MongoIdParams, @Body() updateDiaryEntry: UpdateDiaryEntryDto
+  ): Promise<DiaryEntry> {
+    const searchTagsUpdate = updateDiaryEntry.searchTags !== undefined
+
+    const diaryEntry = await this.diaryEntriesService.update(
+      params.id,
+      updateDiaryEntry,
+      !searchTagsUpdate
+    )
+
+    if (!searchTagsUpdate) {
+      return diaryEntry
+    }
+
+    await this.searchTagsService.addDiaryEntryToNewSearchTags(
+      diaryEntry,
+      updateDiaryEntry.searchTags as string[]
+    )
+
+    await this.searchTagsService.removeDiaryEntryFromRemovedSearchTags(
+      diaryEntry,
+      updateDiaryEntry.searchTags as string[]
+    )
+
+    return await this.diaryEntriesService.findOne(params.id)
   }
 
   @Delete(':id')

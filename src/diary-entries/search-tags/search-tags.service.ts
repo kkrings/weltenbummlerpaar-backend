@@ -43,6 +43,17 @@ export class SearchTagsService {
     )
   }
 
+  async addDiaryEntryToNewSearchTags (
+    diaryEntry: DiaryEntry,
+    searchTags: string[]
+  ): Promise<SearchTag[]> {
+    const addSearchTags = searchTags.filter(
+      searchTag => !diaryEntry.searchTags.includes(searchTag)
+    )
+
+    return await this.addDiaryEntryToSearchTags(diaryEntry, addSearchTags)
+  }
+
   async removeDiaryEntryFromSearchTag (
     diaryEntry: DiaryEntry,
     searchTag: string
@@ -77,6 +88,20 @@ export class SearchTagsService {
           searchTag
         )
       )
+    )
+  }
+
+  async removeDiaryEntryFromRemovedSearchTags (
+    diaryEntry: DiaryEntry,
+    searchTags: string[]
+  ): Promise<SearchTag[]> {
+    const removeSearchTags = diaryEntry.searchTags.filter(
+      searchTag => !searchTags.includes(searchTag)
+    )
+
+    return await this.removeDiaryEntryFromSearchTags(
+      diaryEntry,
+      removeSearchTags
     )
   }
 }

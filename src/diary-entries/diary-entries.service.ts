@@ -20,17 +20,29 @@ export class DiaryEntriesService {
     return await this.diaryEntryModel.find().exec()
   }
 
-  findOne (id: number): string {
-    return `This action returns a #${id} diaryEntry`
+  async findOne (id: string): Promise<DiaryEntry> {
+    const diaryEntry = await this.diaryEntryModel.findById(id).exec()
+    return this.checkDiaryEntryFound(id, diaryEntry)
   }
 
-  update (id: number, updateDiaryEntryDto: UpdateDiaryEntryDto): string {
-    return `This action updates a #${id} diaryEntry`
+  async update (
+    id: string,
+    updateDiaryEntryDto: UpdateDiaryEntryDto,
+    returnUpdated = true
+  ): Promise<DiaryEntry> {
+    const diaryEntry = await this.diaryEntryModel
+      .findByIdAndUpdate(id, { $set: updateDiaryEntryDto }, { new: returnUpdated })
+      .exec()
+
+    return this.checkDiaryEntryFound(id, diaryEntry)
   }
 
   async remove (id: string): Promise<DiaryEntry> {
     const diaryEntry = await this.diaryEntryModel.findByIdAndRemove(id).exec()
+    return this.checkDiaryEntryFound(id, diaryEntry)
+  }
 
+  private checkDiaryEntryFound (id: string, diaryEntry: DiaryEntry | null): DiaryEntry {
     if (diaryEntry === null) {
       throw new Error.DocumentNotFoundError(
         `Diary entry with ID '${id}' was not found.`
