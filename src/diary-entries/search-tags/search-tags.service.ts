@@ -12,8 +12,12 @@ export class SearchTagsService {
   ) { }
 
   async findSearchTags (): Promise<string[]> {
-    const searchTagDocuments = await this.searchTagModel.find().exec()
-    return searchTagDocuments.map(searchTag => searchTag.searchTag)
+    const searchTags = await this.searchTagModel
+      .find()
+      .sort({ searchTag: 'ascending' })
+      .exec()
+
+    return searchTags.map(searchTag => searchTag.searchTag)
   }
 
   async addDiaryEntryToSearchTag (
