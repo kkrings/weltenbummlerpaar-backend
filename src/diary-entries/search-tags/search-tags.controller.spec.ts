@@ -25,10 +25,6 @@ describe('SearchTagsController', () => {
     controller = module.get<SearchTagsController>(SearchTagsController)
   })
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined()
-  })
-
   describe('findSearchTags()', () => {
     const findSearchTagsSpy = jest.spyOn(mockService, 'findSearchTags')
 
