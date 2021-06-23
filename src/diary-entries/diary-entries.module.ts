@@ -4,13 +4,15 @@ import { DiaryEntriesService } from './diary-entries.service'
 import { DiaryEntriesController } from './diary-entries.controller'
 import { DiaryEntry, DiaryEntrySchema } from './entities/diary-entry.entity'
 import { SearchTagsModule } from './search-tags/search-tags.module'
+import { ImagesModule } from './images/images.module'
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: DiaryEntry.name, schema: DiaryEntrySchema }
     ]),
-    SearchTagsModule
+    SearchTagsModule,
+    ImagesModule
   ],
   controllers: [DiaryEntriesController],
   providers: [DiaryEntriesService]

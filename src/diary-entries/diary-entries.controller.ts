@@ -1,3 +1,5 @@
+import { Express } from 'express'
+
 import {
   Controller,
   Get,
@@ -5,16 +7,20 @@ import {
   Body,
   Patch,
   Param,
-  Delete
+  Delete,
+  UseInterceptors,
+  UploadedFile
 } from '@nestjs/common'
 
-import { ApiTags } from '@nestjs/swagger'
+import { FileInterceptor } from '@nestjs/platform-express'
+import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger'
 import { DiaryEntriesService } from './diary-entries.service'
 import { SearchTagsService } from './search-tags/search-tags.service'
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto'
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto'
 import { DiaryEntry } from './entities/diary-entry.entity'
 import { MongoIdParams } from '../dto/mongo-id-params.dto'
+import { ImageUploadDto } from './images/dto/image-upload.dto'
 
 @ApiTags('Diary entries')
 @Controller('diary-entries')
@@ -85,5 +91,18 @@ export class DiaryEntriesController {
     )
 
     return diaryEntry
+  }
+
+  @Post(':id/images')
+  @UseInterceptors(FileInterceptor('imageUpload'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Image Upload',
+    type: ImageUploadDto
+  })
+  uploadImage (
+    @Param() params: MongoIdParams, @UploadedFile() imageUpload: Express.Multer.File
+  ): string {
+    return imageUpload.filename
   }
 }
