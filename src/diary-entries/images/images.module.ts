@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 import { MulterModule } from '@nestjs/platform-express'
-import { Image, ImageSchema } from './entities/image.entity'
+import { Image, ImageSchema } from './schemas/image.schema'
 import { ImageUploadConfigService } from './image-upload/image-upload-config.service'
 import { ImageUploadModule } from './image-upload/image-upload.module'
 

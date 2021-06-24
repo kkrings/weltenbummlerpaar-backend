@@ -13,14 +13,15 @@ import {
 } from '@nestjs/common'
 
 import { FileInterceptor } from '@nestjs/platform-express'
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger'
+import { ApiConsumes, ApiTags } from '@nestjs/swagger'
 import { DiaryEntriesService } from './diary-entries.service'
 import { SearchTagsService } from './search-tags/search-tags.service'
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto'
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto'
 import { DiaryEntry } from './entities/diary-entry.entity'
 import { MongoIdParams } from '../dto/mongo-id-params.dto'
-import { ImageUploadDto } from './images/dto/image-upload.dto'
+import { CreateImageDto } from './images/dto/create-image.dto'
+import { Image } from './images/entities/image.entity'
 
 @ApiTags('Diary entries')
 @Controller('diary-entries')
@@ -96,13 +97,19 @@ export class DiaryEntriesController {
   @Post(':id/images')
   @UseInterceptors(FileInterceptor('imageUpload'))
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    description: 'Image Upload',
-    type: ImageUploadDto
-  })
   uploadImage (
-    @Param() params: MongoIdParams, @UploadedFile() imageUpload: Express.Multer.File
-  ): string {
-    return imageUpload.filename
+    /* eslint-disable @typescript-eslint/indent */
+    @Param() params: MongoIdParams,
+    @UploadedFile() imageUpload: Express.Multer.File,
+    @Body() createImageDto: CreateImageDto
+    /* eslint-enable @typescript-eslint/indent */
+  ): Image {
+    return {
+      id: '60d468d1f33a8412d3cec16f',
+      description: createImageDto.description,
+      diaryEntryId: params.id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
   }
 }
