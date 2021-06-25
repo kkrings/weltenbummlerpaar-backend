@@ -1,5 +1,5 @@
-import { Error, Model } from 'mongoose'
-import { Injectable } from '@nestjs/common'
+import { Model } from 'mongoose'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { DiaryEntry, DiaryEntryDocument } from './entities/diary-entry.entity'
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto'
@@ -44,9 +44,7 @@ export class DiaryEntriesService {
 
   private checkDiaryEntryFound (id: string, diaryEntry: DiaryEntry | null): DiaryEntry {
     if (diaryEntry === null) {
-      throw new Error.DocumentNotFoundError(
-        `Diary entry with ID '${id}' was not found.`
-      )
+      throw new NotFoundException(`Diary entry with ID '${id}' was not found.`)
     }
 
     return diaryEntry

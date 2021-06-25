@@ -1,5 +1,5 @@
-import { Error, Model } from 'mongoose'
-import { Injectable } from '@nestjs/common'
+import { Model } from 'mongoose'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { SearchTag, SearchTagDocument } from './entities/search-tag.entity'
 import { DiaryEntry } from '../entities/diary-entry.entity'
@@ -71,7 +71,7 @@ export class SearchTagsService {
       .exec()
 
     if (searchTagDocument === null) {
-      throw new Error.DocumentNotFoundError(`Search tag '${searchTag}' was not found.`)
+      throw new NotFoundException(`Search tag '${searchTag}' was not found.`)
     }
 
     if (searchTagDocument.diaryEntries.length === 0) {
