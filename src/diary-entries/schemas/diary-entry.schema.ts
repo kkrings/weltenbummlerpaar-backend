@@ -18,6 +18,9 @@ export class DiaryEntry {
 
   @Prop()
   searchTags: string[] = []
+
+  createdAt: Date
+  updatedAt: Date
 }
 
 export const DiaryEntrySchema = SchemaFactory.createForClass(DiaryEntry)
