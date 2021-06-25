@@ -1,8 +1,8 @@
 import { Model } from 'mongoose'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { SearchTag, SearchTagDocument } from './entities/search-tag.entity'
-import { DiaryEntry } from '../entities/diary-entry.entity'
+import { SearchTag, SearchTagDocument } from './schemas/search-tag.schema'
+import { DiaryEntry } from '../schemas/diary-entry.schema'
 
 @Injectable()
 export class SearchTagsService {
@@ -27,7 +27,7 @@ export class SearchTagsService {
     return await this.searchTagModel
       .findOneAndUpdate(
         { searchTag },
-        { $addToSet: { diaryEntries: diaryEntry._id as any } },
+        { $addToSet: { diaryEntries: diaryEntry._id } },
         { new: true, upsert: true }
       )
       .exec()
@@ -65,7 +65,7 @@ export class SearchTagsService {
     const searchTagDocument = await this.searchTagModel
       .findOneAndUpdate(
         { searchTag },
-        { $pull: { diaryEntries: diaryEntry._id as any } },
+        { $pull: { diaryEntries: diaryEntry._id } },
         { new: true }
       )
       .exec()

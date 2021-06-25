@@ -1,6 +1,6 @@
 import { OmitType } from '@nestjs/swagger'
-import { DiaryEntry } from '../entities/diary-entry.entity'
+import { DiaryEntryDto } from '../dto/diary-entry.dto'
 
 export class CreateDiaryEntryDto extends (
-  OmitType(DiaryEntry, ['_id', 'createdAt', 'updatedAt'] as const)
+  OmitType(DiaryEntryDto, ['id', 'createdAt', 'updatedAt'] as const)
 ) {}

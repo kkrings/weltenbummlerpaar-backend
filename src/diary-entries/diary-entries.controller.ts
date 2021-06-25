@@ -18,10 +18,11 @@ import { DiaryEntriesService } from './diary-entries.service'
 import { SearchTagsService } from './search-tags/search-tags.service'
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto'
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto'
-import { DiaryEntry } from './entities/diary-entry.entity'
+import { DiaryEntry } from './schemas/diary-entry.schema'
 import { MongoIdParams } from '../dto/mongo-id-params.dto'
 import { CreateImageDto } from './images/dto/create-image.dto'
 import { Image } from './images/entities/image.entity'
+import { DiaryEntryDto } from './dto/diary-entry.dto'
 
 @ApiTags('Diary entries')
 @Controller('diary-entries')
@@ -32,7 +33,9 @@ export class DiaryEntriesController {
   ) {}
 
   @Post()
-  async create (@Body() createDiaryEntryDto: CreateDiaryEntryDto): Promise<DiaryEntry> {
+  async create (
+    @Body() createDiaryEntryDto: CreateDiaryEntryDto
+  ): Promise<DiaryEntryDto> {
     const diaryEntry = await this.diaryEntriesService.create(createDiaryEntryDto)
 
     await this.searchTagsService.addDiaryEntryToSearchTags(
@@ -40,50 +43,49 @@ export class DiaryEntriesController {
       createDiaryEntryDto.searchTags
     )
 
-    return diaryEntry
+    return this.diaryEntryAsDto(diaryEntry)
   }
 
   @Get()
-  async findAll (): Promise<DiaryEntry[]> {
-    return await this.diaryEntriesService.findAll()
+  async findAll (): Promise<DiaryEntryDto[]> {
+    const diaryEntries = await this.diaryEntriesService.findAll()
+    return diaryEntries.map(diaryEntry => this.diaryEntryAsDto(diaryEntry))
   }
 
   @Get(':id')
-  async findOne (@Param() params: MongoIdParams): Promise<DiaryEntry> {
-    return await this.diaryEntriesService.findOne(params.id)
+  async findOne (@Param() params: MongoIdParams): Promise<DiaryEntryDto> {
+    return this.diaryEntryAsDto(await this.diaryEntriesService.findOne(params.id))
   }
 
   @Patch(':id')
   async update (
-    @Param() params: MongoIdParams, @Body() updateDiaryEntry: UpdateDiaryEntryDto
-  ): Promise<DiaryEntry> {
-    const searchTagsUpdate = updateDiaryEntry.searchTags !== undefined
-
+    @Param() params: MongoIdParams, @Body() updateDiaryEntryDto: UpdateDiaryEntryDto
+  ): Promise<DiaryEntryDto> {
     const diaryEntry = await this.diaryEntriesService.update(
       params.id,
-      updateDiaryEntry,
-      !searchTagsUpdate
+      updateDiaryEntryDto,
+      updateDiaryEntryDto.searchTags === undefined
     )
 
-    if (!searchTagsUpdate) {
-      return diaryEntry
+    if (updateDiaryEntryDto.searchTags === undefined) {
+      return this.diaryEntryAsDto(diaryEntry)
     }
 
     await this.searchTagsService.addDiaryEntryToNewSearchTags(
       diaryEntry,
-      updateDiaryEntry.searchTags as string[]
+      updateDiaryEntryDto.searchTags
     )
 
     await this.searchTagsService.removeDiaryEntryFromRemovedSearchTags(
       diaryEntry,
-      updateDiaryEntry.searchTags as string[]
+      updateDiaryEntryDto.searchTags
     )
 
-    return await this.diaryEntriesService.findOne(params.id)
+    return this.diaryEntryAsDto(await this.diaryEntriesService.findOne(params.id))
   }
 
   @Delete(':id')
-  async remove (@Param() params: MongoIdParams): Promise<DiaryEntry> {
+  async remove (@Param() params: MongoIdParams): Promise<DiaryEntryDto> {
     const diaryEntry = await this.diaryEntriesService.remove(params.id)
 
     await this.searchTagsService.removeDiaryEntryFromSearchTags(
@@ -91,7 +93,7 @@ export class DiaryEntriesController {
       diaryEntry.searchTags
     )
 
-    return diaryEntry
+    return this.diaryEntryAsDto(diaryEntry)
   }
 
   @Post(':id/images')
@@ -110,6 +112,18 @@ export class DiaryEntriesController {
       diaryEntryId: params.id,
       createdAt: new Date(),
       updatedAt: new Date()
+    }
+  }
+
+  private diaryEntryAsDto (diaryEntry: DiaryEntry): DiaryEntryDto {
+    return {
+      id: diaryEntry._id.toHexString(),
+      title: diaryEntry.title,
+      location: diaryEntry.location,
+      body: diaryEntry.body,
+      searchTags: diaryEntry.searchTags,
+      createdAt: diaryEntry.createdAt,
+      updatedAt: diaryEntry.updatedAt
     }
   }
 }

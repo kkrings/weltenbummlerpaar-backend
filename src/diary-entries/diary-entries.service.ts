@@ -1,7 +1,7 @@
 import { Model } from 'mongoose'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { DiaryEntry, DiaryEntryDocument } from './entities/diary-entry.entity'
+import { DiaryEntry, DiaryEntryDocument } from './schemas/diary-entry.schema'
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto'
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto'
 
