@@ -1,8 +1,8 @@
 import { ApiProperty, OmitType } from '@nestjs/swagger'
-import { Image } from '../entities/image.entity'
+import { ImageDto } from './image.dto'
 
 export class CreateImageDto extends OmitType(
-  Image, ['id', 'diaryEntryId', 'createdAt', 'updatedAt']
+  ImageDto, ['id', 'diaryEntryId', 'createdAt', 'updatedAt']
 ) {
   // for documentation purposes only; Multer "moves" imageUpload from the body to the
   // request

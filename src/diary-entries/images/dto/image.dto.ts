@@ -1,6 +1,6 @@
 import { IsMongoId } from 'class-validator'
 
-export class Image {
+export class ImageDto {
   /**
    * Image's unique identifier
    * @example '60d468d1f33a8412d3cec16f'

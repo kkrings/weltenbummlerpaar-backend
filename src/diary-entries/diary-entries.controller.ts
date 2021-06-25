@@ -21,7 +21,7 @@ import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto'
 import { DiaryEntry } from './schemas/diary-entry.schema'
 import { MongoIdParams } from '../dto/mongo-id-params.dto'
 import { CreateImageDto } from './images/dto/create-image.dto'
-import { Image } from './images/entities/image.entity'
+import { ImageDto } from './images/dto/image.dto'
 import { DiaryEntryDto } from './dto/diary-entry.dto'
 
 @ApiTags('Diary entries')
@@ -105,7 +105,7 @@ export class DiaryEntriesController {
     @UploadedFile() imageUpload: Express.Multer.File,
     @Body() createImageDto: CreateImageDto
     /* eslint-enable @typescript-eslint/indent */
-  ): Image {
+  ): ImageDto {
     return {
       id: '60d468d1f33a8412d3cec16f',
       description: createImageDto.description,
