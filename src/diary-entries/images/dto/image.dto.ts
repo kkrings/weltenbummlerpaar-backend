@@ -1,4 +1,5 @@
 import { IsMongoId } from 'class-validator'
+import { Image } from '../schemas/image.schema'
 
 export class ImageDto {
   /**
@@ -29,4 +30,14 @@ export class ImageDto {
    * Date-time the image was last modified
    */
   updatedAt: Date
+}
+
+export function asImageDto (image: Image): ImageDto {
+  return {
+    id: image._id.toHexString(),
+    description: image.description,
+    diaryEntryId: image.diaryEntryId.toHexString(),
+    createdAt: image.createdAt,
+    updatedAt: image.updatedAt
+  }
 }

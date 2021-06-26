@@ -1,4 +1,6 @@
 import { ArrayUnique, IsMongoId } from 'class-validator'
+import { asImageDto, ImageDto } from '../images/dto/image.dto'
+import { DiaryEntry } from '../schemas/diary-entry.schema'
 
 export class DiaryEntryDto {
   /**
@@ -30,6 +32,11 @@ export class DiaryEntryDto {
   searchTags: string[]
 
   /**
+   * Diary entry's images
+   */
+  images: ImageDto[]
+
+  /**
    * Diary entry's creation date-time
    */
   createdAt: Date
@@ -38,4 +45,17 @@ export class DiaryEntryDto {
    * Date-time the diary entry was last modified
    */
   updatedAt: Date
+}
+
+export function asDiaryEntryDto (diaryEntry: DiaryEntry): DiaryEntryDto {
+  return {
+    id: diaryEntry._id.toHexString(),
+    title: diaryEntry.title,
+    location: diaryEntry.location,
+    body: diaryEntry.body,
+    searchTags: diaryEntry.searchTags,
+    images: diaryEntry.images.map(image => asImageDto(image)),
+    createdAt: diaryEntry.createdAt,
+    updatedAt: diaryEntry.updatedAt
+  }
 }

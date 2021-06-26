@@ -16,20 +16,21 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { ApiConsumes, ApiTags } from '@nestjs/swagger'
 import { DiaryEntriesService } from './diary-entries.service'
 import { SearchTagsService } from './search-tags/search-tags.service'
+import { ImagesService } from './images/images.service'
+import { MongoIdParams } from '../dto/mongo-id-params.dto'
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto'
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto'
-import { DiaryEntry } from './schemas/diary-entry.schema'
-import { MongoIdParams } from '../dto/mongo-id-params.dto'
+import { asDiaryEntryDto, DiaryEntryDto } from './dto/diary-entry.dto'
 import { CreateImageDto } from './images/dto/create-image.dto'
-import { ImageDto } from './images/dto/image.dto'
-import { DiaryEntryDto } from './dto/diary-entry.dto'
+import { asImageDto, ImageDto } from './images/dto/image.dto'
 
 @ApiTags('Diary entries')
 @Controller('diary-entries')
 export class DiaryEntriesController {
   constructor (
     private readonly diaryEntriesService: DiaryEntriesService,
-    private readonly searchTagsService: SearchTagsService
+    private readonly searchTagsService: SearchTagsService,
+    private readonly imagesService: ImagesService
   ) {}
 
   @Post()
@@ -43,18 +44,18 @@ export class DiaryEntriesController {
       createDiaryEntryDto.searchTags
     )
 
-    return this.diaryEntryAsDto(diaryEntry)
+    return asDiaryEntryDto(diaryEntry)
   }
 
   @Get()
   async findAll (): Promise<DiaryEntryDto[]> {
     const diaryEntries = await this.diaryEntriesService.findAll()
-    return diaryEntries.map(diaryEntry => this.diaryEntryAsDto(diaryEntry))
+    return diaryEntries.map(diaryEntry => asDiaryEntryDto(diaryEntry))
   }
 
   @Get(':id')
   async findOne (@Param() params: MongoIdParams): Promise<DiaryEntryDto> {
-    return this.diaryEntryAsDto(await this.diaryEntriesService.findOne(params.id))
+    return asDiaryEntryDto(await this.diaryEntriesService.findOne(params.id))
   }
 
   @Patch(':id')
@@ -68,7 +69,7 @@ export class DiaryEntriesController {
     )
 
     if (updateDiaryEntryDto.searchTags === undefined) {
-      return this.diaryEntryAsDto(diaryEntry)
+      return asDiaryEntryDto(diaryEntry)
     }
 
     await this.searchTagsService.addDiaryEntryToNewSearchTags(
@@ -81,7 +82,7 @@ export class DiaryEntriesController {
       updateDiaryEntryDto.searchTags
     )
 
-    return this.diaryEntryAsDto(await this.diaryEntriesService.findOne(params.id))
+    return asDiaryEntryDto(await this.diaryEntriesService.findOne(params.id))
   }
 
   @Delete(':id')
@@ -93,37 +94,24 @@ export class DiaryEntriesController {
       diaryEntry.searchTags
     )
 
-    return this.diaryEntryAsDto(diaryEntry)
+    await this.imagesService.removeMany(diaryEntry.images)
+
+    return asDiaryEntryDto(diaryEntry)
   }
 
   @Post(':id/images')
   @UseInterceptors(FileInterceptor('imageUpload'))
   @ApiConsumes('multipart/form-data')
-  uploadImage (
+  async uploadImage (
     /* eslint-disable @typescript-eslint/indent */
     @Param() params: MongoIdParams,
     @UploadedFile() imageUpload: Express.Multer.File,
     @Body() createImageDto: CreateImageDto
     /* eslint-enable @typescript-eslint/indent */
-  ): ImageDto {
-    return {
-      id: '60d468d1f33a8412d3cec16f',
-      description: createImageDto.description,
-      diaryEntryId: params.id,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }
-  }
-
-  private diaryEntryAsDto (diaryEntry: DiaryEntry): DiaryEntryDto {
-    return {
-      id: diaryEntry._id.toHexString(),
-      title: diaryEntry.title,
-      location: diaryEntry.location,
-      body: diaryEntry.body,
-      searchTags: diaryEntry.searchTags,
-      createdAt: diaryEntry.createdAt,
-      updatedAt: diaryEntry.updatedAt
-    }
+  ): Promise<ImageDto> {
+    const diaryEntry = await this.diaryEntriesService.findOne(params.id)
+    const image = await this.imagesService.create(diaryEntry, createImageDto)
+    await this.diaryEntriesService.addImage(params.id, image)
+    return asImageDto(image)
   }
 }

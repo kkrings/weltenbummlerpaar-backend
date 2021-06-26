@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { DiaryEntry, DiaryEntryDocument } from './schemas/diary-entry.schema'
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto'
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto'
+import { Image } from './images/schemas/image.schema'
 
 @Injectable()
 export class DiaryEntriesService {
@@ -17,11 +18,15 @@ export class DiaryEntriesService {
   }
 
   async findAll (): Promise<DiaryEntry[]> {
-    return await this.diaryEntryModel.find().exec()
+    return await this.diaryEntryModel.find().populate('images').exec()
   }
 
   async findOne (id: string): Promise<DiaryEntry> {
-    const diaryEntry = await this.diaryEntryModel.findById(id).exec()
+    const diaryEntry = await this.diaryEntryModel
+      .findById(id)
+      .populate('images')
+      .exec()
+
     return this.checkDiaryEntryFound(id, diaryEntry)
   }
 
@@ -32,13 +37,27 @@ export class DiaryEntriesService {
   ): Promise<DiaryEntry> {
     const diaryEntry = await this.diaryEntryModel
       .findByIdAndUpdate(id, { $set: updateDiaryEntryDto }, { new: returnUpdated })
+      .populate('images')
+      .exec()
+
+    return this.checkDiaryEntryFound(id, diaryEntry)
+  }
+
+  async addImage (id: string, image: Image): Promise<DiaryEntry> {
+    const diaryEntry = await this.diaryEntryModel
+      .findByIdAndUpdate(id, { $push: { images: image._id } }, { new: true })
+      .populate('images')
       .exec()
 
     return this.checkDiaryEntryFound(id, diaryEntry)
   }
 
   async remove (id: string): Promise<DiaryEntry> {
-    const diaryEntry = await this.diaryEntryModel.findByIdAndRemove(id).exec()
+    const diaryEntry = await this.diaryEntryModel
+      .findByIdAndRemove(id)
+      .populate('images')
+      .exec()
+
     return this.checkDiaryEntryFound(id, diaryEntry)
   }
 
