@@ -1,13 +1,12 @@
 import * as mongoose from 'mongoose'
 import { ObjectId } from 'mongodb'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { BaseSchema } from 'src/schemas/base.schema'
 
 export type ImageDocument = Image & mongoose.Document
 
 @Schema({ timestamps: true })
-export class Image {
-  _id: ObjectId
-
+export class Image extends BaseSchema {
   @Prop({ required: true })
   description: string
 
@@ -17,9 +16,6 @@ export class Image {
     required: true
   })
   diaryEntryId: ObjectId
-
-  createdAt: Date
-  updatedAt: Date
 }
 
 export const ImageSchema = SchemaFactory.createForClass(Image)

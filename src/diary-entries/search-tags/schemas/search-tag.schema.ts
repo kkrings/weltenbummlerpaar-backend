@@ -1,11 +1,12 @@
 import * as mongoose from 'mongoose'
+import { ObjectId } from 'mongodb'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { DiaryEntry } from '../../schemas/diary-entry.schema'
+import { BaseSchema } from 'src/schemas/base.schema'
 
 export type SearchTagDocument = SearchTag & mongoose.Document
 
 @Schema({ timestamps: true })
-export class SearchTag {
+export class SearchTag extends BaseSchema {
   @Prop({ unique: true })
   searchTag: string
 
@@ -15,7 +16,7 @@ export class SearchTag {
       ref: 'DiaryEntry'
     }]
   })
-  diaryEntries: DiaryEntry[]
+  diaryEntries: ObjectId[]
 }
 
 export const SearchTagSchema = SchemaFactory.createForClass(SearchTag)
