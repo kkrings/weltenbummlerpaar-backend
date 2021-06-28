@@ -6,7 +6,7 @@ export class SearchTagsController {
   constructor (private readonly searchTagsService: SearchTagsService) {}
 
   @Get()
-  async findSearchTags (): Promise<string[]> {
+  async findMany (): Promise<string[]> {
     return await this.searchTagsService.findMany()
   }
 }

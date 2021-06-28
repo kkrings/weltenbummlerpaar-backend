@@ -3,7 +3,7 @@ import { SearchTagsController } from './search-tags.controller'
 import { SearchTagsService } from './search-tags.service'
 
 describe('SearchTagsController', () => {
-  const referenceSearchTags = ['some search tag']
+  const referenceSearchTags = ['some tag']
 
   const mockService = {
     findMany: async () => await Promise.resolve(referenceSearchTags)
@@ -31,14 +31,14 @@ describe('SearchTagsController', () => {
     let searchTags: string[]
 
     beforeEach(async () => {
-      searchTags = await controller.findSearchTags()
+      searchTags = await controller.findMany()
     })
 
-    it('should return reference search tags', () => {
+    it('should return search tags', () => {
       expect(searchTags).toEqual(referenceSearchTags)
     })
 
-    it('should have called service', () => {
+    it('service should have been called', () => {
       expect(findSearchTagsSpy).toHaveBeenCalled()
     })
   })
