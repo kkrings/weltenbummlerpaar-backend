@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { BaseSchema } from 'src/schemas/base.schema'
+import { BaseSchema } from '../../schemas/base.schema'
 import { Image } from '../images/schemas/image.schema'
 
 export type DiaryEntryDocument = DiaryEntry & mongoose.Document
