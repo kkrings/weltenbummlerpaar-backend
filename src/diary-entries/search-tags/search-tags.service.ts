@@ -1,111 +1,74 @@
-import { Model } from 'mongoose'
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
-import { SearchTag, SearchTagDocument } from './schemas/search-tag.schema'
+import { SearchTag } from './schemas/search-tag.schema'
 import { DiaryEntry } from '../schemas/diary-entry.schema'
+import { SearchTagsDBService } from './search-tags-db.service'
 
 @Injectable()
 export class SearchTagsService {
-  constructor (
-    @InjectModel(SearchTag.name)
-    private readonly searchTagModel: Model<SearchTagDocument>
-  ) { }
+  constructor (private readonly searchTagsDBService: SearchTagsDBService) { }
 
-  async findSearchTags (): Promise<string[]> {
-    const searchTags = await this.searchTagModel
-      .find()
-      .sort({ searchTag: 'ascending' })
-      .exec()
-
+  async findMany (): Promise<string[]> {
+    const searchTags = await this.searchTagsDBService.findMany()
     return searchTags.map(searchTag => searchTag.searchTag)
   }
 
-  async addDiaryEntryToSearchTag (
-    diaryEntry: DiaryEntry,
-    searchTag: string
-  ): Promise<SearchTag> {
-    return await this.searchTagModel
-      .findOneAndUpdate(
-        { searchTag },
-        { $addToSet: { diaryEntries: diaryEntry._id } },
-        { new: true, upsert: true }
-      )
-      .exec()
-  }
-
-  async addDiaryEntryToSearchTags (
-    diaryEntry: DiaryEntry,
-    searchTags: string[]
+  async addDiaryEntryToMany (
+    searchTags: string[],
+    diaryEntry: DiaryEntry
   ): Promise<SearchTag[]> {
     return await Promise.all(
       searchTags.map(
-        async searchTag => await this.addDiaryEntryToSearchTag(
-          diaryEntry,
-          searchTag
+        async searchTag => await this.searchTagsDBService.addDiaryEntryToOne(
+          searchTag,
+          diaryEntry
         )
       )
     )
   }
 
-  async addDiaryEntryToNewSearchTags (
-    diaryEntry: DiaryEntry,
-    searchTags: string[]
+  async removeDiaryEntryFromMany (
+    searchTags: string[],
+    diaryEntry: DiaryEntry
   ): Promise<SearchTag[]> {
-    const addSearchTags = searchTags.filter(
-      searchTag => !diaryEntry.searchTags.includes(searchTag)
+    return await Promise.all(
+      searchTags.map(
+        async searchTag => await this.removeDiaryEntryFromOne(
+          searchTag,
+          diaryEntry
+        )
+      )
     )
-
-    return await this.addDiaryEntryToSearchTags(diaryEntry, addSearchTags)
   }
 
-  async removeDiaryEntryFromSearchTag (
-    diaryEntry: DiaryEntry,
-    searchTag: string
-  ): Promise<SearchTag> {
-    const searchTagDocument = await this.searchTagModel
-      .findOneAndUpdate(
-        { searchTag },
-        { $pull: { diaryEntries: diaryEntry._id } },
-        { new: true }
-      )
-      .exec()
+  async updateMany (searchTags: string[], diaryEntry: DiaryEntry): Promise<void> {
+    await this.addDiaryEntryToMany(
+      searchTags.filter(searchTag => !diaryEntry.searchTags.includes(searchTag)),
+      diaryEntry
+    )
 
-    if (searchTagDocument === null) {
+    await this.removeDiaryEntryFromMany(
+      diaryEntry.searchTags.filter(searchTag => !searchTags.includes(searchTag)),
+      diaryEntry
+    )
+  }
+
+  protected async removeDiaryEntryFromOne (
+    searchTag: string,
+    diaryEntry: DiaryEntry
+  ): Promise<SearchTag> {
+    const result = await this.searchTagsDBService.removeDiaryEntryFromOne(
+      searchTag,
+      diaryEntry
+    )
+
+    if (result === null) {
       throw new NotFoundException(`Search tag '${searchTag}' was not found.`)
     }
 
-    if (searchTagDocument.diaryEntries.length === 0) {
-      await searchTagDocument.remove()
+    if (result.diaryEntries.length === 0) {
+      await this.searchTagsDBService.removeOne(searchTag)
     }
 
-    return searchTagDocument
-  }
-
-  async removeDiaryEntryFromSearchTags (
-    diaryEntry: DiaryEntry,
-    searchTags: string[]
-  ): Promise<SearchTag[]> {
-    return await Promise.all(
-      searchTags.map(
-        async searchTag => await this.removeDiaryEntryFromSearchTag(
-          diaryEntry,
-          searchTag
-        )
-      )
-    )
-  }
-
-  async removeDiaryEntryFromRemovedSearchTags (
-    diaryEntry: DiaryEntry,
-    searchTags: string[]
-  ): Promise<SearchTag[]> {
-    const removeSearchTags = diaryEntry.searchTags.filter(
-      searchTag => !searchTags.includes(searchTag)
-    )
-
-    return await this.removeDiaryEntryFromSearchTags(
-      diaryEntry,
-      removeSearchTags
-    )
+    return result
   }
 }

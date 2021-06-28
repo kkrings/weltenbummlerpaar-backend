@@ -7,6 +7,6 @@ export class SearchTagsController {
 
   @Get()
   async findSearchTags (): Promise<string[]> {
-    return await this.searchTagsService.findSearchTags()
+    return await this.searchTagsService.findMany()
   }
 }

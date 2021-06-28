@@ -39,9 +39,9 @@ export class DiaryEntriesController {
   ): Promise<DiaryEntryDto> {
     const diaryEntry = await this.diaryEntriesService.create(createDiaryEntryDto)
 
-    await this.searchTagsService.addDiaryEntryToSearchTags(
-      diaryEntry,
-      createDiaryEntryDto.searchTags
+    await this.searchTagsService.addDiaryEntryToMany(
+      createDiaryEntryDto.searchTags,
+      diaryEntry
     )
 
     return asDiaryEntryDto(diaryEntry)
@@ -72,14 +72,9 @@ export class DiaryEntriesController {
       return asDiaryEntryDto(diaryEntry)
     }
 
-    await this.searchTagsService.addDiaryEntryToNewSearchTags(
-      diaryEntry,
-      updateDiaryEntryDto.searchTags
-    )
-
-    await this.searchTagsService.removeDiaryEntryFromRemovedSearchTags(
-      diaryEntry,
-      updateDiaryEntryDto.searchTags
+    await this.searchTagsService.updateMany(
+      updateDiaryEntryDto.searchTags,
+      diaryEntry
     )
 
     return asDiaryEntryDto(await this.diaryEntriesService.findOne(params.id))
@@ -89,9 +84,9 @@ export class DiaryEntriesController {
   async remove (@Param() params: MongoIdParams): Promise<DiaryEntryDto> {
     const diaryEntry = await this.diaryEntriesService.remove(params.id)
 
-    await this.searchTagsService.removeDiaryEntryFromSearchTags(
-      diaryEntry,
-      diaryEntry.searchTags
+    await this.searchTagsService.removeDiaryEntryFromMany(
+      diaryEntry.searchTags,
+      diaryEntry
     )
 
     await this.imagesService.removeMany(diaryEntry.images)

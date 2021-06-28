@@ -6,7 +6,7 @@ describe('SearchTagsController', () => {
   const referenceSearchTags = ['some search tag']
 
   const mockService = {
-    findSearchTags: async () => await Promise.resolve(referenceSearchTags)
+    findMany: async () => await Promise.resolve(referenceSearchTags)
   }
 
   let controller: SearchTagsController
@@ -26,7 +26,7 @@ describe('SearchTagsController', () => {
   })
 
   describe('findSearchTags()', () => {
-    const findSearchTagsSpy = jest.spyOn(mockService, 'findSearchTags')
+    const findSearchTagsSpy = jest.spyOn(mockService, 'findMany')
 
     let searchTags: string[]
 
