@@ -5,6 +5,7 @@ import { DiaryEntriesController } from './diary-entries.controller'
 import { DiaryEntry, DiaryEntrySchema } from './schemas/diary-entry.schema'
 import { SearchTagsModule } from './search-tags/search-tags.module'
 import { ImagesModule } from './images/images.module'
+import { ImageUploadModule } from './images/image-upload/image-upload.module'
 
 @Module({
   imports: [
@@ -12,7 +13,8 @@ import { ImagesModule } from './images/images.module'
       { name: DiaryEntry.name, schema: DiaryEntrySchema }
     ]),
     SearchTagsModule,
-    ImagesModule
+    ImagesModule,
+    ImageUploadModule
   ],
   controllers: [DiaryEntriesController],
   providers: [DiaryEntriesService]
