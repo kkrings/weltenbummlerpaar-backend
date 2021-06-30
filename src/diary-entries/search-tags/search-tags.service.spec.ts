@@ -8,9 +8,9 @@ import { SearchTagsDBServiceMock } from './search-tags-db.service.mock'
 import { SearchTagsService } from './search-tags.service'
 
 describe('SearchTagsService', () => {
-  let searchTagsCollection: SearchTag[] = []
-
+  let searchTagsCollection: SearchTag[]
   let service: SearchTagsService
+  let dbService: SearchTagsDBService
 
   beforeEach(() => {
     searchTagsCollection = []
@@ -33,6 +33,7 @@ describe('SearchTagsService', () => {
     }).compile()
 
     service = module.get<SearchTagsService>(SearchTagsService)
+    dbService = module.get<SearchTagsDBService>(SearchTagsDBService)
   })
 
   describe('findMany', () => {
@@ -298,6 +299,13 @@ describe('SearchTagsService', () => {
         ['some tag'],
         diaryEntry
       )
+    })
+  })
+
+  describe('removeOne', () => {
+    it('should return null', async () => {
+      const searchTag = await dbService.removeOne('some tag')
+      expect(searchTag).toBeNull()
     })
   })
 })
