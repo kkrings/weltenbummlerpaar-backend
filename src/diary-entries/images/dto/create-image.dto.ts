@@ -1,3 +1,4 @@
+import { Express } from 'express'
 import { ApiProperty, OmitType } from '@nestjs/swagger'
 import { ImageDto } from './image.dto'
 
@@ -13,5 +14,5 @@ export class CreateImageDto extends OmitType(
     type: 'string',
     format: 'binary'
   })
-  imageUpload: undefined
+  imageUpload: Express.Multer.File
 }

@@ -23,7 +23,6 @@ import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto'
 import { asDiaryEntryDto, DiaryEntryDto } from './dto/diary-entry.dto'
 import { CreateImageDto } from './images/dto/create-image.dto'
 import { asImageDto, ImageDto } from './images/dto/image.dto'
-import { ImageUploadService } from './images/image-upload/image-upload.service'
 
 @ApiTags('Diary entries')
 @Controller('diary-entries')
@@ -31,8 +30,7 @@ export class DiaryEntriesController {
   constructor (
     private readonly diaryEntriesService: DiaryEntriesService,
     private readonly searchTagsService: SearchTagsService,
-    private readonly imagesService: ImagesService,
-    private readonly imageUploadService: ImageUploadService
+    private readonly imagesService: ImagesService
   ) {}
 
   @Post()
@@ -107,9 +105,9 @@ export class DiaryEntriesController {
     /* eslint-enable @typescript-eslint/indent */
   ): Promise<ImageDto> {
     const diaryEntry = await this.diaryEntriesService.findOne(params.id)
-    const image = await this.imagesService.create(diaryEntry, createImageDto)
+    createImageDto.imageUpload = imageUpload
+    const image = await this.imagesService.create(createImageDto, diaryEntry)
     await this.diaryEntriesService.addImage(params.id, image)
-    await this.imageUploadService.moveImage(imageUpload, image)
     return asImageDto(image)
   }
 }

@@ -5,6 +5,7 @@ import { Image, ImageSchema } from './schemas/image.schema'
 import { ImageUploadConfigService } from './image-upload/image-upload-config.service'
 import { ImageUploadModule } from './image-upload/image-upload.module'
 import { ImagesService } from './images.service'
+import { ImagesDBService } from './images-db.service'
 
 @Module({
   imports: [
@@ -14,10 +15,11 @@ import { ImagesService } from './images.service'
     MulterModule.registerAsync({
       imports: [ImageUploadModule],
       useExisting: ImageUploadConfigService
-    })
+    }),
+    ImageUploadModule
   ],
   controllers: [],
-  providers: [ImagesService],
+  providers: [ImagesDBService, ImagesService],
   exports: [MulterModule, ImagesService]
 })
 export class ImagesModule {}

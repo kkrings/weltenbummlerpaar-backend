@@ -1,5 +1,5 @@
-import * as path from 'path'
 import * as jimp from 'jimp'
+import * as path from 'path'
 import { promises as fs } from 'fs'
 import { Inject, Injectable } from '@nestjs/common'
 import { ConfigType } from '@nestjs/config'
@@ -20,8 +20,16 @@ export class ImageUploadService {
     await imageManipulator
       .resize(this.config.imageManipulation.imageWidth, jimp.AUTO)
       .quality(this.config.imageManipulation.imageQuality)
-      .writeAsync(path.join(imageUpload.destination, `${image._id.toHexString()}.jpg`))
+      .writeAsync(this.imagePath(image))
 
     await fs.unlink(imageUpload.path)
+  }
+
+  async removeImage (image: Image): Promise<void> {
+    await fs.unlink(this.imagePath(image))
+  }
+
+  private imagePath (image: Image): string {
+    return path.join(this.config.destination, `${image._id.toHexString()}.jpg`)
   }
 }

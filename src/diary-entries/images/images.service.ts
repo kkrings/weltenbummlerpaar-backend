@@ -1,32 +1,62 @@
-import { Injectable } from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { DiaryEntry } from '../schemas/diary-entry.schema'
 import { CreateImageDto } from './dto/create-image.dto'
-import { Image, ImageDocument } from './schemas/image.schema'
+import { UpdateImageDto } from './dto/update-image.dto'
+import { ImageUploadService } from './image-upload/image-upload.service'
+import { ImagesDBService } from './images-db.service'
+import { Image } from './schemas/image.schema'
 
 @Injectable()
 export class ImagesService {
   constructor (
-    @InjectModel(Image.name)
-    private readonly imageModel: Model<ImageDocument>
+    private readonly imageDBService: ImagesDBService,
+    private readonly imageUploadService: ImageUploadService
   ) {}
 
   async create (
-    diaryEntry: DiaryEntry,
-    createImageDto: CreateImageDto
+    createImageDto: CreateImageDto,
+    diaryEntry: DiaryEntry
   ): Promise<Image> {
-    return await this.imageModel.create({
-      diaryEntryId: diaryEntry._id,
-      ...createImageDto
-    })
+    const image = await this.imageDBService.create(createImageDto, diaryEntry)
+    await this.imageUploadService.moveImage(createImageDto.imageUpload, image)
+    return image
   }
 
-  async removeMany (images: Image[]): Promise<number> {
-    const result = await this.imageModel
-      .deleteMany({ _id: { $in: images.map(image => image._id) } })
-      .exec()
+  async updateOne (imageId: string, updateImageDto: UpdateImageDto): Promise<Image> {
+    const image = this.checkImageFound(
+      imageId,
+      await this.imageDBService.updateOne(imageId, updateImageDto)
+    )
 
-    return result.deletedCount ?? 0
+    if (updateImageDto.imageUpload !== undefined) {
+      await this.imageUploadService.moveImage(updateImageDto.imageUpload, image)
+    }
+
+    return image
+  }
+
+  async removeOne (imageId: string): Promise<Image> {
+    const image = this.checkImageFound(
+      imageId,
+      await this.imageDBService.removeOne(imageId)
+    )
+
+    await this.imageUploadService.removeImage(image)
+
+    return image
+  }
+
+  async removeMany (images: Image[]): Promise<void> {
+    for await (const image of this.imageDBService.removeMany(images)) {
+      await this.imageUploadService.removeImage(image)
+    }
+  }
+
+  private checkImageFound (imageId: string, image: Image | null): Image {
+    if (image === null) {
+      throw new NotFoundException(`Image with ID '${imageId}' was not found.`)
+    }
+
+    return image
   }
 }
