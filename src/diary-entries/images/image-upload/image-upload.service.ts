@@ -18,8 +18,8 @@ export class ImageUploadService {
     const imageManipulator = await jimp.read(imageUpload.path)
 
     await imageManipulator
-      .resize(this.config.imageManipulation.imageWidth, jimp.AUTO)
-      .quality(this.config.imageManipulation.imageQuality)
+      .resize(this.config.manipulation.imageWidth, jimp.AUTO)
+      .quality(this.config.manipulation.imageQuality)
       .writeAsync(this.imagePath(image))
 
     await fs.unlink(imageUpload.path)

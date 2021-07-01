@@ -5,14 +5,6 @@ import { ConfigType } from '@nestjs/config'
 import { MulterModuleOptions, MulterOptionsFactory } from '@nestjs/platform-express'
 import imageUploadConfig from './image-upload.config'
 
-const jpegFilter = (_, file: Express.Multer.File, cb: FileFilterCallback): void => {
-  if (file.mimetype === 'image/jpeg') {
-    cb(null, true)
-  } else {
-    cb(new UnsupportedMediaTypeException('A file of type \'image/jpeg\' is expected.'))
-  }
-}
-
 @Injectable()
 export class ImageUploadConfigService implements MulterOptionsFactory {
   constructor (
@@ -23,7 +15,21 @@ export class ImageUploadConfigService implements MulterOptionsFactory {
   createMulterOptions (): MulterModuleOptions {
     return {
       dest: this.config.destination,
-      fileFilter: jpegFilter
+      fileFilter: (_, file: Express.Multer.File, cb: FileFilterCallback) =>
+        this.jpegFilter(file.mimetype, cb)
     }
+  }
+
+  jpegFilter (fileType: string, cb: FileFilterCallback): void {
+    if (fileType === 'image/jpeg') {
+      cb(null, true)
+      return
+    }
+
+    const error = new UnsupportedMediaTypeException(
+      'A file of type \'image/jpeg\' is expected.'
+    )
+
+    cb(error)
   }
 }
