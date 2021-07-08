@@ -15,41 +15,28 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express'
 import { ApiConsumes, ApiTags } from '@nestjs/swagger'
 import { DiaryEntriesService } from './diary-entries.service'
-import { SearchTagsService } from './search-tags/search-tags.service'
-import { ImagesService } from './images/images.service'
 import { MongoIdParams } from '../dto/mongo-id-params.dto'
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto'
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto'
 import { asDiaryEntryDto, DiaryEntryDto } from './dto/diary-entry.dto'
 import { CreateImageDto } from './images/dto/create-image.dto'
-import { asImageDto, ImageDto } from './images/dto/image.dto'
+import { RemoveImageParams } from './dto/remove-image-params.dto'
 
 @ApiTags('Diary entries')
 @Controller('diary-entries')
 export class DiaryEntriesController {
-  constructor (
-    private readonly diaryEntriesService: DiaryEntriesService,
-    private readonly searchTagsService: SearchTagsService,
-    private readonly imagesService: ImagesService
-  ) {}
+  constructor (private readonly diaryEntriesService: DiaryEntriesService) {}
 
   @Post()
   async create (
     @Body() createDiaryEntryDto: CreateDiaryEntryDto
   ): Promise<DiaryEntryDto> {
-    const diaryEntry = await this.diaryEntriesService.create(createDiaryEntryDto)
-
-    await this.searchTagsService.addDiaryEntryToMany(
-      createDiaryEntryDto.searchTags,
-      diaryEntry
-    )
-
-    return asDiaryEntryDto(diaryEntry)
+    return asDiaryEntryDto(await this.diaryEntriesService.create(createDiaryEntryDto))
   }
 
   @Get()
-  async findAll (): Promise<DiaryEntryDto[]> {
-    const diaryEntries = await this.diaryEntriesService.findAll()
+  async findMany (): Promise<DiaryEntryDto[]> {
+    const diaryEntries = await this.diaryEntriesService.findMany()
     return diaryEntries.map(diaryEntry => asDiaryEntryDto(diaryEntry))
   }
 
@@ -59,55 +46,43 @@ export class DiaryEntriesController {
   }
 
   @Patch(':id')
-  async update (
-    @Param() params: MongoIdParams, @Body() updateDiaryEntryDto: UpdateDiaryEntryDto
+  async updateOne (
+    /* eslint-disable @typescript-eslint/indent */
+    @Param() params: MongoIdParams,
+    @Body() updateDiaryEntryDto: UpdateDiaryEntryDto
+    /* eslint-enable @typescript-eslint/indent */
   ): Promise<DiaryEntryDto> {
-    const diaryEntry = await this.diaryEntriesService.update(
-      params.id,
-      updateDiaryEntryDto,
-      updateDiaryEntryDto.searchTags === undefined
+    return asDiaryEntryDto(
+      await this.diaryEntriesService.updateOne(params.id, updateDiaryEntryDto)
     )
-
-    if (updateDiaryEntryDto.searchTags === undefined) {
-      return asDiaryEntryDto(diaryEntry)
-    }
-
-    await this.searchTagsService.updateMany(
-      updateDiaryEntryDto.searchTags,
-      diaryEntry
-    )
-
-    return asDiaryEntryDto(await this.diaryEntriesService.findOne(params.id))
   }
 
   @Delete(':id')
-  async remove (@Param() params: MongoIdParams): Promise<DiaryEntryDto> {
-    const diaryEntry = await this.diaryEntriesService.remove(params.id)
-
-    await this.searchTagsService.removeDiaryEntryFromMany(
-      diaryEntry.searchTags,
-      diaryEntry
-    )
-
-    await this.imagesService.removeMany(diaryEntry.images)
-
-    return asDiaryEntryDto(diaryEntry)
+  async removeOne (@Param() params: MongoIdParams): Promise<DiaryEntryDto> {
+    return asDiaryEntryDto(await this.diaryEntriesService.removeOne(params.id))
   }
 
   @Post(':id/images')
   @UseInterceptors(FileInterceptor('imageUpload'))
   @ApiConsumes('multipart/form-data')
-  async uploadImage (
+  async addImage (
     /* eslint-disable @typescript-eslint/indent */
     @Param() params: MongoIdParams,
     @UploadedFile() imageUpload: Express.Multer.File,
     @Body() createImageDto: CreateImageDto
     /* eslint-enable @typescript-eslint/indent */
-  ): Promise<ImageDto> {
-    const diaryEntry = await this.diaryEntriesService.findOne(params.id)
+  ): Promise<DiaryEntryDto> {
     createImageDto.imageUpload = imageUpload
-    const image = await this.imagesService.create(createImageDto, diaryEntry)
-    await this.diaryEntriesService.addImage(params.id, image)
-    return asImageDto(image)
+
+    return asDiaryEntryDto(
+      await this.diaryEntriesService.addImage(params.id, createImageDto)
+    )
+  }
+
+  @Delete(':diaryEntryId/images/:imageId')
+  async removeImage (@Param() params: RemoveImageParams): Promise<DiaryEntryDto> {
+    return asDiaryEntryDto(
+      await this.diaryEntriesService.removeImage(params.diaryEntryId, params.imageId)
+    )
   }
 }

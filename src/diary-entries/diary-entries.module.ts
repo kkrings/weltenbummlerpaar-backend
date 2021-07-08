@@ -5,6 +5,7 @@ import { DiaryEntriesController } from './diary-entries.controller'
 import { DiaryEntry, DiaryEntrySchema } from './schemas/diary-entry.schema'
 import { SearchTagsModule } from './search-tags/search-tags.module'
 import { ImagesModule } from './images/images.module'
+import { DiaryEntriesDBService } from './diary-entries.db.service'
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { ImagesModule } from './images/images.module'
     ImagesModule
   ],
   controllers: [DiaryEntriesController],
-  providers: [DiaryEntriesService]
+  providers: [DiaryEntriesDBService, DiaryEntriesService]
 })
 export class DiaryEntriesModule {}
