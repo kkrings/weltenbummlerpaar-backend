@@ -3,8 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { ObjectId } from 'mongodb'
 import { DiaryEntry } from '../schemas/diary-entry.schema'
 import { SearchTag } from './schemas/search-tag.schema'
-import { SearchTagsDBService } from './search-tags-db.service'
-import { SearchTagsDBServiceMock } from './search-tags-db.service.mock'
+import { SearchTagsDBService } from './search-tags.db.service'
+import { SearchTagsDBServiceMock } from './search-tags.db.service.mock'
 import { SearchTagsService } from './search-tags.service'
 
 describe('SearchTagsService', () => {

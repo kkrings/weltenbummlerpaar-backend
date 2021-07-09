@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { SearchTag } from './schemas/search-tag.schema'
 import { DiaryEntry } from '../schemas/diary-entry.schema'
-import { SearchTagsDBService } from './search-tags-db.service'
+import { SearchTagsDBService } from './search-tags.db.service'
 
 @Injectable()
 export class SearchTagsService {

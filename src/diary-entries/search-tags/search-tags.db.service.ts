@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { DiaryEntry } from '../schemas/diary-entry.schema'
 import { SearchTag, SearchTagDocument } from './schemas/search-tag.schema'
-import { SearchTagsDBServiceBase } from './search-tags-db.service.base'
+import { SearchTagsDBServiceBase } from './search-tags.db.service.base'
 
 @Injectable()
 export class SearchTagsDBService extends SearchTagsDBServiceBase {

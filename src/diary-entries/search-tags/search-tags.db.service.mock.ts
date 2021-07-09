@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import { ObjectId } from 'mongodb'
 import { DiaryEntry } from '../schemas/diary-entry.schema'
 import { SearchTag } from './schemas/search-tag.schema'
-import { SearchTagsDBServiceBase } from './search-tags-db.service.base'
+import { SearchTagsDBServiceBase } from './search-tags.db.service.base'
 
 @Injectable()
 export class SearchTagsDBServiceMock extends SearchTagsDBServiceBase {

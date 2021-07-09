@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
+import { throwOnNull } from '../../schemas/base.schema'
 import { DiaryEntry } from '../schemas/diary-entry.schema'
 import { CreateImageDto } from './dto/create-image.dto'
 import { UpdateImageDto } from './dto/update-image.dto'
@@ -26,14 +27,18 @@ export class ImagesDBService {
   async updateOne (
     imageId: string,
     updateImageDto: UpdateImageDto
-  ): Promise<Image | null> {
-    return await this.imageModel
+  ): Promise<Image> {
+    return await throwOnNull(imageId, async () => await this.imageModel
       .findByIdAndUpdate(imageId, { $set: updateImageDto }, { new: true })
       .exec()
+    )
   }
 
-  async removeOne (imageId: string): Promise<Image | null> {
-    return await this.imageModel.findByIdAndRemove(imageId).exec()
+  async removeOne (imageId: string): Promise<Image> {
+    return await throwOnNull(imageId, async () => await this.imageModel
+      .findByIdAndRemove(imageId)
+      .exec()
+    )
   }
 
   removeMany (images: Image[]): AsyncIterable<Image> {

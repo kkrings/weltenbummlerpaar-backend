@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { DiaryEntry } from '../schemas/diary-entry.schema'
 import { CreateImageDto } from './dto/create-image.dto'
 import { UpdateImageDto } from './dto/update-image.dto'
 import { ImageUploadService } from './image-upload/image-upload.service'
-import { ImagesDBService } from './images-db.service'
+import { ImagesDBService } from './images.db.service'
 import { Image } from './schemas/image.schema'
 
 @Injectable()
@@ -23,10 +23,7 @@ export class ImagesService {
   }
 
   async updateOne (imageId: string, updateImageDto: UpdateImageDto): Promise<Image> {
-    const image = this.checkImageFound(
-      imageId,
-      await this.imageDBService.updateOne(imageId, updateImageDto)
-    )
+    const image = await this.imageDBService.updateOne(imageId, updateImageDto)
 
     if (updateImageDto.imageUpload !== undefined) {
       await this.imageUploadService.moveImage(updateImageDto.imageUpload, image)
@@ -36,13 +33,8 @@ export class ImagesService {
   }
 
   async removeOne (imageId: string): Promise<Image> {
-    const image = this.checkImageFound(
-      imageId,
-      await this.imageDBService.removeOne(imageId)
-    )
-
+    const image = await this.imageDBService.removeOne(imageId)
     await this.imageUploadService.removeImage(image)
-
     return image
   }
 
@@ -50,13 +42,5 @@ export class ImagesService {
     for await (const image of this.imageDBService.removeMany(images)) {
       await this.imageUploadService.removeImage(image)
     }
-  }
-
-  private checkImageFound (imageId: string, image: Image | null): Image {
-    if (image === null) {
-      throw new NotFoundException(`Image with ID '${imageId}' was not found.`)
-    }
-
-    return image
   }
 }
