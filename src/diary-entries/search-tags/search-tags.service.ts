@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { SearchTag } from './schemas/search-tag.schema'
 import { DiaryEntry } from '../schemas/diary-entry.schema'
 import { SearchTagsDBService } from './search-tags.db.service'
@@ -56,19 +56,15 @@ export class SearchTagsService {
     searchTag: string,
     diaryEntry: DiaryEntry
   ): Promise<SearchTag> {
-    const result = await this.searchTagsDBService.removeDiaryEntryFromOne(
+    const searchTagDoc = await this.searchTagsDBService.removeDiaryEntryFromOne(
       searchTag,
       diaryEntry
     )
 
-    if (result === null) {
-      throw new NotFoundException(`Search tag '${searchTag}' was not found.`)
-    }
-
-    if (result.diaryEntries.length === 0) {
+    if (searchTagDoc.diaryEntries.length === 0) {
       await this.searchTagsDBService.removeOne(searchTag)
     }
 
-    return result
+    return searchTagDoc
   }
 }

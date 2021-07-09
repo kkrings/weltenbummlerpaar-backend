@@ -242,7 +242,9 @@ describe('SearchTagsService', () => {
       )
 
       await expect(promise).rejects.toEqual(
-        new NotFoundException(`Search tag '${searchTagValue}' was not found.`)
+        new NotFoundException(
+          `Document with ID '${searchTagValue}' could not be found.`
+        )
       )
     })
   })
@@ -303,9 +305,12 @@ describe('SearchTagsService', () => {
   })
 
   describe('removeOne', () => {
-    it('should return null', async () => {
-      const searchTag = await dbService.removeOne('some tag')
-      expect(searchTag).toBeNull()
+    const searchTag = 'some tag'
+
+    it('should throw not-found exception', async () => {
+      await expect(dbService.removeOne(searchTag)).rejects.toEqual(
+        new NotFoundException(`Document with ID '${searchTag}' could not be found.`)
+      )
     })
   })
 })

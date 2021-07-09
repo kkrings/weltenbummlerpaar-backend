@@ -4,7 +4,7 @@ import { SearchTag } from './schemas/search-tag.schema'
 export abstract class SearchTagsDBServiceBase {
   abstract findMany (): Promise<SearchTag[]>
 
-  abstract removeOne (searchTag: string): Promise<SearchTag | null>
+  abstract removeOne (searchTag: string): Promise<SearchTag>
 
   abstract addDiaryEntryToOne (
     searchTag: string,
@@ -14,5 +14,5 @@ export abstract class SearchTagsDBServiceBase {
   abstract removeDiaryEntryFromOne (
     searchTag: string,
     diaryEntry: DiaryEntry,
-  ): Promise<SearchTag | null>
+  ): Promise<SearchTag>
 }

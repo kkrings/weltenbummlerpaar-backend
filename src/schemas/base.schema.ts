@@ -14,7 +14,7 @@ export async function throwOnNull<T> (
   const document = await queryDocument()
 
   if (document === null) {
-    throw new NotFoundException(`Document with ID ${documentId} could not be found.`)
+    throw new NotFoundException(`Document with ID '${documentId}' could not be found.`)
   }
 
   return document

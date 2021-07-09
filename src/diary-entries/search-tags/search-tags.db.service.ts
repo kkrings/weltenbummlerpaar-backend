@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
+import { throwOnNull } from '../../schemas/base.schema'
 import { DiaryEntry } from '../schemas/diary-entry.schema'
 import { SearchTag, SearchTagDocument } from './schemas/search-tag.schema'
 import { SearchTagsDBServiceBase } from './search-tags.db.service.base'
@@ -21,8 +22,11 @@ export class SearchTagsDBService extends SearchTagsDBServiceBase {
       .exec()
   }
 
-  async removeOne (searchTag: string): Promise<SearchTag | null> {
-    return await this.searchTagModel.findOneAndRemove({ searchTag }).exec()
+  async removeOne (searchTag: string): Promise<SearchTag> {
+    return await throwOnNull(searchTag, async () => await this.searchTagModel
+      .findOneAndRemove({ searchTag })
+      .exec()
+    )
   }
 
   async addDiaryEntryToOne (
@@ -41,13 +45,14 @@ export class SearchTagsDBService extends SearchTagsDBServiceBase {
   async removeDiaryEntryFromOne (
     searchTag: string,
     diaryEntry: DiaryEntry
-  ): Promise<SearchTag | null> {
-    return await this.searchTagModel
+  ): Promise<SearchTag> {
+    return await throwOnNull(searchTag, async () => await this.searchTagModel
       .findOneAndUpdate(
         { searchTag },
         { $pull: { diaryEntries: diaryEntry._id } },
         { new: true }
       )
       .exec()
+    )
   }
 }
