@@ -1,9 +1,8 @@
-import * as jimp from 'jimp'
+import * as Jimp from 'jimp'
 import * as path from 'path'
 import { promises as fs } from 'fs'
 import { Inject, Injectable } from '@nestjs/common'
 import { ConfigType } from '@nestjs/config'
-import { Express } from 'express'
 import { Image } from '../schemas/image.schema'
 import imageUploadConfig from './image-upload.config'
 
@@ -14,15 +13,15 @@ export class ImageUploadService {
     private readonly config: ConfigType<typeof imageUploadConfig>
   ) {}
 
-  async moveImage (imageUpload: Express.Multer.File, image: Image): Promise<void> {
-    const imageManipulator = await jimp.read(imageUpload.path)
+  async moveImage (imageUploadPath: string, image: Image): Promise<void> {
+    const imageManipulator = await Jimp.read(imageUploadPath)
 
     await imageManipulator
-      .resize(this.config.manipulation.imageWidth, jimp.AUTO)
+      .resize(this.config.manipulation.imageWidth, Jimp.AUTO)
       .quality(this.config.manipulation.imageQuality)
       .writeAsync(this.imagePath(image))
 
-    await fs.unlink(imageUpload.path)
+    await fs.unlink(imageUploadPath)
   }
 
   async removeImage (image: Image): Promise<void> {
