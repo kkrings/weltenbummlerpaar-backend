@@ -6,6 +6,7 @@ import { ImageUploadConfigService } from './image-upload/image-upload-config.ser
 import { ImageUploadModule } from './image-upload/image-upload.module'
 import { ImagesService } from './images.service'
 import { ImagesDBService } from './images.db.service'
+import { ImagesController } from './images.controller'
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { ImagesDBService } from './images.db.service'
     }),
     ImageUploadModule
   ],
-  controllers: [],
+  controllers: [ImagesController],
   providers: [ImagesDBService, ImagesService],
   exports: [MulterModule, ImagesService]
 })

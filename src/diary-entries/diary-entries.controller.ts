@@ -72,7 +72,7 @@ export class DiaryEntriesController {
     @Body() createImageDto: CreateImageDto
     /* eslint-enable @typescript-eslint/indent */
   ): Promise<DiaryEntryDto> {
-    createImageDto.imageUpload = imageUpload
+    createImageDto.imageUpload = imageUpload.path
 
     return asDiaryEntryDto(
       await this.diaryEntriesService.addImage(params.id, createImageDto)

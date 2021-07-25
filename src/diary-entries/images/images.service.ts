@@ -18,7 +18,7 @@ export class ImagesService {
     diaryEntry: DiaryEntry
   ): Promise<Image> {
     const image = await this.imageDBService.create(createImageDto, diaryEntry)
-    await this.imageUploadService.moveImage(createImageDto.imageUpload.path, image)
+    await this.imageUploadService.moveImage(createImageDto.imageUpload, image)
     return image
   }
 
@@ -26,7 +26,7 @@ export class ImagesService {
     const image = await this.imageDBService.updateOne(imageId, updateImageDto)
 
     if (updateImageDto.imageUpload !== undefined) {
-      await this.imageUploadService.moveImage(updateImageDto.imageUpload.path, image)
+      await this.imageUploadService.moveImage(updateImageDto.imageUpload, image)
     }
 
     return image
