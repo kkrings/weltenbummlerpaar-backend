@@ -5,14 +5,17 @@ import { throwOnNull } from '../../schemas/base.schema'
 import { DiaryEntry } from '../schemas/diary-entry.schema'
 import { CreateImageDto } from './dto/create-image.dto'
 import { UpdateImageDto } from './dto/update-image.dto'
+import { ImagesDBServiceBase } from './images.db.service.base'
 import { Image, ImageDocument } from './schemas/image.schema'
 
 @Injectable()
-export class ImagesDBService {
+export class ImagesDBService extends ImagesDBServiceBase {
   constructor (
     @InjectModel(Image.name)
     private readonly imageModel: Model<ImageDocument>
-  ) {}
+  ) {
+    super()
+  }
 
   async create (
     createImageDto: CreateImageDto,
