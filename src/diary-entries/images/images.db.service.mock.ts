@@ -66,8 +66,10 @@ export class ImagesDBServiceMock extends ImagesDBServiceBase {
       other => this.imagesCollection.some(image => image._id.equals(other._id))
     )
 
-    this.imagesCollection = this.imagesCollection(
-      other => !removeImages.some(image => image._id.equals(other))
+    this.imagesCollection.splice(
+      0, this.imagesCollection.length, ...this.imagesCollection.filter(
+        other => !removeImages.some(image => image._id.equals(other._id))
+      )
     )
 
     return removeImages[Symbol.asyncIterator]
