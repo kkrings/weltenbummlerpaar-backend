@@ -21,6 +21,10 @@ export class ImageUploadService {
       .quality(this.config.manipulation.imageQuality)
       .writeAsync(this.imagePath(image))
 
+    await this.removeUpload(imageUploadPath)
+  }
+
+  async removeUpload (imageUploadPath: string): Promise<void> {
     await fs.unlink(imageUploadPath)
   }
 

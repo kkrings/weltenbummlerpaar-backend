@@ -23,13 +23,23 @@ export class ImagesService {
   }
 
   async updateOne (imageId: string, updateImageDto: UpdateImageDto): Promise<Image> {
-    const image = await this.imageDBService.updateOne(imageId, updateImageDto)
+    const imageUploadPath = updateImageDto.imageUpload
 
-    if (updateImageDto.imageUpload !== undefined) {
-      await this.imageUploadService.moveImage(updateImageDto.imageUpload, image)
+    try {
+      const image = await this.imageDBService.updateOne(imageId, updateImageDto)
+
+      if (imageUploadPath !== undefined) {
+        await this.imageUploadService.moveImage(imageUploadPath, image)
+      }
+
+      return image
+    } catch (error) {
+      if (imageUploadPath !== undefined) {
+        await this.imageUploadService.removeUpload(imageUploadPath)
+      }
+
+      throw error
     }
-
-    return image
   }
 
   async removeOne (imageId: string): Promise<Image> {
