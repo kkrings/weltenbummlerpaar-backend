@@ -3,15 +3,18 @@ import * as path from 'path'
 import { promises as fs } from 'fs'
 import { Inject, Injectable } from '@nestjs/common'
 import { ConfigType } from '@nestjs/config'
+import { ImageUploadServiceBase } from './image-upload.service.base'
 import { Image } from '../schemas/image.schema'
 import imageUploadConfig from './image-upload.config'
 
 @Injectable()
-export class ImageUploadService {
+export class ImageUploadService extends ImageUploadServiceBase {
   constructor (
     @Inject(imageUploadConfig.KEY)
     private readonly config: ConfigType<typeof imageUploadConfig>
-  ) {}
+  ) {
+    super()
+  }
 
   async moveImage (imageUploadPath: string, image: Image): Promise<void> {
     const imageManipulator = await Jimp.read(imageUploadPath)

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { ObjectId } from 'mongodb'
-import { throwOnNull } from 'src/schemas/base.schema'
+import { throwOnNull } from '../../schemas/base.schema'
 import { DiaryEntry } from '../schemas/diary-entry.schema'
 import { CreateImageDto } from './dto/create-image.dto'
 import { UpdateImageDto } from './dto/update-image.dto'
