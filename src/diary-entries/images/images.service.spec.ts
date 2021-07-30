@@ -14,7 +14,7 @@ import { Image } from './schemas/image.schema'
 describe('ImagesService', () => {
   let imagesCollection: Image[]
   let imagesService: ImagesService
-  let imagesUploadService: ImageUploadService
+  let imageUploadService: ImageUploadService
 
   beforeEach(() => {
     imagesCollection = []
@@ -40,7 +40,7 @@ describe('ImagesService', () => {
     }).compile()
 
     imagesService = module.get<ImagesService>(ImagesService)
-    imagesUploadService = module.get<ImageUploadService>(ImageUploadService)
+    imageUploadService = module.get<ImageUploadService>(ImageUploadService)
   })
 
   describe('create', () => {
@@ -65,7 +65,7 @@ describe('ImagesService', () => {
     let expectedImage: Image
 
     beforeEach(() => {
-      moveImageSpy = jest.spyOn(imagesUploadService, 'moveImage')
+      moveImageSpy = jest.spyOn(imageUploadService, 'moveImage')
     })
 
     beforeEach(async () => {
@@ -158,7 +158,7 @@ describe('ImagesService', () => {
         let updatedImage: Image
 
         beforeEach(() => {
-          moveImageSpy = jest.spyOn(imagesUploadService, 'moveImage')
+          moveImageSpy = jest.spyOn(imageUploadService, 'moveImage')
         })
 
         beforeEach(() => {
@@ -195,7 +195,7 @@ describe('ImagesService', () => {
         let imagePromise: Promise<Image>
 
         beforeEach(() => {
-          removeUploadSpy = jest.spyOn(imagesUploadService, 'removeUpload')
+          removeUploadSpy = jest.spyOn(imageUploadService, 'removeUpload')
         })
 
         beforeEach(() => {
