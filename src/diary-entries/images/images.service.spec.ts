@@ -1,6 +1,7 @@
 import { NotFoundException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { ObjectId } from 'mongodb'
+import { nextTick } from 'process'
 import { DiaryEntry } from '../schemas/diary-entry.schema'
 import { CreateImageDto } from './dto/create-image.dto'
 import { UpdateImageDto } from './dto/update-image.dto'
@@ -305,5 +306,14 @@ describe('ImagesService', () => {
     it('removeImage should have been called', () => {
       expect(removeImageSpy).toHaveBeenLastCalledWith(image)
     })
+  })
+
+  afterAll(async () => {
+    // jimp dependency: wait for import in node_modules/gifwrap/src/gifcodec.js
+    const waitForNextTick = async (): Promise<unknown> => await new Promise(
+      resolve => nextTick(resolve)
+    )
+
+    await waitForNextTick()
   })
 })

@@ -2,6 +2,7 @@ import * as Jimp from 'jimp'
 import * as os from 'os'
 import * as path from 'path'
 import { promises as fs } from 'fs'
+import { nextTick } from 'process'
 import { Test, TestingModule } from '@nestjs/testing'
 import { ObjectId } from 'mongodb'
 import { name } from '../../../../package.json'
@@ -104,5 +105,14 @@ describe('ImageUploadService', () => {
 
   afterEach(async () => {
     await fs.rm(imageDir, { recursive: true })
+  })
+
+  afterAll(async () => {
+    // jimp dependency: wait for import in node_modules/gifwrap/src/gifcodec.js
+    const waitForNextTick = async (): Promise<unknown> => await new Promise(
+      resolve => nextTick(resolve)
+    )
+
+    await waitForNextTick()
   })
 })
