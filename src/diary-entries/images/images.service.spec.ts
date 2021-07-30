@@ -1,4 +1,9 @@
+import { NotFoundException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
+import { ObjectId } from 'mongodb'
+import { DiaryEntry } from '../schemas/diary-entry.schema'
+import { CreateImageDto } from './dto/create-image.dto'
+import { UpdateImageDto } from './dto/update-image.dto'
 import { ImageUploadService } from './image-upload/image-upload.service'
 import { ImageUploadServiceMock } from './image-upload/image-upload.service.mock'
 import { ImagesDBService } from './images.db.service'
@@ -8,7 +13,8 @@ import { Image } from './schemas/image.schema'
 
 describe('ImagesService', () => {
   let imagesCollection: Image[]
-  let service: ImagesService
+  let imagesService: ImagesService
+  let imagesUploadService: ImageUploadService
 
   beforeEach(() => {
     imagesCollection = []
@@ -33,10 +39,185 @@ describe('ImagesService', () => {
       ]
     }).compile()
 
-    service = module.get<ImagesService>(ImagesService)
+    imagesService = module.get<ImagesService>(ImagesService)
+    imagesUploadService = module.get<ImageUploadService>(ImageUploadService)
   })
 
-  it('service is defined', () => {
-    expect(service).toBeDefined()
+  describe('create', () => {
+    const diaryEntry: DiaryEntry = {
+      _id: new ObjectId(),
+      title: 'some title',
+      location: 'some location',
+      body: 'some body',
+      searchTags: ['some tag'],
+      images: [],
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+
+    const createImageDto: CreateImageDto = {
+      description: 'some description',
+      imageUpload: 'some path'
+    }
+
+    let moveImageSpy: jest.SpyInstance
+    let image: Image
+    let expectedImage: Image
+
+    beforeEach(() => {
+      moveImageSpy = jest.spyOn(imagesUploadService, 'moveImage')
+    })
+
+    beforeEach(async () => {
+      image = await imagesService.create(createImageDto, diaryEntry)
+    })
+
+    beforeEach(() => {
+      expect(imagesCollection.length).toEqual(1)
+      expectedImage = imagesCollection[0]
+    })
+
+    it('image should have been created', () => {
+      expect(image).toEqual(expectedImage)
+    })
+
+    it('created image should be related to diary entry', () => {
+      expect(image.diaryEntryId).toEqual(diaryEntry._id)
+    })
+
+    it('moveImage should have been called', () => {
+      expect(moveImageSpy).toHaveBeenCalledWith(createImageDto.imageUpload, image)
+    })
+  })
+
+  describe('updateOne', () => {
+    const image: Image = {
+      _id: new ObjectId(),
+      description: 'some description',
+      diaryEntryId: new ObjectId(),
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+
+    describe('with description, without image upload', () => {
+      const updateImageDto: UpdateImageDto = {
+        description: 'some updated description'
+      }
+
+      describe('on image found', () => {
+        let updatedImage: Image
+
+        beforeEach(() => {
+          imagesCollection.push({ ...image })
+        })
+
+        beforeEach(async () => {
+          updatedImage = await imagesService.updateOne(
+            image._id.toHexString(),
+            updateImageDto
+          )
+        })
+
+        it('image in database should have been returned', () => {
+          expect(updatedImage).toEqual(imagesCollection[0])
+        })
+
+        it('image in database should have been updated', () => {
+          const imageInDB = imagesCollection[0]
+          expect(imageInDB._id).toEqual(image._id)
+          expect(imageInDB.description).toEqual(updateImageDto.description)
+          expect(imageInDB.diaryEntryId).toEqual(image.diaryEntryId)
+          expect(imageInDB.createdAt).toEqual(image.createdAt)
+          expect(imageInDB.updatedAt).not.toEqual(image.updatedAt)
+        })
+      })
+
+      describe('on image not found', () => {
+        const imageId = new ObjectId().toHexString()
+        let imagePromise: Promise<Image>
+
+        beforeEach(() => {
+          imagePromise = imagesService.updateOne(imageId, updateImageDto)
+        })
+
+        it('not-found execption should have been thrown', async () => {
+          await expect(imagePromise).rejects.toEqual(
+            new NotFoundException(`Document with ID '${imageId}' could not be found.`)
+          )
+        })
+      })
+    })
+
+    describe('without description, with image upload', () => {
+      const updateImageDto: UpdateImageDto = {
+        imageUpload: 'some path'
+      }
+
+      describe('on image found', () => {
+        let moveImageSpy: jest.SpyInstance
+        let updatedImage: Image
+
+        beforeEach(() => {
+          moveImageSpy = jest.spyOn(imagesUploadService, 'moveImage')
+        })
+
+        beforeEach(() => {
+          imagesCollection.push({ ...image })
+        })
+
+        beforeEach(async () => {
+          updatedImage = await imagesService.updateOne(
+            image._id.toHexString(),
+            updateImageDto
+          )
+        })
+
+        it('image in database should have been returned', () => {
+          expect(updatedImage).toEqual(imagesCollection[0])
+        })
+
+        it('image in database should not have been updated', () => {
+          expect(imagesCollection[0]).toEqual(image)
+        })
+
+        it('moveImage should have been called', () => {
+          expect(moveImageSpy).toHaveBeenCalledWith(
+            updateImageDto.imageUpload,
+            updatedImage
+          )
+        })
+      })
+
+      describe('on image not found', () => {
+        const imageId = new ObjectId().toHexString()
+
+        let removeUploadSpy: jest.SpyInstance
+        let imagePromise: Promise<Image>
+
+        beforeEach(() => {
+          removeUploadSpy = jest.spyOn(imagesUploadService, 'removeUpload')
+        })
+
+        beforeEach(() => {
+          imagePromise = imagesService.updateOne(imageId, updateImageDto)
+        })
+
+        it('not-found exception should have been thrown', async () => {
+          await expect(imagePromise).rejects.toEqual(
+            new NotFoundException(`Document with ID '${imageId}' could not be found.`)
+          )
+        })
+
+        it('removeUpload should have been called', async () => {
+          try {
+            await imagePromise
+          } catch {
+            // do nothing
+          }
+
+          expect(removeUploadSpy).toHaveBeenCalledWith(updateImageDto.imageUpload)
+        })
+      })
+    })
   })
 })
