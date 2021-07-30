@@ -220,4 +220,90 @@ describe('ImagesService', () => {
       })
     })
   })
+
+  describe('removeOne', () => {
+    const image: Image = {
+      _id: new ObjectId(),
+      description: 'some description',
+      diaryEntryId: new ObjectId(),
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+
+    describe('on image found', () => {
+      let removeImageSpy: jest.SpyInstance
+      let removedImage: Image
+
+      beforeEach(() => {
+        removeImageSpy = jest.spyOn(imageUploadService, 'removeImage')
+      })
+
+      beforeEach(() => {
+        imagesCollection.push({ ...image })
+      })
+
+      beforeEach(async () => {
+        removedImage = await imagesService.removeOne(image._id.toHexString())
+      })
+
+      it('image removed from database should have been returned', () => {
+        expect(removedImage).toEqual(image)
+      })
+
+      it('image in database should have been removed', () => {
+        expect(imagesCollection.length).toEqual(0)
+      })
+
+      it('removeImage should have been called', () => {
+        expect(removeImageSpy).toHaveBeenCalledWith(removedImage)
+      })
+    })
+
+    describe('on image not found', () => {
+      const imageId = image._id.toHexString()
+      let imagePromise: Promise<Image>
+
+      beforeEach(() => {
+        imagePromise = imagesService.removeOne(imageId)
+      })
+
+      it('not-found exception should have been thrown', async () => {
+        await expect(imagePromise).rejects.toEqual(
+          new NotFoundException(`Document with ID '${imageId}' could not be found.`)
+        )
+      })
+    })
+  })
+
+  describe('removeMany', () => {
+    let removeImageSpy: jest.SpyInstance
+
+    const image: Image = {
+      _id: new ObjectId(),
+      description: 'some description',
+      diaryEntryId: new ObjectId(),
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+
+    beforeEach(() => {
+      removeImageSpy = jest.spyOn(imageUploadService, 'removeImage')
+    })
+
+    beforeEach(() => {
+      imagesCollection.push({ ...image })
+    })
+
+    beforeEach(async () => {
+      await imagesService.removeMany([image])
+    })
+
+    it('image in database should have been removed', () => {
+      expect(imagesCollection.length).toEqual(0)
+    })
+
+    it('removeImage should have been called', () => {
+      expect(removeImageSpy).toHaveBeenLastCalledWith(image)
+    })
+  })
 })

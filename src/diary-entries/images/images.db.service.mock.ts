@@ -61,7 +61,7 @@ export class ImagesDBServiceMock extends ImagesDBServiceBase {
     })
   }
 
-  removeMany (images: Image[]): AsyncIterable<Image> {
+  async * removeMany (images: Image[]): AsyncIterable<Image> {
     const removeImages = images.filter(
       other => this.imagesCollection.some(image => image._id.equals(other._id))
     )
@@ -72,6 +72,8 @@ export class ImagesDBServiceMock extends ImagesDBServiceBase {
       )
     )
 
-    return removeImages[Symbol.asyncIterator]
+    for (const image of removeImages) {
+      yield image
+    }
   }
 }
