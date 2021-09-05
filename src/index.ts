@@ -55,11 +55,7 @@ server.on('listening', onListening)
  */
 async function connectDB (uri: string): Promise<void> {
   await mongoose.connect(uri, {
-    autoIndex: config.mongodbAutoIndex,
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+    autoIndex: config.mongodbAutoIndex
   })
 
   debugLog(`Connected to ${uri}; auto index: ${config.mongodbAutoIndex ? 'true' : 'false'}`)

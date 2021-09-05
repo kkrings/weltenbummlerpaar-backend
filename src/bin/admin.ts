@@ -10,12 +10,7 @@ import Admin from '../app/models/admin'
  *   MongoDB URI
  */
 async function connect (uri: string): Promise<void> {
-  const mongooseOptions = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  }
-
-  await mongoose.connect(uri, mongooseOptions)
+  await mongoose.connect(uri)
 }
 
 /**
@@ -57,7 +52,7 @@ const args = yargs
       type: 'string'
     }
   })
-  .argv
+  .parseSync()
 
 createAdmin(args.uri, args.username, args.password).then(
   _ => console.log(`Admin user ${args.username} has been saved.`),

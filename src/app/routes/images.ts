@@ -36,7 +36,7 @@ router.route('/:imageId').put(authenticate.authorizeJwt, imageUpload.single('ima
         imageManipulator
           .resize(config.jimp.imageWidth, jimp.AUTO)
           .quality(config.jimp.imageQuality)
-          .write(path.join(req.file.destination, `${image.id as string}.jpg`))
+          .write(path.join(req.file.destination, `${image.id}.jpg`))
 
         // remove uncompressed image from disk
         fs.unlinkSync(req.file.path)

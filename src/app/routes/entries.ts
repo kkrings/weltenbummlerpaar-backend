@@ -113,6 +113,10 @@ const imageUpload = multer({ dest: `${config.publicFolder}/images/` })
 router.route('/:entryId/images').post(authenticate.authorizeJwt,
   imageUpload.single('image'), async function (req, res, next) {
     try {
+      if (req.file === undefined) {
+        throw Error('File upload is missing.')
+      }
+
       const image = new Image(req.body)
 
       // compress and rename uploaded image given its ID

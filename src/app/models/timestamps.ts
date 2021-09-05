@@ -11,6 +11,10 @@
  */
 export interface TimeStamps {
   /**
+   * String representation of document's ID
+   */
+  id: string
+  /**
    * Document's creation date and time
    */
   createdAt: Date

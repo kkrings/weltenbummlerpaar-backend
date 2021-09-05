@@ -10,7 +10,7 @@ import { TimeStamps } from './timestamps'
 /**
  * Image model
  */
-export interface Image extends mongoose.Document, TimeStamps {
+export interface Image extends TimeStamps {
   /**
    * Image's description: what is shown on the picture, where was it taken, ...
    */

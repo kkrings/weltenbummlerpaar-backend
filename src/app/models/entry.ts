@@ -11,7 +11,7 @@ import { TimeStamps } from './timestamps'
 /**
  * Diary entry model
  */
-export interface DiaryEntry extends mongoose.Document, TimeStamps {
+export interface DiaryEntry extends TimeStamps {
   /**
    * Diary entry's title
    */
@@ -28,7 +28,7 @@ export interface DiaryEntry extends mongoose.Document, TimeStamps {
   /**
    * Optional: list of images
    */
-  images: Array<Image['_id']>
+  images: Image[]
   /**
    * Optional: list of search tags
    */
