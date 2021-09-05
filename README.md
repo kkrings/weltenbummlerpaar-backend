@@ -93,7 +93,7 @@ private *SSL* key.
 
 After its configuration, the application can be started:
 
-    ./node_modules/pm2/bin/pm2 start app.config.js
+    pm2 start app.config.js
 
 The last step is to change the configuration of the *NGINX* server in way that
 requests to the `rest` endpoint are redirected to the port the application is
