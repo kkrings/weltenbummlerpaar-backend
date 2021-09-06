@@ -59,7 +59,7 @@ export class DiaryEntriesDBServiceMock extends DiaryEntriesDBServiceBase {
       searchTags: updateDiaryEntryDto.searchTags ?? diaryEntry.searchTags,
       images: images ?? diaryEntry.images,
       createdAt: diaryEntry.createdAt,
-      updatedAt: new Date()
+      updatedAt: new Date(diaryEntry.createdAt.getTime() + 1000)
     }
 
     return Object.assign(diaryEntry, updatedDiaryEntry)
