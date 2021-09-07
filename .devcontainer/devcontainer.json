@@ -6,7 +6,7 @@
     "settings": {
         "editor.renderWhitespace": "all",
         "editor.rulers": [
-            80
+            90
         ],
         "typescript.format.enable": false,
         "typescript.validate.enable": false

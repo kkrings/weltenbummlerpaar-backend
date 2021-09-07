@@ -26,6 +26,7 @@ describe('DiaryEntriesService', () => {
 
   let diaryEntriesService: DiaryEntriesService;
   let searchTagsService: SearchTagsService;
+  let imagesService: ImagesService;
 
   beforeEach(() => {
     diaryEntriesCollection = [];
@@ -72,6 +73,7 @@ describe('DiaryEntriesService', () => {
 
     diaryEntriesService = module.get<DiaryEntriesService>(DiaryEntriesService);
     searchTagsService = module.get<SearchTagsService>(SearchTagsService);
+    imagesService = module.get<ImagesService>(ImagesService);
   });
 
   it('service should be defined', () => {
@@ -395,6 +397,101 @@ describe('DiaryEntriesService', () => {
 
           await expect(diaryEntryPromise).rejects.toEqual(notFoundException);
         });
+      });
+    });
+  });
+
+  describe('removeOne', () => {
+    const diaryEntry: DiaryEntry = {
+      _id: ObjectId(),
+      title: 'some title',
+      location: 'some location',
+      body: 'some body',
+      searchTags: [],
+      images: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const searchTag: SearchTag = {
+      _id: new ObjectId(),
+      searchTag: 'some tag',
+      diaryEntries: [diaryEntry._id],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    diaryEntry.searchTags.push(searchTag.searchTag);
+
+    diaryEntry.images.push({
+      _id: new ObjectId(),
+      description: 'some description',
+      diaryEntryId: diaryEntry._id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    const diaryEntryId = diaryEntry._id.toHexString();
+
+    describe('on diary entry in database', () => {
+      let removedDiaryEntry: DiaryEntry;
+      let removeDiaryEntryFromManySpy: jest.SpyInstance;
+      let removeManySpy: jest.SpyInstance;
+
+      beforeEach(() => {
+        diaryEntriesCollection.push(diaryEntry);
+        searchTagsCollection.push(searchTag);
+        imagesCollection.push(...diaryEntry.images);
+      });
+
+      beforeEach(() => {
+        removeDiaryEntryFromManySpy = jest.spyOn(
+          searchTagsService,
+          'removeDiaryEntryFromMany',
+        );
+      });
+
+      beforeEach(() => {
+        removeManySpy = jest.spyOn(imagesService, 'removeMany');
+      });
+
+      beforeEach(async () => {
+        removedDiaryEntry = await diaryEntriesService.removeOne(diaryEntryId);
+      });
+
+      it('diary entry in database should have been returned', () => {
+        expect(removedDiaryEntry).toEqual(diaryEntry);
+      });
+
+      it('diary entry should have been removed from database', () => {
+        expect(diaryEntriesCollection).toHaveLength(0);
+      });
+
+      it('SearchTagsService.removeDiaryEntryFromMany should have been called', () => {
+        expect(removeDiaryEntryFromManySpy).toHaveBeenCalledWith(
+          diaryEntry.searchTags,
+          diaryEntry,
+        );
+      });
+
+      it('ImagesService.removeMany should have been called', () => {
+        expect(removeManySpy).toHaveBeenCalledWith(diaryEntry.images);
+      });
+    });
+
+    describe('on diary entry not in database', () => {
+      let diaryEntryPromise: Promise<DiaryEntry>;
+
+      beforeEach(() => {
+        diaryEntryPromise = diaryEntriesService.removeOne(diaryEntryId);
+      });
+
+      it('not-found exception should have been thrown', async () => {
+        const error = new NotFoundException(
+          `Document with ID '${diaryEntryId}' could not be found.`,
+        );
+
+        await expect(diaryEntryPromise).rejects.toEqual(error);
       });
     });
   });
