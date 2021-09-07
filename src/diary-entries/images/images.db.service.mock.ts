@@ -1,79 +1,87 @@
-import { Inject, Injectable } from '@nestjs/common'
-import { ObjectId } from 'mongodb'
-import { throwOnNull } from '../../schemas/base.schema'
-import { DiaryEntry } from '../schemas/diary-entry.schema'
-import { CreateImageDto } from './dto/create-image.dto'
-import { UpdateImageDto } from './dto/update-image.dto'
-import { ImagesDBServiceBase } from './images.db.service.base'
-import { Image } from './schemas/image.schema'
+import { Inject, Injectable } from '@nestjs/common';
+import { ObjectId } from 'mongodb';
+import { throwOnNull } from '../../schemas/base.schema';
+import { DiaryEntry } from '../schemas/diary-entry.schema';
+import { CreateImageDto } from './dto/create-image.dto';
+import { UpdateImageDto } from './dto/update-image.dto';
+import { ImagesDBServiceBase } from './images.db.service.base';
+import { Image } from './schemas/image.schema';
 
 @Injectable()
 export class ImagesDBServiceMock extends ImagesDBServiceBase {
-  constructor (
+  constructor(
     @Inject('ImagesCollection')
-    private readonly imagesCollection: Image[]
+    private readonly imagesCollection: Image[],
   ) {
-    super()
+    super();
   }
 
-  async create (
+  async create(
     createImageDto: CreateImageDto,
-    diaryEntry: DiaryEntry
+    diaryEntry: DiaryEntry,
   ): Promise<Image> {
-    const createdAt = new Date()
+    const createdAt = new Date();
 
     const image: Image = {
       _id: new ObjectId(),
       description: createImageDto.description,
       diaryEntryId: diaryEntry._id,
       createdAt: createdAt,
-      updatedAt: createdAt
-    }
+      updatedAt: createdAt,
+    };
 
-    this.imagesCollection.push(image)
+    this.imagesCollection.push(image);
 
-    return image
+    return image;
   }
 
-  async updateOne (imageId: string, updateImageDto: UpdateImageDto): Promise<Image> {
-    const image = await throwOnNull(imageId, async () => this.imagesCollection
-      .filter(image => image._id.equals(imageId))
-      .shift() ?? null
-    )
+  async updateOne(
+    imageId: string,
+    updateImageDto: UpdateImageDto,
+  ): Promise<Image> {
+    const image = await throwOnNull(
+      imageId,
+      async () =>
+        this.imagesCollection
+          .filter((image) => image._id.equals(imageId))
+          .shift() ?? null,
+    );
 
     if (updateImageDto.description === undefined) {
-      return image
+      return image;
     }
 
-    image.description = updateImageDto.description
-    image.updatedAt = new Date()
+    image.description = updateImageDto.description;
+    image.updatedAt = new Date();
 
-    return image
+    return image;
   }
 
-  async removeOne (imageId: string): Promise<Image> {
+  async removeOne(imageId: string): Promise<Image> {
     return await throwOnNull(imageId, async () => {
       const index = this.imagesCollection
-        .map(image => image._id.toHexString())
-        .indexOf(imageId)
+        .map((image) => image._id.toHexString())
+        .indexOf(imageId);
 
-      return index > -1 ? this.imagesCollection.splice(index, 1)[0] : null
-    })
+      return index > -1 ? this.imagesCollection.splice(index, 1)[0] : null;
+    });
   }
 
-  async * removeMany (images: Image[]): AsyncIterable<Image> {
-    const removeImages = images.filter(
-      other => this.imagesCollection.some(image => image._id.equals(other._id))
-    )
+  async *removeMany(images: Image[]): AsyncIterable<Image> {
+    const removeImages = images.filter((other) =>
+      this.imagesCollection.some((image) => image._id.equals(other._id)),
+    );
 
     this.imagesCollection.splice(
-      0, this.imagesCollection.length, ...this.imagesCollection.filter(
-        other => !removeImages.some(image => image._id.equals(other._id))
-      )
-    )
+      0,
+      this.imagesCollection.length,
+      ...this.imagesCollection.filter(
+        (other) => !removeImages.some((image) => image._id.equals(other._id)),
+      ),
+    );
 
     for (const image of removeImages) {
-      yield image
+      yield image;
     }
   }
 }

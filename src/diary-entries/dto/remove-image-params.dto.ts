@@ -1,9 +1,9 @@
-import { IsMongoId } from 'class-validator'
+import { IsMongoId } from 'class-validator';
 
 export class RemoveImageParams {
   @IsMongoId()
-  diaryEntryId: string
+  diaryEntryId: string;
 
   @IsMongoId()
-  imageId: string
+  imageId: string;
 }

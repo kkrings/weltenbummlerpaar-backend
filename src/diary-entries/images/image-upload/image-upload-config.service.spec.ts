@@ -1,75 +1,74 @@
-import { UnsupportedMediaTypeException } from '@nestjs/common'
-import { MulterModuleOptions } from '@nestjs/platform-express'
-import { Test, TestingModule } from '@nestjs/testing'
-import { ImageUploadConfigService } from './image-upload-config.service'
-import imageUploadConfig, { ImageUploadConfig } from './image-upload.config'
+import { UnsupportedMediaTypeException } from '@nestjs/common';
+import { MulterModuleOptions } from '@nestjs/platform-express';
+import { Test, TestingModule } from '@nestjs/testing';
+import { ImageUploadConfigService } from './image-upload-config.service';
+import imageUploadConfig, { ImageUploadConfig } from './image-upload.config';
 
 describe('ImageUploadConfigService', () => {
-  let service: ImageUploadConfigService
+  let service: ImageUploadConfigService;
 
   const mockConfig: ImageUploadConfig = {
     destination: 'some destination',
-    manipulation: { imageWidth: 2500, imageQuality: 75 }
-  }
+    manipulation: { imageWidth: 2500, imageQuality: 75 },
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
           provide: imageUploadConfig.KEY,
-          useValue: mockConfig
-
+          useValue: mockConfig,
         },
-        ImageUploadConfigService
-      ]
-    }).compile()
+        ImageUploadConfigService,
+      ],
+    }).compile();
 
-    service = module.get<ImageUploadConfigService>(ImageUploadConfigService)
-  })
+    service = module.get<ImageUploadConfigService>(ImageUploadConfigService);
+  });
 
   describe('createMulterOptions', () => {
-    let multerOptions: MulterModuleOptions
+    let multerOptions: MulterModuleOptions;
 
     beforeEach(() => {
-      multerOptions = service.createMulterOptions()
-    })
+      multerOptions = service.createMulterOptions();
+    });
 
     it('should return destination', () => {
-      expect(multerOptions.dest).toEqual(mockConfig.destination)
-    })
+      expect(multerOptions.dest).toEqual(mockConfig.destination);
+    });
 
     it('should return file filter', () => {
-      expect(multerOptions).not.toBeNull()
-    })
-  })
+      expect(multerOptions).not.toBeNull();
+    });
+  });
 
   describe('jpegFilter', () => {
-    it('should accept file of type image/jpeg', done => {
+    it('should accept file of type image/jpeg', (done) => {
       const runTest = (error: Error | null, acceptFile?: boolean): void => {
         try {
-          expect(error).toBeNull()
-          expect(acceptFile).toBeTruthy()
-          done()
+          expect(error).toBeNull();
+          expect(acceptFile).toBeTruthy();
+          done();
         } catch (failure) {
-          done(failure)
+          done(failure);
         }
-      }
+      };
 
-      service.jpegFilter('image/jpeg', runTest)
-    })
+      service.jpegFilter('image/jpeg', runTest);
+    });
 
-    it('should return error', done => {
+    it('should return error', (done) => {
       const runTest = (error: Error | null, accceptFile?: boolean): void => {
         try {
-          expect(error instanceof UnsupportedMediaTypeException).toBeTruthy()
-          expect(accceptFile).toBeUndefined()
-          done()
+          expect(error instanceof UnsupportedMediaTypeException).toBeTruthy();
+          expect(accceptFile).toBeUndefined();
+          done();
         } catch (failure) {
-          done(failure)
+          done(failure);
         }
-      }
+      };
 
-      service.jpegFilter('image/png', runTest)
-    })
-  })
-})
+      service.jpegFilter('image/png', runTest);
+    });
+  });
+});

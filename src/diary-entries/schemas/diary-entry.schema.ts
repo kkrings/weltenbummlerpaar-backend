@@ -1,31 +1,33 @@
-import * as mongoose from 'mongoose'
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { BaseSchema } from '../../schemas/base.schema'
-import { Image } from '../images/schemas/image.schema'
+import * as mongoose from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { BaseSchema } from '../../schemas/base.schema';
+import { Image } from '../images/schemas/image.schema';
 
-export type DiaryEntryDocument = DiaryEntry & mongoose.Document
+export type DiaryEntryDocument = DiaryEntry & mongoose.Document;
 
 @Schema({ timestamps: true })
 export class DiaryEntry extends BaseSchema {
   @Prop({ required: true })
-  title: string
+  title: string;
 
   @Prop({ required: true })
-  location: string
+  location: string;
 
   @Prop({ required: true })
-  body: string
+  body: string;
 
   @Prop()
-  searchTags: string[]
+  searchTags: string[];
 
   @Prop({
-    type: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Image'
-    }]
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Image',
+      },
+    ],
   })
-  images: Image[]
+  images: Image[];
 }
 
-export const DiaryEntrySchema = SchemaFactory.createForClass(DiaryEntry)
+export const DiaryEntrySchema = SchemaFactory.createForClass(DiaryEntry);

@@ -1,18 +1,18 @@
-import { DiaryEntry } from '../schemas/diary-entry.schema'
-import { SearchTag } from './schemas/search-tag.schema'
+import { DiaryEntry } from '../schemas/diary-entry.schema';
+import { SearchTag } from './schemas/search-tag.schema';
 
 export abstract class SearchTagsDBServiceBase {
-  abstract findMany (): Promise<SearchTag[]>
+  abstract findMany(): Promise<SearchTag[]>;
 
-  abstract removeOne (searchTag: string): Promise<SearchTag>
+  abstract removeOne(searchTag: string): Promise<SearchTag>;
 
-  abstract addDiaryEntryToOne (
+  abstract addDiaryEntryToOne(
     searchTag: string,
     diaryEntry: DiaryEntry,
-  ): Promise<SearchTag>
+  ): Promise<SearchTag>;
 
-  abstract removeDiaryEntryFromOne (
+  abstract removeDiaryEntryFromOne(
     searchTag: string,
     diaryEntry: DiaryEntry,
-  ): Promise<SearchTag>
+  ): Promise<SearchTag>;
 }

@@ -1,22 +1,24 @@
-import * as mongoose from 'mongoose'
-import { ObjectId } from 'mongodb'
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { BaseSchema } from '../../../schemas/base.schema'
+import * as mongoose from 'mongoose';
+import { ObjectId } from 'mongodb';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { BaseSchema } from '../../../schemas/base.schema';
 
-export type SearchTagDocument = SearchTag & mongoose.Document
+export type SearchTagDocument = SearchTag & mongoose.Document;
 
 @Schema({ timestamps: true })
 export class SearchTag extends BaseSchema {
   @Prop({ unique: true })
-  searchTag: string
+  searchTag: string;
 
   @Prop({
-    type: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'DiaryEntry'
-    }]
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'DiaryEntry',
+      },
+    ],
   })
-  diaryEntries: ObjectId[]
+  diaryEntries: ObjectId[];
 }
 
-export const SearchTagSchema = SchemaFactory.createForClass(SearchTag)
+export const SearchTagSchema = SchemaFactory.createForClass(SearchTag);
