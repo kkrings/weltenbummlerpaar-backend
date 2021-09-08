@@ -7,6 +7,7 @@ import { DiaryEntriesDBServiceMock } from './diary-entries.db.service.mock';
 import { DiaryEntriesService } from './diary-entries.service';
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto';
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto';
+import { CreateImageDto } from './images/dto/create-image.dto';
 import { ImageUploadService } from './images/image-upload/image-upload.service';
 import { ImageUploadServiceMock } from './images/image-upload/image-upload.service.mock';
 import { ImagesDBService } from './images/images.db.service';
@@ -403,7 +404,7 @@ describe('DiaryEntriesService', () => {
 
   describe('removeOne', () => {
     const diaryEntry: DiaryEntry = {
-      _id: ObjectId(),
+      _id: new ObjectId(),
       title: 'some title',
       location: 'some location',
       body: 'some body',
@@ -484,6 +485,93 @@ describe('DiaryEntriesService', () => {
 
       beforeEach(() => {
         diaryEntryPromise = diaryEntriesService.removeOne(diaryEntryId);
+      });
+
+      it('not-found exception should have been thrown', async () => {
+        const error = new NotFoundException(
+          `Document with ID '${diaryEntryId}' could not be found.`,
+        );
+
+        await expect(diaryEntryPromise).rejects.toEqual(error);
+      });
+    });
+  });
+
+  describe('addImage', () => {
+    const diaryEntry: DiaryEntry = {
+      _id: new ObjectId(),
+      title: 'some title',
+      location: 'some location',
+      body: 'some body',
+      searchTags: [],
+      images: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const createImageDto: CreateImageDto = {
+      description: 'some description',
+      imageUpload: '',
+    };
+
+    const diaryEntryId = diaryEntry._id.toHexString();
+
+    describe('on diary entry in database', () => {
+      let updatedDiaryEntry: DiaryEntry;
+
+      beforeEach(() => {
+        diaryEntriesCollection.push({
+          _id: diaryEntry._id,
+          title: diaryEntry.title,
+          location: diaryEntry.location,
+          body: diaryEntry.body,
+          searchTags: [],
+          images: [],
+          createdAt: diaryEntry.createdAt,
+          updatedAt: diaryEntry.updatedAt,
+        });
+      });
+
+      beforeEach(async () => {
+        updatedDiaryEntry = await diaryEntriesService.addImage(
+          diaryEntryId,
+          createImageDto,
+        );
+      });
+
+      it('diary entry in database should have been returned', () => {
+        expect(updatedDiaryEntry).toEqual(diaryEntriesCollection[0]);
+      });
+
+      it("diary entry's images should match the ones in the database", () => {
+        expect(updatedDiaryEntry.images).toEqual(imagesCollection);
+      });
+
+      it('image should have been added to diary entry', () => {
+        const images = updatedDiaryEntry.images.map((image) => ({
+          description: image.description,
+          diaryEntryId: image.diaryEntryId.toHexString(),
+        }));
+
+        const expectedImages = [
+          {
+            description: createImageDto.description,
+            diaryEntryId: diaryEntryId,
+          },
+        ];
+
+        expect(images).toEqual(expectedImages);
+      });
+    });
+
+    describe('on diary entry not in database', () => {
+      let diaryEntryPromise: Promise<DiaryEntry>;
+
+      beforeEach(() => {
+        diaryEntryPromise = diaryEntriesService.addImage(
+          diaryEntryId,
+          createImageDto,
+        );
       });
 
       it('not-found exception should have been thrown', async () => {
