@@ -584,6 +584,111 @@ describe('DiaryEntriesService', () => {
     });
   });
 
+  describe('removeImage', () => {
+    const diaryEntry: DiaryEntry = {
+      _id: new ObjectId(),
+      title: 'some title',
+      location: 'some location',
+      body: 'some body',
+      searchTags: [],
+      images: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const image: Image = {
+      _id: new ObjectId(),
+      description: 'some description',
+      diaryEntryId: diaryEntry._id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    diaryEntry.images.push(image);
+
+    const diaryEntryId = diaryEntry._id.toHexString();
+    const imageId = image._id.toHexString();
+
+    describe('on diary entry in database', () => {
+      describe('on image in database', () => {
+        let updatedDiaryEntry: DiaryEntry;
+
+        beforeEach(() => {
+          const diaryEntryCopy = { ...diaryEntry };
+          diaryEntryCopy.images = [...diaryEntry.images];
+          diaryEntriesCollection.push(diaryEntryCopy);
+        });
+
+        beforeEach(() => {
+          imagesCollection.push({ ...image });
+        });
+
+        beforeEach(async () => {
+          updatedDiaryEntry = await diaryEntriesService.removeImage(
+            diaryEntryId,
+            imageId,
+          );
+        });
+
+        it('diary entry in database should have been returned', () => {
+          expect(updatedDiaryEntry).toEqual(diaryEntriesCollection[0]);
+        });
+
+        it('image should have been removed from diary entry', () => {
+          expect(updatedDiaryEntry.images).toHaveLength(0);
+        });
+
+        it('image should have been removed from database', () => {
+          expect(imagesCollection).toHaveLength(0);
+        });
+      });
+
+      describe('on image not in database', () => {
+        let diaryEntryPromise: Promise<DiaryEntry>;
+
+        beforeEach(() => {
+          const diaryEntryCopy = { ...diaryEntry };
+          diaryEntryCopy.images = [];
+          diaryEntriesCollection.push(diaryEntryCopy);
+        });
+
+        beforeEach(() => {
+          diaryEntryPromise = diaryEntriesService.removeImage(
+            diaryEntryId,
+            imageId,
+          );
+        });
+
+        it('not-found exception should have been thrown', async () => {
+          const error = new NotFoundException(
+            `Diary entry does not contain image with ID ${imageId}.`,
+          );
+
+          await expect(diaryEntryPromise).rejects.toEqual(error);
+        });
+      });
+    });
+
+    describe('on diary entry not in database', () => {
+      let diaryEntryPromise: Promise<DiaryEntry>;
+
+      beforeEach(() => {
+        diaryEntryPromise = diaryEntriesService.removeImage(
+          diaryEntryId,
+          imageId,
+        );
+      });
+
+      it('not-found exception should have been thrown', async () => {
+        const error = new NotFoundException(
+          `Document with ID '${diaryEntryId}' could not be found.`,
+        );
+
+        await expect(diaryEntryPromise).rejects.toEqual(error);
+      });
+    });
+  });
+
   afterAll(async () => {
     // jimp dependency: wait for import in node_modules/gifwrap/src/gifcodec.js
     const waitForNextTick = async (): Promise<unknown> =>
