@@ -54,7 +54,7 @@ class DiaryEntriesServiceMock {
   }
 
   async findMany(): Promise<DiaryEntry[]> {
-    return [];
+    return [this.diaryEntry];
   }
 
   async findOne(diaryEntryId: string): Promise<DiaryEntry> {
@@ -167,8 +167,25 @@ describe('DiaryEntriesController', () => {
   describe('findMany', () => {
     const findManySpy = jest.spyOn(mockService, 'findMany');
 
+    let diaryEntries: DiaryEntryDto[];
+
     beforeEach(async () => {
-      await controller.findMany();
+      diaryEntries = await controller.findMany();
+    });
+
+    it('diary entries should have been returned', () => {
+      const diaryEntryDto: DiaryEntryDto = {
+        id: mockService.diaryEntry._id.toHexString(),
+        title: mockService.diaryEntry.title,
+        location: mockService.diaryEntry.location,
+        body: mockService.diaryEntry.body,
+        searchTags: mockService.diaryEntry.searchTags,
+        images: [],
+        createdAt: mockService.diaryEntry.createdAt,
+        updatedAt: mockService.diaryEntry.updatedAt,
+      };
+
+      expect(diaryEntries).toEqual([diaryEntryDto]);
     });
 
     it('DiaryEntriesService.findMany should have been called', () => {
