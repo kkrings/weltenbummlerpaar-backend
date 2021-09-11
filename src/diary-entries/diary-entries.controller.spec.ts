@@ -13,6 +13,7 @@ import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto';
 import { CreateImageDto } from './images/dto/create-image.dto';
 import { Image } from './images/schemas/image.schema';
 import { ImageDto } from './images/dto/image.dto';
+import { RemoveImageParams } from './dto/remove-image-params.dto';
 
 class DiaryEntriesServiceMock {
   diaryEntry: DiaryEntry;
@@ -94,6 +95,16 @@ class DiaryEntriesServiceMock {
     image.description = createImageDto.description;
     image.diaryEntryId = diaryEntry._id;
     diaryEntry.images = [image];
+    return diaryEntry;
+  }
+
+  async removeImage(
+    diaryEntryId: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    imageId: string,
+  ): Promise<DiaryEntry> {
+    const diaryEntry: DiaryEntry = { ...this.diaryEntry };
+    diaryEntry._id = ObjectId.createFromHexString(diaryEntryId);
     return diaryEntry;
   }
 }
@@ -341,6 +352,43 @@ describe('DiaryEntriesController', () => {
       expect(addImageSpy).toHaveBeenCalledWith(
         addImageQueryParams.id,
         createImageDtoCopy,
+      );
+    });
+  });
+
+  describe('removeImage', () => {
+    const removeImageSpy = jest.spyOn(mockService, 'removeImage');
+
+    const removeImageQueryParams: RemoveImageParams = {
+      diaryEntryId: new ObjectId().toHexString(),
+      imageId: new ObjectId().toHexString(),
+    };
+
+    let diaryEntryDto: DiaryEntryDto;
+
+    beforeEach(async () => {
+      diaryEntryDto = await controller.removeImage(removeImageQueryParams);
+    });
+
+    it('diary entry should have been returned', () => {
+      const expectedDiaryEntryDto: DiaryEntryDto = {
+        id: removeImageQueryParams.diaryEntryId,
+        title: mockService.diaryEntry.title,
+        location: mockService.diaryEntry.location,
+        body: mockService.diaryEntry.body,
+        searchTags: mockService.diaryEntry.searchTags,
+        images: [],
+        createdAt: mockService.diaryEntry.createdAt,
+        updatedAt: mockService.diaryEntry.updatedAt,
+      };
+
+      expect(diaryEntryDto).toEqual(expectedDiaryEntryDto);
+    });
+
+    it('DiaryEntriesService.removeImage should have been called', () => {
+      expect(removeImageSpy).toHaveBeenCalledWith(
+        removeImageQueryParams.diaryEntryId,
+        removeImageQueryParams.imageId,
       );
     });
   });
