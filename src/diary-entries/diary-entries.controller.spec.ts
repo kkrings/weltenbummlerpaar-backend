@@ -59,6 +59,12 @@ class DiaryEntriesServiceMock {
       updatedAt: this.diaryEntry.updatedAt,
     };
   }
+
+  async removeOne(diaryEntryId: string): Promise<DiaryEntry> {
+    const diaryEntry = { ...this.diaryEntry };
+    diaryEntry._id = ObjectId.createFromHexString(diaryEntryId);
+    return diaryEntry;
+  }
 }
 
 describe('DiaryEntriesController', () => {
@@ -201,6 +207,39 @@ describe('DiaryEntriesController', () => {
         updateOneQueryParams.id,
         updateDiaryEntryDto,
       );
+    });
+  });
+
+  describe('removeOne', () => {
+    const removeOneSpy = jest.spyOn(mockService, 'removeOne');
+
+    const removeOneQueryParams: MongoIdParams = {
+      id: new ObjectId().toHexString(),
+    };
+
+    let diaryEntryDto: DiaryEntryDto;
+
+    beforeEach(async () => {
+      diaryEntryDto = await controller.removeOne(removeOneQueryParams);
+    });
+
+    it('diary entry should have been returned', () => {
+      const expectedDiaryEntryDto: DiaryEntryDto = {
+        id: removeOneQueryParams.id,
+        title: mockService.diaryEntry.title,
+        location: mockService.diaryEntry.location,
+        body: mockService.diaryEntry.body,
+        searchTags: mockService.diaryEntry.searchTags,
+        images: [],
+        createdAt: mockService.diaryEntry.createdAt,
+        updatedAt: mockService.diaryEntry.updatedAt,
+      };
+
+      expect(diaryEntryDto).toEqual(expectedDiaryEntryDto);
+    });
+
+    it('DiaryEntriesService.removeOne should have been called', () => {
+      expect(removeOneSpy).toHaveBeenCalledWith(removeOneQueryParams.id);
     });
   });
 
