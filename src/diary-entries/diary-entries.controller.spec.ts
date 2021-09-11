@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { nextTick } from 'process';
+import { Readable } from 'stream';
+import { Express } from 'express';
 import { ObjectId } from 'mongodb';
 import { DiaryEntriesController } from './diary-entries.controller';
 import { DiaryEntriesService } from './diary-entries.service';
@@ -8,18 +10,34 @@ import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto';
 import { DiaryEntryDto } from './dto/diary-entry.dto';
 import { MongoIdParams } from 'src/dto/mongo-id-params.dto';
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto';
+import { CreateImageDto } from './images/dto/create-image.dto';
+import { Image } from './images/schemas/image.schema';
+import { ImageDto } from './images/dto/image.dto';
 
 class DiaryEntriesServiceMock {
-  diaryEntry: DiaryEntry = {
-    _id: new ObjectId(),
-    title: 'some title',
-    location: 'some location',
-    body: 'some body',
-    searchTags: ['some tag'],
-    images: [],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
+  diaryEntry: DiaryEntry;
+  image: Image;
+
+  constructor() {
+    this.diaryEntry = {
+      _id: new ObjectId(),
+      title: 'some title',
+      location: 'some location',
+      body: 'some body',
+      searchTags: ['some tag'],
+      images: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    this.image = {
+      _id: new ObjectId(),
+      description: 'some description',
+      diaryEntryId: this.diaryEntry._id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+  }
 
   async create(createDiaryEntryDto: CreateDiaryEntryDto): Promise<DiaryEntry> {
     return {
@@ -39,7 +57,7 @@ class DiaryEntriesServiceMock {
   }
 
   async findOne(diaryEntryId: string): Promise<DiaryEntry> {
-    const diaryEntry = { ...this.diaryEntry };
+    const diaryEntry: DiaryEntry = { ...this.diaryEntry };
     diaryEntry._id = ObjectId.createFromHexString(diaryEntryId);
     return diaryEntry;
   }
@@ -61,8 +79,21 @@ class DiaryEntriesServiceMock {
   }
 
   async removeOne(diaryEntryId: string): Promise<DiaryEntry> {
-    const diaryEntry = { ...this.diaryEntry };
+    const diaryEntry: DiaryEntry = { ...this.diaryEntry };
     diaryEntry._id = ObjectId.createFromHexString(diaryEntryId);
+    return diaryEntry;
+  }
+
+  async addImage(
+    diaryEntryId: string,
+    createImageDto: CreateImageDto,
+  ): Promise<DiaryEntry> {
+    const diaryEntry: DiaryEntry = { ...this.diaryEntry };
+    const image: Image = { ...this.image };
+    diaryEntry._id = ObjectId.createFromHexString(diaryEntryId);
+    image.description = createImageDto.description;
+    image.diaryEntryId = diaryEntry._id;
+    diaryEntry.images = [image];
     return diaryEntry;
   }
 }
@@ -240,6 +271,77 @@ describe('DiaryEntriesController', () => {
 
     it('DiaryEntriesService.removeOne should have been called', () => {
       expect(removeOneSpy).toHaveBeenCalledWith(removeOneQueryParams.id);
+    });
+  });
+
+  describe('addImage', () => {
+    const addImageSpy = jest.spyOn(mockService, 'addImage');
+
+    const addImageQueryParams: MongoIdParams = {
+      id: new ObjectId().toHexString(),
+    };
+
+    const imageUpload: Express.Multer.File = {
+      fieldname: '',
+      originalname: '',
+      encoding: '',
+      mimetype: '',
+      size: 0,
+      stream: new Readable(),
+      destination: '',
+      filename: '',
+      path: 'some path',
+      buffer: Buffer.from([]),
+    };
+
+    const createImageDto: CreateImageDto = {
+      description: 'some description',
+      imageUpload: '',
+    };
+
+    let diaryEntryDto: DiaryEntryDto;
+
+    beforeEach(async () => {
+      const createImageDtoCopy: CreateImageDto = { ...createImageDto };
+
+      diaryEntryDto = await controller.addImage(
+        addImageQueryParams,
+        imageUpload,
+        createImageDtoCopy,
+      );
+    });
+
+    it('diary should have been returned', () => {
+      const expectedImageDto: ImageDto = {
+        id: mockService.image._id.toHexString(),
+        description: createImageDto.description,
+        diaryEntryId: addImageQueryParams.id,
+        createdAt: mockService.image.createdAt,
+        updatedAt: mockService.image.updatedAt,
+      };
+
+      const expectedDiaryEntryDto: DiaryEntryDto = {
+        id: addImageQueryParams.id,
+        title: mockService.diaryEntry.title,
+        location: mockService.diaryEntry.location,
+        body: mockService.diaryEntry.body,
+        searchTags: mockService.diaryEntry.searchTags,
+        images: [expectedImageDto],
+        createdAt: mockService.diaryEntry.createdAt,
+        updatedAt: mockService.diaryEntry.updatedAt,
+      };
+
+      expect(diaryEntryDto).toEqual(expectedDiaryEntryDto);
+    });
+
+    it('DiaryEntries.addImage should have been called', () => {
+      const createImageDtoCopy: CreateImageDto = { ...createImageDto };
+      createImageDtoCopy.imageUpload = imageUpload.path;
+
+      expect(addImageSpy).toHaveBeenCalledWith(
+        addImageQueryParams.id,
+        createImageDtoCopy,
+      );
     });
   });
 
