@@ -7,6 +7,7 @@ import { DiaryEntry } from './schemas/diary-entry.schema';
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto';
 import { DiaryEntryDto } from './dto/diary-entry.dto';
 import { MongoIdParams } from 'src/dto/mongo-id-params.dto';
+import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto';
 
 class DiaryEntriesServiceMock {
   diaryEntry: DiaryEntry = {
@@ -41,6 +42,22 @@ class DiaryEntriesServiceMock {
     const diaryEntry = { ...this.diaryEntry };
     diaryEntry._id = ObjectId.createFromHexString(diaryEntryId);
     return diaryEntry;
+  }
+
+  async updateOne(
+    diaryEntryId: string,
+    updateDiaryEntryDto: UpdateDiaryEntryDto,
+  ): Promise<DiaryEntry> {
+    return {
+      _id: ObjectId.createFromHexString(diaryEntryId),
+      title: updateDiaryEntryDto.title ?? this.diaryEntry.title,
+      location: updateDiaryEntryDto.location ?? this.diaryEntry.location,
+      body: updateDiaryEntryDto.body ?? this.diaryEntry.body,
+      searchTags: updateDiaryEntryDto.searchTags ?? this.diaryEntry.searchTags,
+      images: [],
+      createdAt: this.diaryEntry.createdAt,
+      updatedAt: this.diaryEntry.updatedAt,
+    };
   }
 }
 
@@ -141,6 +158,49 @@ describe('DiaryEntriesController', () => {
 
     it('DiaryEntriesService.findOne should have been called', () => {
       expect(findOneSpy).toHaveBeenCalledWith(findOneQueryParams.id);
+    });
+  });
+
+  describe('updateOne', () => {
+    const updateOneSpy = jest.spyOn(mockService, 'updateOne');
+
+    const updateOneQueryParams: MongoIdParams = {
+      id: new ObjectId().toHexString(),
+    };
+
+    const updateDiaryEntryDto: UpdateDiaryEntryDto = {
+      title: 'some other title',
+    };
+
+    let diaryEntryDto: DiaryEntryDto;
+
+    beforeEach(async () => {
+      diaryEntryDto = await controller.updateOne(
+        updateOneQueryParams,
+        updateDiaryEntryDto,
+      );
+    });
+
+    it('diary entry should have been returned', () => {
+      const expectedDiaryEntryDto: DiaryEntryDto = {
+        id: updateOneQueryParams.id,
+        title: updateDiaryEntryDto.title,
+        location: mockService.diaryEntry.location,
+        body: mockService.diaryEntry.body,
+        searchTags: mockService.diaryEntry.searchTags,
+        images: [],
+        createdAt: mockService.diaryEntry.createdAt,
+        updatedAt: mockService.diaryEntry.updatedAt,
+      };
+
+      expect(diaryEntryDto).toEqual(expectedDiaryEntryDto);
+    });
+
+    it('DiaryEntriesService.updateOne should have been called', () => {
+      expect(updateOneSpy).toHaveBeenCalledWith(
+        updateOneQueryParams.id,
+        updateDiaryEntryDto,
+      );
     });
   });
 
