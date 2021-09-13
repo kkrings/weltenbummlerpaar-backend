@@ -1,6 +1,11 @@
 import { UnsupportedMediaTypeException } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { MulterModuleOptions } from '@nestjs/platform-express';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Express } from 'express';
+import { FileFilterCallback } from 'multer';
+import { env } from 'process';
+import { Readable } from 'stream';
 import { ImageUploadConfigService } from './image-upload-config.service';
 import imageUploadConfig, { ImageUploadConfig } from './image-upload.config';
 
@@ -12,15 +17,20 @@ describe('ImageUploadConfigService', () => {
     manipulation: { imageWidth: 2500, imageQuality: 75 },
   };
 
+  beforeAll(() => {
+    env.WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION =
+      mockConfig.destination;
+  });
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        {
-          provide: imageUploadConfig.KEY,
-          useValue: mockConfig,
-        },
-        ImageUploadConfigService,
+      imports: [
+        ConfigModule.forRoot({
+          load: [imageUploadConfig],
+          ignoreEnvFile: true,
+        }),
       ],
+      providers: [ImageUploadConfigService],
     }).compile();
 
     service = module.get<ImageUploadConfigService>(ImageUploadConfigService);
@@ -37,8 +47,45 @@ describe('ImageUploadConfigService', () => {
       expect(multerOptions.dest).toEqual(mockConfig.destination);
     });
 
-    it('should return file filter', () => {
-      expect(multerOptions).not.toBeNull();
+    describe('file filter', () => {
+      let jpegFilterSpy: jest.SpyInstance;
+
+      const imageUpload: Express.Multer.File = {
+        fieldname: '',
+        originalname: '',
+        encoding: '',
+        mimetype: 'image/jpeg',
+        size: 0,
+        stream: new Readable(),
+        destination: '',
+        filename: '',
+        path: '',
+        buffer: Buffer.from([]),
+      };
+
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      const fileFilterCallback: FileFilterCallback = () => {};
+
+      beforeEach(() => {
+        /* eslint-disable @typescript-eslint/no-unused-vars */
+        /* eslint-disable @typescript-eslint/no-empty-function */
+        jpegFilterSpy = jest
+          .spyOn(service, 'jpegFilter')
+          .mockImplementation((fileType, cb) => {});
+        /* eslint-enable @typescript-eslint/no-unused-vars */
+        /* eslint-enable @typescript-eslint/no-empty-function */
+      });
+
+      beforeEach(() => {
+        multerOptions.fileFilter?.(undefined, imageUpload, fileFilterCallback);
+      });
+
+      it('jpeg filter should have been called', () => {
+        expect(jpegFilterSpy).toHaveBeenCalledWith(
+          imageUpload.mimetype,
+          fileFilterCallback,
+        );
+      });
     });
   });
 
@@ -70,5 +117,9 @@ describe('ImageUploadConfigService', () => {
 
       service.jpegFilter('image/png', runTest);
     });
+  });
+
+  afterAll(() => {
+    delete env.WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION;
   });
 });
