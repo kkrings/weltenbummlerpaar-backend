@@ -7,6 +7,7 @@ import { DatabaseConfigService } from './database/database-config.service';
 import { DatabaseModule } from './database/database.module';
 import { DiaryEntriesModule } from './diary-entries/diary-entries.module';
 import { validateConfig } from './config/config.validation';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { validateConfig } from './config/config.validation';
       useExisting: DatabaseConfigService,
     }),
     DiaryEntriesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

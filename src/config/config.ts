@@ -10,4 +10,7 @@ export class Config {
 
   @IsString()
   WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION: string;
+
+  @IsString()
+  WELTENBUMMLERPAAR_BACKEND_JWT_SECRET: string;
 }
