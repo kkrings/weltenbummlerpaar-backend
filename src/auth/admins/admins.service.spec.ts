@@ -3,7 +3,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ObjectId } from 'mongodb';
 import { AdminsService } from './admins.service';
-import { AdminLoginDto } from './dto/admin-login';
+import { AdminLoginDto } from './dto/admin-login.dto';
 import {
   AuthenticationMethod,
   AuthenticationResult,

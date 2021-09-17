@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Admin } from './schemas/admin.schema';
 import { AdminModel } from './models/admin.model';
-import { AdminLoginDto } from './dto/admin-login';
+import { AdminLoginDto } from './dto/admin-login.dto';
 
 @Injectable()
 export class AdminsService {
