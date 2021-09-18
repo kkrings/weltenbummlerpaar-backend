@@ -6,5 +6,8 @@ export class AdminLoginDto extends OmitType(AdminDto, [
   'createdAt',
   'updatedAt',
 ] as const) {
+  /**
+   * Admin user's login password
+   */
   password: string;
 }
