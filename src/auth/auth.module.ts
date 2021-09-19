@@ -5,6 +5,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtConfigModule } from './jwt-config/jwt-config.module';
 import { JwtConfigService } from './jwt-config/jwt-config.service';
+import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
@@ -14,8 +15,9 @@ import { LocalStrategy } from './strategies/local.strategy';
       useExisting: JwtConfigService,
     }),
     AdminsModule,
+    JwtConfigModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy],
 })
 export class AuthModule {}

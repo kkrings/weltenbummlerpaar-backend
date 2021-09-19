@@ -10,7 +10,11 @@ export function setupOpenApi(app: INestApplication): void {
     .setTitle('Weltenbummlerpaar REST API')
     .setDescription(description)
     .setVersion(version)
+    .addTag('Authentication')
     .addTag('Diary entries')
+    .addTag('Diary entry search tags')
+    .addTag('Diary entry images')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

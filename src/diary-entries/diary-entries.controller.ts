@@ -10,10 +10,17 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
+  HttpStatus,
 } from '@nestjs/common';
 
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiConsumes,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { DiaryEntriesService } from './diary-entries.service';
 import { MongoIdParams } from '../dto/mongo-id-params.dto';
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto';
@@ -21,13 +28,20 @@ import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto';
 import { asDiaryEntryDto, DiaryEntryDto } from './dto/diary-entry.dto';
 import { CreateImageDto } from './images/dto/create-image.dto';
 import { RemoveImageParams } from './dto/remove-image-params.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Diary entries')
 @Controller('diary-entries')
 export class DiaryEntriesController {
   constructor(private readonly diaryEntriesService: DiaryEntriesService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Authentication failed',
+  })
   async create(
     @Body() createDiaryEntryDto: CreateDiaryEntryDto,
   ): Promise<DiaryEntryDto> {
@@ -47,7 +61,13 @@ export class DiaryEntriesController {
     return asDiaryEntryDto(await this.diaryEntriesService.findOne(params.id));
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Authentication failed',
+  })
   async updateOne(
     /* eslint-disable @typescript-eslint/indent */
     @Param() params: MongoIdParams,
@@ -59,14 +79,26 @@ export class DiaryEntriesController {
     );
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Authentication failed',
+  })
   async removeOne(@Param() params: MongoIdParams): Promise<DiaryEntryDto> {
     return asDiaryEntryDto(await this.diaryEntriesService.removeOne(params.id));
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post(':id/images')
   @UseInterceptors(FileInterceptor('imageUpload'))
   @ApiConsumes('multipart/form-data')
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Authentication failed',
+  })
   async addImage(
     /* eslint-disable @typescript-eslint/indent */
     @Param() params: MongoIdParams,
@@ -81,7 +113,13 @@ export class DiaryEntriesController {
     );
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':diaryEntryId/images/:imageId')
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Authentication failed',
+  })
   async removeImage(
     @Param() params: RemoveImageParams,
   ): Promise<DiaryEntryDto> {
