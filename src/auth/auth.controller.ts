@@ -9,7 +9,7 @@ import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AdminLoginDto } from './admins/dto/admin-login.dto';
 import { AdminDto } from './admins/dto/admin.dto';
 import { AuthService } from './auth.service';
-import { AccessTokenDto } from './dto/access-token.dto';
+import { AccessTokenDto, asAccessTokenDto } from './dto/access-token.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
 export interface LoginRequest {
@@ -29,6 +29,6 @@ export class AuthController {
     description: 'Authentication failed',
   })
   async login(@Request() request: LoginRequest): Promise<AccessTokenDto> {
-    return { accessToken: await this.authService.login(request.user) };
+    return asAccessTokenDto(await this.authService.login(request.user));
   }
 }

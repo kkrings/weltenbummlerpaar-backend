@@ -5,3 +5,7 @@ export class AccessTokenDto {
    */
   accessToken: string;
 }
+
+export const asAccessTokenDto = (jwt: string): AccessTokenDto => ({
+  accessToken: jwt,
+});
