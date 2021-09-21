@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  HttpStatus,
   Param,
   Patch,
   UploadedFile,
@@ -12,8 +11,10 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
   ApiConsumes,
-  ApiResponse,
+  ApiNotFoundResponse,
   ApiTags,
+  ApiUnauthorizedResponse,
+  ApiUnsupportedMediaTypeResponse,
 } from '@nestjs/swagger';
 import { Express } from 'express';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
@@ -32,10 +33,9 @@ export class ImagesController {
   @UseInterceptors(FileInterceptor('imageUpload'))
   @ApiConsumes('multipart/form-data')
   @ApiBearerAuth()
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'Authentication failed',
-  })
+  @ApiUnauthorizedResponse({ description: 'Not authorized' })
+  @ApiNotFoundResponse({ description: 'Image not found' })
+  @ApiUnsupportedMediaTypeResponse({ description: 'JPEG expected' })
   async updateOne(
     /* eslint-disable @typescript-eslint/indent */
     @Param() params: MongoIdParams,

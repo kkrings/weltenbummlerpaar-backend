@@ -1,11 +1,5 @@
-import {
-  Controller,
-  HttpStatus,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { ApiBody, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { AdminLoginDto } from './admins/dto/admin-login.dto';
 import { AdminDto } from './admins/dto/admin.dto';
 import { AuthService } from './auth.service';
@@ -24,10 +18,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @ApiBody({ type: AdminLoginDto })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'Authentication failed',
-  })
+  @ApiUnauthorizedResponse({ description: 'Authentication failed' })
   async login(@Request() request: LoginRequest): Promise<AccessTokenDto> {
     return asAccessTokenDto(await this.authService.login(request.user));
   }
