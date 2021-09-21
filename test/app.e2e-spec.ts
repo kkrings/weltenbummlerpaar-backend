@@ -2,6 +2,7 @@ import * as request from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from './../src/app.module';
+import { appConstants } from './../src/app.constants';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -19,6 +20,6 @@ describe('AppController (e2e)', () => {
     return await request(app.getHttpServer())
       .get('/')
       .expect(200)
-      .expect('Hello World!');
+      .expect(appConstants.apiDescription);
   });
 });

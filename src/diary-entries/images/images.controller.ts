@@ -17,13 +17,14 @@ import {
   ApiUnsupportedMediaTypeResponse,
 } from '@nestjs/swagger';
 import { Express } from 'express';
+import { appConstants } from './../../app.constants';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { MongoIdParams } from '../../dto/mongo-id-params.dto';
 import { asImageDto, ImageDto } from './dto/image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
 import { ImagesService } from './images.service';
 
-@ApiTags('Diary entry images')
+@ApiTags(appConstants.apiTags.images)
 @Controller('images')
 export class ImagesController {
   constructor(private readonly imagesService: ImagesService) {}

@@ -28,8 +28,9 @@ import { asDiaryEntryDto, DiaryEntryDto } from './dto/diary-entry.dto';
 import { CreateImageDto } from './images/dto/create-image.dto';
 import { RemoveImageParams } from './dto/remove-image-params.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { appConstants } from './../app.constants';
 
-@ApiTags('Diary entries')
+@ApiTags(appConstants.apiTags.diaryEntries)
 @Controller('diary-entries')
 export class DiaryEntriesController {
   constructor(private readonly diaryEntriesService: DiaryEntriesService) {}
