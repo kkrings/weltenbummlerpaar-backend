@@ -1,4 +1,4 @@
-import { IsMongoId } from 'class-validator';
+import { IsString } from 'class-validator';
 import { Image } from '../schemas/image.schema';
 
 export class ImageDto {
@@ -6,19 +6,18 @@ export class ImageDto {
    * Image's unique identifier
    * @example '60d468d1f33a8412d3cec16f'
    */
-  @IsMongoId()
   id: string;
 
   /**
    * Image's description
    */
+  @IsString()
   description: string;
 
   /**
    * Diary entry's unique identifier the image belongs to
    * @example '60bfd78704a7f25279cfa06a'
    */
-  @IsMongoId()
   diaryEntryId: string;
 
   /**

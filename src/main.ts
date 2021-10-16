@@ -5,7 +5,12 @@ import { setupOpenApi } from './openapi';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: { enableImplicitConversion: true },
+    }),
+  );
   setupOpenApi(app);
   await app.listen(3000);
 }

@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiConsumes,
   ApiNotFoundResponse,
@@ -34,6 +35,7 @@ export class ImagesController {
   @UseInterceptors(FileInterceptor('imageUpload'))
   @ApiConsumes('multipart/form-data')
   @ApiBearerAuth()
+  @ApiBadRequestResponse({ description: 'Failed validation' })
   @ApiUnauthorizedResponse({ description: 'Not authorized' })
   @ApiNotFoundResponse({ description: 'Image not found' })
   @ApiUnsupportedMediaTypeResponse({ description: 'JPEG expected' })

@@ -1,4 +1,4 @@
-import { ArrayUnique, IsMongoId } from 'class-validator';
+import { ArrayUnique, IsArray, IsString } from 'class-validator';
 import { asImageDto, ImageDto } from '../images/dto/image.dto';
 import { DiaryEntry } from '../schemas/diary-entry.schema';
 
@@ -7,27 +7,30 @@ export class DiaryEntryDto {
    * Diary entry's unique identifier
    * @example '60bfd78704a7f25279cfa06a'
    */
-  @IsMongoId()
   id: string;
 
   /**
    * Diary entry's title
    */
+  @IsString()
   title: string;
 
   /**
    * Country, city, ..., the diary entry is about
    */
+  @IsString()
   location: string;
 
   /**
    * Diary entry's content
    */
+  @IsString()
   body: string;
 
   /**
    * Search tags the diary entry can be found with
    */
+  @IsArray()
   @ArrayUnique()
   searchTags: string[];
 

@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiConsumes,
   ApiNotFoundResponse,
@@ -38,6 +39,7 @@ export class DiaryEntriesController {
   @UseGuards(JwtAuthGuard)
   @Post()
   @ApiBearerAuth()
+  @ApiBadRequestResponse({ description: 'Failed validation' })
   @ApiUnauthorizedResponse({ description: 'Not authorized' })
   async create(
     @Body() createDiaryEntryDto: CreateDiaryEntryDto,
@@ -54,6 +56,7 @@ export class DiaryEntriesController {
   }
 
   @Get(':id')
+  @ApiBadRequestResponse({ description: 'Failed validation' })
   @ApiNotFoundResponse({ description: 'Diary entry not found' })
   async findOne(@Param() params: MongoIdParams): Promise<DiaryEntryDto> {
     return asDiaryEntryDto(await this.diaryEntriesService.findOne(params.id));
@@ -62,6 +65,7 @@ export class DiaryEntriesController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @ApiBearerAuth()
+  @ApiBadRequestResponse({ description: 'Failed validation' })
   @ApiUnauthorizedResponse({ description: 'Not authorized' })
   @ApiNotFoundResponse({ description: 'Diary entry not found' })
   async updateOne(
@@ -78,6 +82,7 @@ export class DiaryEntriesController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @ApiBearerAuth()
+  @ApiBadRequestResponse({ description: 'Failed validation' })
   @ApiUnauthorizedResponse({ description: 'Not authorized' })
   @ApiNotFoundResponse({ description: 'Diary entry not found' })
   async removeOne(@Param() params: MongoIdParams): Promise<DiaryEntryDto> {
@@ -89,6 +94,7 @@ export class DiaryEntriesController {
   @UseInterceptors(FileInterceptor('imageUpload'))
   @ApiConsumes('multipart/form-data')
   @ApiBearerAuth()
+  @ApiBadRequestResponse({ description: 'Failed validation' })
   @ApiUnauthorizedResponse({ description: 'Not authorized' })
   @ApiNotFoundResponse({ description: 'Diary entry not found' })
   @ApiUnsupportedMediaTypeResponse({ description: 'JPEG expected' })
@@ -109,6 +115,7 @@ export class DiaryEntriesController {
   @UseGuards(JwtAuthGuard)
   @Delete(':diaryEntryId/images/:imageId')
   @ApiBearerAuth()
+  @ApiBadRequestResponse({ description: 'Failed validation' })
   @ApiUnauthorizedResponse({ description: 'Not authorized' })
   @ApiNotFoundResponse({ description: 'Diary entry or image not found' })
   async removeImage(
