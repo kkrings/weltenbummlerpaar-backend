@@ -170,7 +170,7 @@ describe('DiaryEntriesController', () => {
     let diaryEntries: DiaryEntryDto[];
 
     beforeEach(async () => {
-      diaryEntries = await controller.findMany();
+      diaryEntries = await controller.findMany({});
     });
 
     it('diary entries should have been returned', () => {

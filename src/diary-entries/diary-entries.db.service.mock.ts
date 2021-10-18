@@ -6,6 +6,7 @@ import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto';
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto';
 import { DiaryEntry } from './schemas/diary-entry.schema';
 import { Image } from './images/schemas/image.schema';
+import { DiaryEntryQueryParams } from './dto/diary-entry-query-params.dto';
 
 @Injectable()
 export class DiaryEntriesDBServiceMock extends DiaryEntriesDBServiceBase {
@@ -30,8 +31,14 @@ export class DiaryEntriesDBServiceMock extends DiaryEntriesDBServiceBase {
     return diaryEntry;
   }
 
-  async findMany(): Promise<DiaryEntry[]> {
-    return [...this.diaryEntriesCollection];
+  async findMany(params?: DiaryEntryQueryParams): Promise<DiaryEntry[]> {
+    const searchTags = params?.searchTags ?? [];
+
+    return this.diaryEntriesCollection.filter((diaryEntry) =>
+      searchTags.every((searchTag) =>
+        diaryEntry.searchTags.includes(searchTag),
+      ),
+    );
   }
 
   async findOne(diaryEntryId: string): Promise<DiaryEntry> {

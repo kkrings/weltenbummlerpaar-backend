@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
@@ -30,6 +31,7 @@ import { CreateImageDto } from './images/dto/create-image.dto';
 import { RemoveImageParams } from './dto/remove-image-params.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { appConstants } from './../app.constants';
+import { DiaryEntryQueryParams } from './dto/diary-entry-query-params.dto';
 
 @ApiTags(appConstants.apiTags.diaryEntries)
 @Controller('diary-entries')
@@ -50,8 +52,11 @@ export class DiaryEntriesController {
   }
 
   @Get()
-  async findMany(): Promise<DiaryEntryDto[]> {
-    const diaryEntries = await this.diaryEntriesService.findMany();
+  @ApiBadRequestResponse({ description: 'Failed validation' })
+  async findMany(
+    @Query() params: DiaryEntryQueryParams,
+  ): Promise<DiaryEntryDto[]> {
+    const diaryEntries = await this.diaryEntriesService.findMany(params);
     return diaryEntries.map((diaryEntry) => asDiaryEntryDto(diaryEntry));
   }
 

@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { throwOnNull } from '../schemas/base.schema';
 import { DiaryEntriesDBServiceBase } from './diary-entries.db.service.base';
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto';
+import { DiaryEntryQueryParams } from './dto/diary-entry-query-params.dto';
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto';
 import { Image } from './images/schemas/image.schema';
 import { DiaryEntry, DiaryEntryDocument } from './schemas/diary-entry.schema';
@@ -21,8 +22,14 @@ export class DiaryEntriesDBService extends DiaryEntriesDBServiceBase {
     return await this.diaryEntryModel.create(createDiaryEntryDto);
   }
 
-  async findMany(): Promise<DiaryEntry[]> {
-    return await this.diaryEntryModel.find().populate('images').exec();
+  async findMany(params?: DiaryEntryQueryParams): Promise<DiaryEntry[]> {
+    const { searchTags } = params;
+
+    return await this.diaryEntryModel
+      .find(searchTags ? { searchTags: { $all: searchTags } } : {})
+      .sort({ createdAt: -1 })
+      .populate('images')
+      .exec();
   }
 
   async findOne(diaryEntryId: string): Promise<DiaryEntry> {
