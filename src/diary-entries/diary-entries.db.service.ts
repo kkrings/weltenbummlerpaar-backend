@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { throwOnNull } from '../schemas/base.schema';
 import { DiaryEntriesDBServiceBase } from './diary-entries.db.service.base';
+import { CountQueryParams } from './dto/count-query-params.dto';
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto';
 import { FindManyQueryParams } from './dto/find-many-query-params.dto';
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto';
@@ -30,6 +31,16 @@ export class DiaryEntriesDBService extends DiaryEntriesDBServiceBase {
       .sort({ createdAt: -1 })
       .populate('images')
       .exec();
+  }
+
+  async count(params?: CountQueryParams): Promise<number> {
+    const query = params?.searchTags
+      ? this.diaryEntryModel.countDocuments({
+          searchTags: { $all: params.searchTags },
+        })
+      : this.diaryEntryModel.estimatedDocumentCount();
+
+    return await query.exec();
   }
 
   async findOne(diaryEntryId: string): Promise<DiaryEntry> {

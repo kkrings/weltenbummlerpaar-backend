@@ -7,6 +7,7 @@ import { ImagesService } from './images/images.service';
 import { SearchTagsService } from './search-tags/search-tags.service';
 import { CreateImageDto } from './images/dto/create-image.dto';
 import { FindManyQueryParams } from './dto/find-many-query-params.dto';
+import { CountQueryParams } from './dto/count-query-params.dto';
 
 @Injectable()
 export class DiaryEntriesService {
@@ -31,6 +32,10 @@ export class DiaryEntriesService {
 
   async findMany(params?: FindManyQueryParams): Promise<DiaryEntry[]> {
     return await this.diaryEntriesDBService.findMany(params);
+  }
+
+  async count(params?: CountQueryParams): Promise<number> {
+    return await this.diaryEntriesDBService.count(params);
   }
 
   async findOne(diaryEntryId: string): Promise<DiaryEntry> {

@@ -32,6 +32,7 @@ import { RemoveImageParams } from './dto/remove-image-params.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { appConstants } from './../app.constants';
 import { FindManyQueryParams } from './dto/find-many-query-params.dto';
+import { CountQueryParams } from './dto/count-query-params.dto';
 
 @ApiTags(appConstants.apiTags.diaryEntries)
 @Controller('diary-entries')
@@ -58,6 +59,12 @@ export class DiaryEntriesController {
   ): Promise<DiaryEntryDto[]> {
     const diaryEntries = await this.diaryEntriesService.findMany(params);
     return diaryEntries.map((diaryEntry) => asDiaryEntryDto(diaryEntry));
+  }
+
+  @Get('count')
+  @ApiBadRequestResponse({ description: 'Failed validation ' })
+  async count(@Query() params: CountQueryParams): Promise<number> {
+    return await this.diaryEntriesService.count(params);
   }
 
   @Get(':id')

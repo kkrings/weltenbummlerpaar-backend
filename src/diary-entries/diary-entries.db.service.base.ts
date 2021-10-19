@@ -3,6 +3,7 @@ import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto';
 import { DiaryEntry } from './schemas/diary-entry.schema';
 import { Image } from './images/schemas/image.schema';
 import { FindManyQueryParams } from './dto/find-many-query-params.dto';
+import { CountQueryParams } from './dto/count-query-params.dto';
 
 export abstract class DiaryEntriesDBServiceBase {
   abstract create(
@@ -10,6 +11,9 @@ export abstract class DiaryEntriesDBServiceBase {
   ): Promise<DiaryEntry>;
 
   abstract findMany(params?: FindManyQueryParams): Promise<DiaryEntry[]>;
+
+  abstract count(params?: CountQueryParams): Promise<number>;
+
   abstract findOne(diaryEntryId: string): Promise<DiaryEntry>;
 
   abstract updateOne(
@@ -20,5 +24,6 @@ export abstract class DiaryEntriesDBServiceBase {
   abstract removeOne(diaryEntryId: string): Promise<DiaryEntry>;
 
   abstract addImage(diaryEntryId: string, image: Image): Promise<DiaryEntry>;
+
   abstract removeImage(diaryEntryId: string, image: Image): Promise<DiaryEntry>;
 }

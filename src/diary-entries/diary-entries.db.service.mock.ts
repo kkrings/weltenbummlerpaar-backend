@@ -7,6 +7,7 @@ import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto';
 import { DiaryEntry } from './schemas/diary-entry.schema';
 import { Image } from './images/schemas/image.schema';
 import { FindManyQueryParams } from './dto/find-many-query-params.dto';
+import { CountQueryParams } from './dto/count-query-params.dto';
 
 @Injectable()
 export class DiaryEntriesDBServiceMock extends DiaryEntriesDBServiceBase {
@@ -39,6 +40,14 @@ export class DiaryEntriesDBServiceMock extends DiaryEntriesDBServiceBase {
         diaryEntry.searchTags.includes(searchTag),
       ),
     );
+  }
+
+  async count(params?: CountQueryParams): Promise<number> {
+    const diaryEntries = await this.findMany({
+      searchTags: params?.searchTags,
+    });
+
+    return diaryEntries.length;
   }
 
   async findOne(diaryEntryId: string): Promise<DiaryEntry> {
