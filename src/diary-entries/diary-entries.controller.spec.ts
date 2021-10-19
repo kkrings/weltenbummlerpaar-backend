@@ -14,7 +14,7 @@ import { CreateImageDto } from './images/dto/create-image.dto';
 import { Image } from './images/schemas/image.schema';
 import { ImageDto } from './images/dto/image.dto';
 import { RemoveImageParams } from './dto/remove-image-params.dto';
-import { DiaryEntryQueryParams } from './dto/diary-entry-query-params.dto';
+import { FindManyQueryParams } from './dto/find-many-query-params.dto';
 
 class DiaryEntriesServiceMock {
   diaryEntry: DiaryEntry;
@@ -196,7 +196,7 @@ describe('DiaryEntriesController', () => {
     });
 
     describe('with search tags', () => {
-      const queryParams: DiaryEntryQueryParams = {
+      const queryParams: FindManyQueryParams = {
         searchTags: ['some tag'],
       };
 

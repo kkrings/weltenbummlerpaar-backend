@@ -6,7 +6,7 @@ import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto';
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto';
 import { DiaryEntry } from './schemas/diary-entry.schema';
 import { Image } from './images/schemas/image.schema';
-import { DiaryEntryQueryParams } from './dto/diary-entry-query-params.dto';
+import { FindManyQueryParams } from './dto/find-many-query-params.dto';
 
 @Injectable()
 export class DiaryEntriesDBServiceMock extends DiaryEntriesDBServiceBase {
@@ -31,7 +31,7 @@ export class DiaryEntriesDBServiceMock extends DiaryEntriesDBServiceBase {
     return diaryEntry;
   }
 
-  async findMany(params?: DiaryEntryQueryParams): Promise<DiaryEntry[]> {
+  async findMany(params?: FindManyQueryParams): Promise<DiaryEntry[]> {
     const searchTags = params?.searchTags ?? [];
 
     return this.diaryEntriesCollection.filter((diaryEntry) =>

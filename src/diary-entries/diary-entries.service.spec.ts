@@ -6,7 +6,7 @@ import { DiaryEntriesDBService } from './diary-entries.db.service';
 import { DiaryEntriesDBServiceMock } from './diary-entries.db.service.mock';
 import { DiaryEntriesService } from './diary-entries.service';
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto';
-import { DiaryEntryQueryParams } from './dto/diary-entry-query-params.dto';
+import { FindManyQueryParams } from './dto/find-many-query-params.dto';
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto';
 import { CreateImageDto } from './images/dto/create-image.dto';
 import { ImageUploadService } from './images/image-upload/image-upload.service';
@@ -175,7 +175,7 @@ describe('DiaryEntriesService', () => {
     });
 
     describe("with diary entry's search tags", () => {
-      const queryParams: DiaryEntryQueryParams = {
+      const queryParams: FindManyQueryParams = {
         searchTags: diaryEntry.searchTags,
       };
 
@@ -191,7 +191,7 @@ describe('DiaryEntriesService', () => {
     });
 
     describe('with other search tags', () => {
-      const queryParams: DiaryEntryQueryParams = {
+      const queryParams: FindManyQueryParams = {
         searchTags: ['some other tag'],
       };
 
