@@ -15,6 +15,7 @@ import { Image } from './images/schemas/image.schema';
 import { ImageDto } from './images/dto/image.dto';
 import { RemoveImageParams } from './dto/remove-image-params.dto';
 import { FindManyQueryParams } from './dto/find-many-query-params.dto';
+import { CountQueryParams } from './dto/count-query-params.dto';
 
 class DiaryEntriesServiceMock {
   diaryEntry: DiaryEntry;
@@ -56,6 +57,10 @@ class DiaryEntriesServiceMock {
 
   async findMany(): Promise<DiaryEntry[]> {
     return [this.diaryEntry];
+  }
+
+  async count(): Promise<number> {
+    return 1;
   }
 
   async findOne(diaryEntryId: string): Promise<DiaryEntry> {
@@ -206,6 +211,40 @@ describe('DiaryEntriesController', () => {
 
       it('DiaryEntryService.findMany should have been called', () => {
         expect(findManySpy).toHaveBeenLastCalledWith(queryParams);
+      });
+    });
+  });
+
+  describe('count', () => {
+    const countSpy = jest.spyOn(mockService, 'count');
+
+    describe('without query parameters', () => {
+      let numDiaryEntries: number;
+
+      beforeEach(async () => {
+        numDiaryEntries = await controller.count({});
+      });
+
+      it('diary entry should have been counted', () => {
+        expect(numDiaryEntries).toEqual(1);
+      });
+
+      it('DiaryEntriesService.count should have been called', () => {
+        expect(countSpy).toHaveBeenLastCalledWith({});
+      });
+    });
+
+    describe('with search tags', () => {
+      const queryParams: CountQueryParams = {
+        searchTags: ['some tag'],
+      };
+
+      beforeEach(async () => {
+        await controller.count(queryParams);
+      });
+
+      it('DiaryEntriesService.count should have been called', () => {
+        expect(countSpy).toHaveBeenLastCalledWith(queryParams);
       });
     });
   });

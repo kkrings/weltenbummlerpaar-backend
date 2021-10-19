@@ -5,6 +5,7 @@ import { nextTick } from 'process';
 import { DiaryEntriesDBService } from './diary-entries.db.service';
 import { DiaryEntriesDBServiceMock } from './diary-entries.db.service.mock';
 import { DiaryEntriesService } from './diary-entries.service';
+import { CountQueryParams } from './dto/count-query-params.dto';
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto';
 import { FindManyQueryParams } from './dto/find-many-query-params.dto';
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto';
@@ -203,6 +204,79 @@ describe('DiaryEntriesService', () => {
 
       it('no diary entry should have been found', () => {
         expect(diaryEntries).toEqual([]);
+      });
+    });
+  });
+
+  describe('count', () => {
+    const diaryEntry: DiaryEntry = {
+      _id: new ObjectId(),
+      title: 'some title',
+      location: 'some location',
+      body: 'some body',
+      searchTags: ['some tag'],
+      images: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    beforeEach(() => {
+      diaryEntriesCollection.push(diaryEntry);
+    });
+
+    describe('without query parameters', () => {
+      let numDiaryEntries: number;
+
+      beforeEach(async () => {
+        numDiaryEntries = await diaryEntriesService.count();
+      });
+
+      it('diary entry should have been counted', () => {
+        expect(numDiaryEntries).toEqual(1);
+      });
+    });
+
+    describe('without search tags', () => {
+      let numDiaryEntries: number;
+
+      beforeEach(async () => {
+        numDiaryEntries = await diaryEntriesService.count({});
+      });
+
+      it('diary entry should have been counted', () => {
+        expect(numDiaryEntries).toEqual(1);
+      });
+    });
+
+    describe("with diary entry's search tags", () => {
+      const queryParams: CountQueryParams = {
+        searchTags: diaryEntry.searchTags,
+      };
+
+      let numDiaryEntries: number;
+
+      beforeEach(async () => {
+        numDiaryEntries = await diaryEntriesService.count(queryParams);
+      });
+
+      it('diary entry should have been counted', () => {
+        expect(numDiaryEntries).toEqual(1);
+      });
+    });
+
+    describe('with other search tags', () => {
+      const queryParams: CountQueryParams = {
+        searchTags: ['some other tag'],
+      };
+
+      let numDiaryEntries: number;
+
+      beforeEach(async () => {
+        numDiaryEntries = await diaryEntriesService.count(queryParams);
+      });
+
+      it('diary entry should not have been counted', () => {
+        expect(numDiaryEntries).toEqual(0);
       });
     });
   });
