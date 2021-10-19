@@ -14,6 +14,7 @@ import { CreateImageDto } from './images/dto/create-image.dto';
 import { Image } from './images/schemas/image.schema';
 import { ImageDto } from './images/dto/image.dto';
 import { RemoveImageParams } from './dto/remove-image-params.dto';
+import { DiaryEntryQueryParams } from './dto/diary-entry-query-params.dto';
 
 class DiaryEntriesServiceMock {
   diaryEntry: DiaryEntry;
@@ -167,29 +168,45 @@ describe('DiaryEntriesController', () => {
   describe('findMany', () => {
     const findManySpy = jest.spyOn(mockService, 'findMany');
 
-    let diaryEntries: DiaryEntryDto[];
+    describe('without query parameters', () => {
+      let diaryEntries: DiaryEntryDto[];
 
-    beforeEach(async () => {
-      diaryEntries = await controller.findMany({});
+      beforeEach(async () => {
+        diaryEntries = await controller.findMany({});
+      });
+
+      it('diary entries should have been returned', () => {
+        const diaryEntryDto: DiaryEntryDto = {
+          id: mockService.diaryEntry._id.toHexString(),
+          title: mockService.diaryEntry.title,
+          location: mockService.diaryEntry.location,
+          body: mockService.diaryEntry.body,
+          searchTags: mockService.diaryEntry.searchTags,
+          images: [],
+          createdAt: mockService.diaryEntry.createdAt,
+          updatedAt: mockService.diaryEntry.updatedAt,
+        };
+
+        expect(diaryEntries).toEqual([diaryEntryDto]);
+      });
+
+      it('DiaryEntriesService.findMany should have been called', () => {
+        expect(findManySpy).toHaveBeenLastCalledWith({});
+      });
     });
 
-    it('diary entries should have been returned', () => {
-      const diaryEntryDto: DiaryEntryDto = {
-        id: mockService.diaryEntry._id.toHexString(),
-        title: mockService.diaryEntry.title,
-        location: mockService.diaryEntry.location,
-        body: mockService.diaryEntry.body,
-        searchTags: mockService.diaryEntry.searchTags,
-        images: [],
-        createdAt: mockService.diaryEntry.createdAt,
-        updatedAt: mockService.diaryEntry.updatedAt,
+    describe('with search tags', () => {
+      const queryParams: DiaryEntryQueryParams = {
+        searchTags: ['some tag'],
       };
 
-      expect(diaryEntries).toEqual([diaryEntryDto]);
-    });
+      beforeEach(async () => {
+        await controller.findMany(queryParams);
+      });
 
-    it('DiaryEntriesService.findMany should have been called', () => {
-      expect(findManySpy).toHaveBeenCalled();
+      it('DiaryEntryService.findMany should have been called', () => {
+        expect(findManySpy).toHaveBeenLastCalledWith(queryParams);
+      });
     });
   });
 

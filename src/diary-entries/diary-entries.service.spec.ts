@@ -6,6 +6,7 @@ import { DiaryEntriesDBService } from './diary-entries.db.service';
 import { DiaryEntriesDBServiceMock } from './diary-entries.db.service.mock';
 import { DiaryEntriesService } from './diary-entries.service';
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto';
+import { DiaryEntryQueryParams } from './dto/diary-entry-query-params.dto';
 import { UpdateDiaryEntryDto } from './dto/update-diary-entry.dto';
 import { CreateImageDto } from './images/dto/create-image.dto';
 import { ImageUploadService } from './images/image-upload/image-upload.service';
@@ -149,9 +150,60 @@ describe('DiaryEntriesService', () => {
       diaryEntriesCollection.push(diaryEntry);
     });
 
-    it('diary entry should have been found', async () => {
-      const diaryEntries = await diaryEntriesService.findMany();
-      expect(diaryEntries).toEqual([diaryEntry]);
+    describe('without query parameters', () => {
+      let diaryEntries: DiaryEntry[];
+
+      beforeEach(async () => {
+        diaryEntries = await diaryEntriesService.findMany();
+      });
+
+      it('diary entry should have been found', () => {
+        expect(diaryEntries).toEqual([diaryEntry]);
+      });
+    });
+
+    describe('without search tags', () => {
+      let diaryEntries: DiaryEntry[];
+
+      beforeEach(async () => {
+        diaryEntries = await diaryEntriesService.findMany({});
+      });
+
+      it('diary entry should have been found', () => {
+        expect(diaryEntries).toEqual([diaryEntry]);
+      });
+    });
+
+    describe("with diary entry's search tags", () => {
+      const queryParams: DiaryEntryQueryParams = {
+        searchTags: diaryEntry.searchTags,
+      };
+
+      let diaryEntries: DiaryEntry[];
+
+      beforeEach(async () => {
+        diaryEntries = await diaryEntriesService.findMany(queryParams);
+      });
+
+      it('diary entry should have been found', () => {
+        expect(diaryEntries).toEqual([diaryEntry]);
+      });
+    });
+
+    describe('with other search tags', () => {
+      const queryParams: DiaryEntryQueryParams = {
+        searchTags: ['some other tag'],
+      };
+
+      let diaryEntries: DiaryEntry[];
+
+      beforeEach(async () => {
+        diaryEntries = await diaryEntriesService.findMany(queryParams);
+      });
+
+      it('no diary entry should have been found', () => {
+        expect(diaryEntries).toEqual([]);
+      });
     });
   });
 
