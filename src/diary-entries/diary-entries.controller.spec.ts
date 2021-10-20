@@ -439,6 +439,7 @@ describe('DiaryEntriesController', () => {
         body: mockService.diaryEntry.body,
         searchTags: mockService.diaryEntry.searchTags,
         images: [expectedImageDto],
+        previewImage: expectedImageDto,
         createdAt: mockService.diaryEntry.createdAt,
         updatedAt: mockService.diaryEntry.updatedAt,
       };

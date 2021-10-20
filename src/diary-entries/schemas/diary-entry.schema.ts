@@ -28,6 +28,9 @@ export class DiaryEntry extends BaseSchema {
     ],
   })
   images: Image[];
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Image' })
+  previewImage?: Image;
 }
 
 export const DiaryEntrySchema = SchemaFactory.createForClass(DiaryEntry);

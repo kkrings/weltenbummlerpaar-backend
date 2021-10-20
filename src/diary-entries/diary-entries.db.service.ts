@@ -38,7 +38,7 @@ export class DiaryEntriesDBService extends DiaryEntriesDBServiceBase {
       query = query.limit(numDiaryEntries);
     }
 
-    return query.populate('images').exec();
+    return query.populate('images').populate('previewImage').exec();
   }
 
   async count(params?: CountQueryParams): Promise<number> {
@@ -58,6 +58,7 @@ export class DiaryEntriesDBService extends DiaryEntriesDBServiceBase {
         await this.diaryEntryModel
           .findById(diaryEntryId)
           .populate('images')
+          .populate('previewImage')
           .exec(),
     );
   }
@@ -76,6 +77,7 @@ export class DiaryEntriesDBService extends DiaryEntriesDBServiceBase {
             { new: true },
           )
           .populate('images')
+          .populate('previewImage')
           .exec(),
     );
   }
@@ -87,6 +89,7 @@ export class DiaryEntriesDBService extends DiaryEntriesDBServiceBase {
         await this.diaryEntryModel
           .findByIdAndRemove(diaryEntryId)
           .populate('images')
+          .populate('previewImage')
           .exec(),
     );
   }
@@ -102,6 +105,7 @@ export class DiaryEntriesDBService extends DiaryEntriesDBServiceBase {
             { new: true },
           )
           .populate('images')
+          .populate('previewImage')
           .exec(),
     );
   }
@@ -117,6 +121,7 @@ export class DiaryEntriesDBService extends DiaryEntriesDBServiceBase {
             { new: true },
           )
           .populate('images')
+          .populate('previewImage')
           .exec(),
     );
   }

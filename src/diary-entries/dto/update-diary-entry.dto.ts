@@ -10,4 +10,12 @@ export class UpdateDiaryEntryDto extends PartialType(CreateDiaryEntryDto) {
   @IsOptional()
   @IsMongoId({ each: true })
   images?: string[];
+
+  /**
+   * Change the diary entry's preview image.
+   * @example "60d468d1f33a8412d3cec16f"
+   */
+  @IsOptional()
+  @IsMongoId()
+  previewImage?: string;
 }

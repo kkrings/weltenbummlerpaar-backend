@@ -40,6 +40,11 @@ export class DiaryEntryDto {
   images: ImageDto[];
 
   /**
+   * Diary entry's preview image
+   */
+  previewImage?: ImageDto;
+
+  /**
    * Diary entry's creation date-time
    */
   createdAt: Date;
@@ -51,13 +56,20 @@ export class DiaryEntryDto {
 }
 
 export function asDiaryEntryDto(diaryEntry: DiaryEntry): DiaryEntryDto {
+  const images = diaryEntry.images.map((image) => asImageDto(image));
+
+  const previewImage = diaryEntry.previewImage
+    ? asImageDto(diaryEntry.previewImage)
+    : images[0];
+
   return {
     id: diaryEntry._id.toHexString(),
     title: diaryEntry.title,
     location: diaryEntry.location,
     body: diaryEntry.body,
     searchTags: diaryEntry.searchTags,
-    images: diaryEntry.images.map((image) => asImageDto(image)),
+    images: images,
+    previewImage: previewImage,
     createdAt: diaryEntry.createdAt,
     updatedAt: diaryEntry.updatedAt,
   };

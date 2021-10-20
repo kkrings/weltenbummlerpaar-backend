@@ -52,6 +52,10 @@ export class DiaryEntriesService {
       this.validateReorderedImageIds(updateDiaryEntryDto.images, diaryEntry);
     }
 
+    if (updateDiaryEntryDto.previewImage !== undefined) {
+      this.validateImageId(updateDiaryEntryDto.previewImage, diaryEntry);
+    }
+
     await this.diaryEntriesDBService.updateOne(
       diaryEntryId,
       updateDiaryEntryDto,
