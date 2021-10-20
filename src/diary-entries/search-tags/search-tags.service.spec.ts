@@ -50,10 +50,48 @@ describe('SearchTagsService', () => {
       searchTagsCollection.push(...searchTags);
     });
 
-    it('should find search tags', async () => {
-      expect(await service.findMany()).toEqual(
-        searchTags.map((searchTag) => searchTag.searchTag),
-      );
+    describe('without search tag', () => {
+      let foundSearchTags: string[];
+
+      beforeEach(async () => {
+        foundSearchTags = await service.findMany();
+      });
+
+      it('search tags should have been found', () => {
+        expect(foundSearchTags).toEqual(
+          searchTags.map((searchTag) => searchTag.searchTag),
+        );
+      });
+    });
+
+    describe("with diary entry's search tag", () => {
+      let foundSearchTags: string[];
+
+      beforeEach(async () => {
+        foundSearchTags = await service.findMany({
+          searchTag: searchTags[0].searchTag,
+        });
+      });
+
+      it('search tags should have been found', () => {
+        expect(foundSearchTags).toEqual(
+          searchTags.map((searchTag) => searchTag.searchTag),
+        );
+      });
+    });
+
+    describe('with other search tag', () => {
+      let foundSearchTags: string[];
+
+      beforeEach(async () => {
+        foundSearchTags = await service.findMany({
+          searchTag: 'some other search tag',
+        });
+      });
+
+      it('no search tags should have been found', () => {
+        expect(foundSearchTags).toHaveLength(0);
+      });
     });
   });
 
