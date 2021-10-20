@@ -209,7 +209,35 @@ describe('DiaryEntriesController', () => {
         await controller.findMany(queryParams);
       });
 
-      it('DiaryEntryService.findMany should have been called', () => {
+      it('DiaryEntriesService.findMany should have been called', () => {
+        expect(findManySpy).toHaveBeenLastCalledWith(queryParams);
+      });
+    });
+
+    describe('with skip diary entries', () => {
+      const queryParams: FindManyQueryParams = {
+        skipDiaryEntries: 1,
+      };
+
+      beforeEach(async () => {
+        await controller.findMany(queryParams);
+      });
+
+      it('DiaryEntriesService.findMany should have been called', () => {
+        expect(findManySpy).toHaveBeenLastCalledWith(queryParams);
+      });
+    });
+
+    describe('with limit diary entries', () => {
+      const queryParams: FindManyQueryParams = {
+        numDiaryEntries: 1,
+      };
+
+      beforeEach(async () => {
+        await controller.findMany(queryParams);
+      });
+
+      it('DiaryEntriesService.findMany should have been called', () => {
         expect(findManySpy).toHaveBeenLastCalledWith(queryParams);
       });
     });

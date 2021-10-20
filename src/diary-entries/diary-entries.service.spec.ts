@@ -206,6 +206,38 @@ describe('DiaryEntriesService', () => {
         expect(diaryEntries).toEqual([]);
       });
     });
+
+    describe('with skip diary entries', () => {
+      const queryParams: FindManyQueryParams = {
+        skipDiaryEntries: 2,
+      };
+
+      let diaryEntries: DiaryEntry[];
+
+      beforeEach(async () => {
+        diaryEntries = await diaryEntriesService.findMany(queryParams);
+      });
+
+      it('no diary entries should have been returned', () => {
+        expect(diaryEntries).toHaveLength(0);
+      });
+    });
+
+    describe('with limit diary entries', () => {
+      const queryParams: FindManyQueryParams = {
+        numDiaryEntries: 1,
+      };
+
+      let diaryEntries: DiaryEntry[];
+
+      beforeEach(async () => {
+        diaryEntries = await diaryEntriesService.findMany(queryParams);
+      });
+
+      it('diary entry should have been returned', () => {
+        expect(diaryEntries).toHaveLength(1);
+      });
+    });
   });
 
   describe('count', () => {

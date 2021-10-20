@@ -35,11 +35,16 @@ export class DiaryEntriesDBServiceMock extends DiaryEntriesDBServiceBase {
   async findMany(params?: FindManyQueryParams): Promise<DiaryEntry[]> {
     const searchTags = params?.searchTags ?? [];
 
-    return this.diaryEntriesCollection.filter((diaryEntry) =>
+    const diaryEntries = this.diaryEntriesCollection.filter((diaryEntry) =>
       searchTags.every((searchTag) =>
         diaryEntry.searchTags.includes(searchTag),
       ),
     );
+
+    const start = params?.skipDiaryEntries ?? 0;
+    const end = start + (params?.numDiaryEntries ?? diaryEntries.length);
+
+    return diaryEntries.slice(start, end);
   }
 
   async count(params?: CountQueryParams): Promise<number> {
