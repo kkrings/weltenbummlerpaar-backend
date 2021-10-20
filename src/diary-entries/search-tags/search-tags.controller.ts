@@ -1,6 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { appConstants } from './../../app.constants';
+import { FindManyQueryParams } from './dto/find-many-query-params.dto';
 import { SearchTagsService } from './search-tags.service';
 
 @ApiTags(appConstants.apiTags.searchTags)
@@ -9,7 +10,7 @@ export class SearchTagsController {
   constructor(private readonly searchTagsService: SearchTagsService) {}
 
   @Get()
-  async findMany(): Promise<string[]> {
-    return await this.searchTagsService.findMany();
+  async findMany(@Query() params: FindManyQueryParams): Promise<string[]> {
+    return await this.searchTagsService.findMany(params);
   }
 }

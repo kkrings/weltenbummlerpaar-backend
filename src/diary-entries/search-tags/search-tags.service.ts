@@ -2,13 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { SearchTag } from './schemas/search-tag.schema';
 import { DiaryEntry } from '../schemas/diary-entry.schema';
 import { SearchTagsDBService } from './search-tags.db.service';
+import { FindManyQueryParams } from './dto/find-many-query-params.dto';
 
 @Injectable()
 export class SearchTagsService {
   constructor(private readonly searchTagsDBService: SearchTagsDBService) {}
 
-  async findMany(): Promise<string[]> {
-    const searchTags = await this.searchTagsDBService.findMany();
+  async findMany(params?: FindManyQueryParams): Promise<string[]> {
+    const searchTags = await this.searchTagsDBService.findMany(params);
     return searchTags.map((searchTag) => searchTag.searchTag);
   }
 

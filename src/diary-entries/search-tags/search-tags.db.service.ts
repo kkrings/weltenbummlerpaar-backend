@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { throwOnNull } from '../../schemas/base.schema';
 import { DiaryEntry } from '../schemas/diary-entry.schema';
+import { FindManyQueryParams } from './dto/find-many-query-params.dto';
 import { SearchTag, SearchTagDocument } from './schemas/search-tag.schema';
 import { SearchTagsDBServiceBase } from './search-tags.db.service.base';
 
@@ -15,9 +16,13 @@ export class SearchTagsDBService extends SearchTagsDBServiceBase {
     super();
   }
 
-  async findMany(): Promise<SearchTag[]> {
+  async findMany(params?: FindManyQueryParams): Promise<SearchTag[]> {
+    const { searchTag } = params;
+
     return await this.searchTagModel
-      .find()
+      .find(
+        searchTag ? { searchTag: { $regex: searchTag, $options: '$i' } } : {},
+      )
       .sort({ searchTag: 'ascending' })
       .exec();
   }
