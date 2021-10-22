@@ -125,4 +125,18 @@ export class DiaryEntriesDBService extends DiaryEntriesDBServiceBase {
           .exec(),
     );
   }
+
+  async unsetPreviewImage(diaryEntryId: string): Promise<DiaryEntry> {
+    return await throwOnNull(
+      diaryEntryId,
+      async () =>
+        await this.diaryEntryModel
+          .findByIdAndUpdate(diaryEntryId, {
+            $unset: { previewImage: undefined },
+          })
+          .populate('images')
+          .populate('previewImage')
+          .exec(),
+    );
+  }
 }

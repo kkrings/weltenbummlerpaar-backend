@@ -98,8 +98,14 @@ export class DiaryEntriesService {
     imageId: string,
   ): Promise<DiaryEntry> {
     const diaryEntry = await this.findOne(diaryEntryId);
+
     this.validateImageId(imageId, diaryEntry);
     const image = await this.imagesService.removeOne(imageId);
+
+    if (diaryEntry.previewImage?._id.equals(image._id) ?? false) {
+      await this.diaryEntriesDBService.unsetPreviewImage(diaryEntryId);
+    }
+
     return await this.diaryEntriesDBService.removeImage(diaryEntryId, image);
   }
 

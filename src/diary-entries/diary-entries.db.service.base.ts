@@ -26,4 +26,6 @@ export abstract class DiaryEntriesDBServiceBase {
   abstract addImage(diaryEntryId: string, image: Image): Promise<DiaryEntry>;
 
   abstract removeImage(diaryEntryId: string, image: Image): Promise<DiaryEntry>;
+
+  abstract unsetPreviewImage(diaryEntryId: string): Promise<DiaryEntry>;
 }

@@ -108,13 +108,19 @@ export class DiaryEntriesDBServiceMock extends DiaryEntriesDBServiceBase {
     return diaryEntry;
   }
 
-  async removeImage(diaryEntryId, image: Image): Promise<DiaryEntry> {
+  async removeImage(diaryEntryId: string, image: Image): Promise<DiaryEntry> {
     const diaryEntry = await this.findOne(diaryEntryId);
 
     diaryEntry.images = diaryEntry.images.filter(
       (otherImage) => !otherImage._id.equals(image._id),
     );
 
+    return diaryEntry;
+  }
+
+  async unsetPreviewImage(diaryEntryId: string): Promise<DiaryEntry> {
+    const diaryEntry = await this.findOne(diaryEntryId);
+    diaryEntry.previewImage = undefined;
     return diaryEntry;
   }
 }
