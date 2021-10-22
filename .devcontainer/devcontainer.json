@@ -8,8 +8,7 @@
         "editor.rulers": [
             80
         ],
-        "typescript.format.enable": false,
-        "typescript.validate.enable": false
+        "typescript.format.enable": false
     },
     "extensions": [
         "dbaeumer.vscode-eslint",
