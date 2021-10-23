@@ -557,6 +557,30 @@ describe('DiaryEntriesService', () => {
           await expect(diaryEntryPromise).rejects.toEqual(notFoundException);
         });
       });
+
+      describe('on unknown preview image ID', () => {
+        const previewImageId = new ObjectId().toHexString();
+        let diaryEntryPromise: Promise<DiaryEntry>;
+
+        beforeEach(() => {
+          const updatedDiaryEntry: UpdateDiaryEntryDto = {
+            previewImage: previewImageId,
+          };
+
+          diaryEntryPromise = diaryEntriesService.updateOne(
+            diaryEntry._id.toHexString(),
+            updatedDiaryEntry,
+          );
+        });
+
+        it('not-found exception should have been thrown', async () => {
+          const notFoundException = new NotFoundException(
+            `Diary entry does not contain image with ID ${previewImageId}.`,
+          );
+
+          await expect(diaryEntryPromise).rejects.toEqual(notFoundException);
+        });
+      });
     });
   });
 
