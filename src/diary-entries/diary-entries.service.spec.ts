@@ -845,6 +845,81 @@ describe('DiaryEntriesService', () => {
         await expect(diaryEntryPromise).rejects.toEqual(error);
       });
     });
+
+    describe('unsetPreviewImage', () => {
+      const diaryEntry: DiaryEntry = {
+        _id: new ObjectId(),
+        title: 'some title',
+        location: 'some location',
+        body: 'some body',
+        searchTags: [],
+        images: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const image: Image = {
+        _id: new ObjectId(),
+        description: 'some description',
+        diaryEntryId: diaryEntry._id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const otherImage: Image = {
+        _id: new ObjectId(),
+        description: 'some description',
+        diaryEntryId: diaryEntry._id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      diaryEntry.images.push(image, otherImage);
+      diaryEntry.previewImage = image;
+
+      const diaryEntryId = diaryEntry._id.toHexString();
+
+      beforeEach(() => {
+        diaryEntriesCollection.push({
+          ...diaryEntry,
+          images: [...diaryEntry.images],
+        });
+      });
+
+      beforeEach(() => {
+        imagesCollection.push(image, otherImage);
+      });
+
+      describe('remove preview image', () => {
+        let updatedDiaryEntry: DiaryEntry;
+
+        beforeEach(async () => {
+          updatedDiaryEntry = await diaryEntriesService.removeImage(
+            diaryEntryId,
+            image._id.toHexString(),
+          );
+        });
+
+        it('preview image should have been unset', () => {
+          expect(updatedDiaryEntry.previewImage).toBeUndefined();
+        });
+      });
+
+      describe('remove other image', () => {
+        let updatedDiaryEntry: DiaryEntry;
+
+        beforeEach(async () => {
+          updatedDiaryEntry = await diaryEntriesService.removeImage(
+            diaryEntryId,
+            otherImage._id.toHexString(),
+          );
+        });
+
+        it('preview image should not have been unset', () => {
+          expect(updatedDiaryEntry.previewImage).toBe(image);
+        });
+      });
+    });
   });
 
   afterAll(async () => {
