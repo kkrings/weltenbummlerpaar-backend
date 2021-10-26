@@ -8,10 +8,12 @@ import jwtConfig from './jwt.config';
 describe('JwtConfigService', () => {
   const jwtSecret = 'some secret';
 
+  let oldJwtSecret: string;
   let service: JwtConfigService;
   let jwtOptions: JwtModuleOptions;
 
   beforeAll(() => {
+    oldJwtSecret = env.WELTENBUMMLERPAAR_BACKEND_JWT_SECRET;
     env.WELTENBUMMLERPAAR_BACKEND_JWT_SECRET = jwtSecret;
   });
 
@@ -38,6 +40,6 @@ describe('JwtConfigService', () => {
   });
 
   afterAll(() => {
-    delete env.WELTENBUMMLERPAAR_BACKEND_JWT_SECRET;
+    env.WELTENBUMMLERPAAR_BACKEND_JWT_SECRET = oldJwtSecret;
   });
 });

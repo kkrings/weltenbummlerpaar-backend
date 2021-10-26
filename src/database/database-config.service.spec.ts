@@ -8,10 +8,12 @@ import databaseConfig from './database.config';
 describe('DatabaseConfigService', () => {
   const databaseUri = 'some URI';
 
+  let oldDatabaseUri: string;
   let service: DatabaseConfigService;
   let databaseOptions: MongooseModuleOptions;
 
   beforeAll(() => {
+    oldDatabaseUri = env.WELTENBUMMLERPAAR_BACKEND_DATABASE_URI;
     env.WELTENBUMMLERPAAR_BACKEND_DATABASE_URI = databaseUri;
   });
 
@@ -38,6 +40,6 @@ describe('DatabaseConfigService', () => {
   });
 
   afterAll(() => {
-    delete env.WELTENBUMMLERPAAR_BACKEND_DATABASE_URI;
+    env.WELTENBUMMLERPAAR_BACKEND_DATABASE_URI = oldDatabaseUri;
   });
 });

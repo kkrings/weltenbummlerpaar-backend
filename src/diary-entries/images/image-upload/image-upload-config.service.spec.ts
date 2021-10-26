@@ -2,7 +2,6 @@ import { UnsupportedMediaTypeException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MulterModuleOptions } from '@nestjs/platform-express';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Express } from 'express';
 import { FileFilterCallback } from 'multer';
 import { env } from 'process';
 import { Readable } from 'stream';
@@ -10,6 +9,7 @@ import { ImageUploadConfigService } from './image-upload-config.service';
 import imageUploadConfig, { ImageUploadConfig } from './image-upload.config';
 
 describe('ImageUploadConfigService', () => {
+  let oldDestination: string;
   let service: ImageUploadConfigService;
 
   const mockConfig: ImageUploadConfig = {
@@ -18,6 +18,8 @@ describe('ImageUploadConfigService', () => {
   };
 
   beforeAll(() => {
+    oldDestination = env.WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION;
+
     env.WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION =
       mockConfig.destination;
   });
@@ -120,6 +122,6 @@ describe('ImageUploadConfigService', () => {
   });
 
   afterAll(() => {
-    delete env.WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION;
+    env.WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION = oldDestination;
   });
 });
