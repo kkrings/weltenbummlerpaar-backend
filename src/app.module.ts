@@ -8,6 +8,7 @@ import { DatabaseModule } from './database/database.module';
 import { DiaryEntriesModule } from './diary-entries/diary-entries.module';
 import { validateConfig } from './config/config.validation';
 import { AuthModule } from './auth/auth.module';
+import { CorsModule } from './cors/cors.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     DiaryEntriesModule,
     AuthModule,
+    CorsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
