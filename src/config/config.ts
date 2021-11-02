@@ -26,4 +26,7 @@ export class Config {
     { each: true },
   )
   WELTENBUMMLERPAAR_BACKEND_CORS_ORIGINS: string[];
+
+  @IsString()
+  WELTENBUMMLERPAAR_BACKEND_STATIC_FILES_ROOT_PATH: string;
 }

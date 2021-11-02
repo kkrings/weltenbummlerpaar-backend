@@ -13,8 +13,7 @@ export interface ImageUploadConfig {
 export default registerAs(
   'imageUpload',
   (): ImageUploadConfig => ({
-    destination: process.env
-      .WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION as string,
+    destination: process.env.WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION,
     manipulation: { imageWidth: 2500, imageQuality: 75 },
   }),
 );
