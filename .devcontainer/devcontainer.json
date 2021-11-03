@@ -1,21 +1,24 @@
 {
-    "name": "Weltenbummlerpaar Backend",
-    "dockerComposeFile": "docker-compose.yml",
-    "service": "app",
-    "workspaceFolder": "/workspace",
-    "settings": {
-        "editor.renderWhitespace": "all",
-        "editor.rulers": [
-            80
-        ],
-        "typescript.format.enable": false
-    },
-    "extensions": [
-        "dbaeumer.vscode-eslint",
+	"name": "Weltenbummlerpaar Backend",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspace",
+	"settings": {
+		"editor.renderWhitespace": "all",
+		"editor.rulers": [80],
+		"[typescript]": {
+			"editor.defaultFormatter": "esbenp.prettier-vscode"
+		}
+	},
+	"extensions": [
+		"dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
-        "mongodb.mongodb-vscode"
-    ],
-    "forwardPorts": [3000],
-    "postCreateCommand": "npm install",
-    "remoteUser": "node"
+		"mongodb.mongodb-vscode" 
+	],
+	"forwardPorts": [3000],
+	"postCreateCommand": "npm install",
+	"remoteUser": "node",
+	"features": {
+		"git": "latest"
+	}
 }
