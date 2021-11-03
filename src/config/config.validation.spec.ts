@@ -7,14 +7,12 @@ describe('validateConfig', () => {
   const imageUploadDestination = './public';
   const jwtSecret = 'some secret';
   const corsOrigins = ['http://localhost:4200'];
-  const staticFilesRootPath = '/workspace/public';
 
   const config: Record<string, string> = {
     WELTENBUMMLERPAAR_BACKEND_DATABASE_URI: databaseUri,
     WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION: imageUploadDestination,
     WELTENBUMMLERPAAR_BACKEND_JWT_SECRET: jwtSecret,
     WELTENBUMMLERPAAR_BACKEND_CORS_ORIGINS: JSON.stringify(corsOrigins),
-    WELTENBUMMLERPAAR_BACKEND_STATIC_FILES_ROOT_PATH: staticFilesRootPath,
   };
 
   const validatedConfig: Config = {
@@ -22,7 +20,6 @@ describe('validateConfig', () => {
     WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION: imageUploadDestination,
     WELTENBUMMLERPAAR_BACKEND_JWT_SECRET: jwtSecret,
     WELTENBUMMLERPAAR_BACKEND_CORS_ORIGINS: corsOrigins,
-    WELTENBUMMLERPAAR_BACKEND_STATIC_FILES_ROOT_PATH: staticFilesRootPath,
   };
 
   it('validated config should have been returned', () => {
@@ -106,10 +103,20 @@ describe('validateConfig', () => {
   });
 
   describe('static files root path', () => {
-    it('error should have been thrown if missing', () => {
-      const configCopy: Record<string, string> = { ...config };
-      delete configCopy.WELTENBUMMLERPAAR_BACKEND_STATIC_FILES_ROOT_PATH;
-      expect(() => validateConfig(configCopy)).toThrow();
+    it('validated config should have been returned', () => {
+      const staticFilesRootPath = '/workspace/public';
+
+      const configCopy: Record<string, string> = {
+        ...config,
+        WELTENBUMMLERPAAR_BACKEND_STATIC_FILES_ROOT_PATH: staticFilesRootPath,
+      };
+
+      const validatedConfigCopy: Config = {
+        ...validatedConfig,
+        WELTENBUMMLERPAAR_BACKEND_STATIC_FILES_ROOT_PATH: staticFilesRootPath,
+      };
+
+      expect(validateConfig(configCopy)).toEqual(validatedConfigCopy);
     });
   });
 });

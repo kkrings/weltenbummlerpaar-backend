@@ -15,6 +15,10 @@ export class StaticFilesConfigService
   ) {}
 
   createLoggerOptions(): ServeStaticModuleOptions[] {
-    return [{ rootPath: this.config.rootPath }];
+    return this.rootPath ? [{ rootPath: this.config.rootPath }] : [];
+  }
+
+  private get rootPath(): string | undefined {
+    return this.config.rootPath;
   }
 }
