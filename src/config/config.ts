@@ -1,4 +1,4 @@
-import { IsString, IsUrl } from 'class-validator';
+import { IsBooleanString, IsString, IsUrl } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { transformCorsOrigins } from '../cors/cors-config.transform';
 
@@ -9,6 +9,9 @@ export class Config {
     require_tld: false,
   })
   WELTENBUMMLERPAAR_BACKEND_DATABASE_URI: string;
+
+  @IsBooleanString()
+  WELTENBUMMLERPAAR_BACKEND_DATABASE_AUTO_INDEX: string;
 
   @IsString()
   WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION: string;

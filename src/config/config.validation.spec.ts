@@ -4,12 +4,14 @@ import { validateConfig } from './config.validation';
 
 describe('validateConfig', () => {
   const databaseUri = 'mongodb://localhost:27017/weltenbummlerpaar';
+  const databaseAutoIndex = 'true';
   const imageUploadDestination = './public';
   const jwtSecret = 'some secret';
   const corsOrigins = ['http://localhost:4200'];
 
   const config: Record<string, string> = {
     WELTENBUMMLERPAAR_BACKEND_DATABASE_URI: databaseUri,
+    WELTENBUMMLERPAAR_BACKEND_DATABASE_AUTO_INDEX: databaseAutoIndex,
     WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION: imageUploadDestination,
     WELTENBUMMLERPAAR_BACKEND_JWT_SECRET: jwtSecret,
     WELTENBUMMLERPAAR_BACKEND_CORS_ORIGINS: JSON.stringify(corsOrigins),
@@ -17,6 +19,7 @@ describe('validateConfig', () => {
 
   const validatedConfig: Config = {
     WELTENBUMMLERPAAR_BACKEND_DATABASE_URI: databaseUri,
+    WELTENBUMMLERPAAR_BACKEND_DATABASE_AUTO_INDEX: databaseAutoIndex,
     WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION: imageUploadDestination,
     WELTENBUMMLERPAAR_BACKEND_JWT_SECRET: jwtSecret,
     WELTENBUMMLERPAAR_BACKEND_CORS_ORIGINS: corsOrigins,
@@ -41,6 +44,22 @@ describe('validateConfig', () => {
         WELTENBUMMLERPAAR_BACKEND_DATABASE_URI: uri,
       };
 
+      expect(() => validateConfig(configCopy)).toThrow();
+    });
+  });
+
+  describe('database auto index', () => {
+    it('error should have been thrown if missing', () => {
+      const configCopy: Record<string, string> = { ...config };
+      delete configCopy.WELTENBUMMLERPAAR_BACKEND_DATABASE_AUTO_INDEX;
+      expect(() => validateConfig(configCopy)).toThrow();
+    });
+
+    it('error should have been thrown if not a boolean string', () => {
+      const configCopy: Record<string, string> = {
+        ...config,
+        WELTENBUMMLERPAAR_BACKEND_DATABASE_AUTO_INDEX: 'not a boolean',
+      };
       expect(() => validateConfig(configCopy)).toThrow();
     });
   });

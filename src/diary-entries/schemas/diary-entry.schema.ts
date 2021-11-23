@@ -33,4 +33,7 @@ export class DiaryEntry extends BaseSchema {
   previewImage?: Image;
 }
 
-export const DiaryEntrySchema = SchemaFactory.createForClass(DiaryEntry);
+const diaryEntrySchema = SchemaFactory.createForClass(DiaryEntry);
+diaryEntrySchema.index({ createdAt: -1 });
+
+export const DiaryEntrySchema = diaryEntrySchema;
