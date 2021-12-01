@@ -4,9 +4,14 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { setupOpenApi } from './openapi';
 import { CorsConfigService } from './cors/cors-config.service';
+import { readHttpsCerts } from './https';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule);
+  const httpsCerts = await readHttpsCerts();
+
+  const app = await NestFactory.create(AppModule, {
+    httpsOptions: { ...httpsCerts },
+  });
 
   app.use(helmet());
 
