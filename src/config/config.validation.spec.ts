@@ -3,6 +3,7 @@ import { Config } from './config';
 import { validateConfig } from './config.validation';
 
 describe('validateConfig', () => {
+  const port = '3000';
   const databaseUri = 'mongodb://localhost:27017/weltenbummlerpaar';
   const databaseAutoIndex = 'true';
   const imageUploadDestination = './public';
@@ -10,6 +11,7 @@ describe('validateConfig', () => {
   const corsOrigins = ['http://localhost:4200'];
 
   const config: Record<string, string> = {
+    WELTENBUMMLERPAAR_BACKEND_APP_PORT: `${port}`,
     WELTENBUMMLERPAAR_BACKEND_DATABASE_URI: databaseUri,
     WELTENBUMMLERPAAR_BACKEND_DATABASE_AUTO_INDEX: databaseAutoIndex,
     WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION: imageUploadDestination,
@@ -18,6 +20,7 @@ describe('validateConfig', () => {
   };
 
   const validatedConfig: Config = {
+    WELTENBUMMLERPAAR_BACKEND_APP_PORT: port,
     WELTENBUMMLERPAAR_BACKEND_DATABASE_URI: databaseUri,
     WELTENBUMMLERPAAR_BACKEND_DATABASE_AUTO_INDEX: databaseAutoIndex,
     WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION: imageUploadDestination,
@@ -27,6 +30,41 @@ describe('validateConfig', () => {
 
   it('validated config should have been returned', () => {
     expect(validateConfig(config)).toEqual(validatedConfig);
+  });
+
+  describe('port', () => {
+    it('error should have been thrown if missing', () => {
+      const configCopy: Record<string, string> = { ...config };
+      delete configCopy.WELTENBUMMLERPAAR_BACKEND_APP_PORT;
+      expect(() => validateConfig(configCopy)).toThrow();
+    });
+
+    it('error should have been thrown if not a port', () => {
+      const configCopy: Record<string, string> = {
+        ...config,
+        WELTENBUMMLERPAAR_BACKEND_APP_PORT: '-1',
+      };
+
+      expect(() => validateConfig(configCopy)).toThrow();
+    });
+  });
+
+  describe('prefix', () => {
+    it('validated config should have been returned', () => {
+      const prefix = 'api';
+
+      const configCopy: Record<string, string> = {
+        ...config,
+        WELTENBUMMLERPAAR_BACKEND_APP_PREFIX: prefix,
+      };
+
+      const validatedConfigCopy: Config = {
+        ...validatedConfig,
+        WELTENBUMMLERPAAR_BACKEND_APP_PREFIX: prefix,
+      };
+
+      expect(validateConfig(configCopy)).toEqual(validatedConfigCopy);
+    });
   });
 
   describe('database URI', () => {

@@ -3,7 +3,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { appConstants } from './app.constants';
 import { version } from '../package.json';
 
-export function setupOpenApi(app: INestApplication): void {
+export function setupOpenApi(app: INestApplication, path: string): void {
   const config = new DocumentBuilder()
     .setTitle(appConstants.apiTitle)
     .setDescription(appConstants.apiDescription)
@@ -18,5 +18,5 @@ export function setupOpenApi(app: INestApplication): void {
 
   const document = SwaggerModule.createDocument(app, config);
 
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup(path, app, document);
 }

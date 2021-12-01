@@ -12,10 +12,12 @@ import { AuthModule } from './auth/auth.module';
 import { CorsModule } from './cors/cors.module';
 import { StaticFilesModule } from './static-files/static-files.module';
 import { StaticFilesConfigService } from './static-files/static-files-config.service';
+import { AppConfigModule } from './config/app-config.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ validate: validateConfig }),
+    AppConfigModule,
     MongooseModule.forRootAsync({
       imports: [DatabaseModule],
       useExisting: DatabaseConfigService,

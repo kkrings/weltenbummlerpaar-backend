@@ -1,8 +1,13 @@
-import { IsBooleanString, IsString, IsUrl } from 'class-validator';
+import { IsBooleanString, IsPort, IsString, IsUrl } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { transformCorsOrigins } from '../cors/cors-config.transform';
 
 export class Config {
+  @IsPort()
+  WELTENBUMMLERPAAR_BACKEND_APP_PORT: string;
+
+  WELTENBUMMLERPAAR_BACKEND_APP_PREFIX?: string;
+
   @IsUrl({
     protocols: ['mongodb'],
     require_protocol: true,

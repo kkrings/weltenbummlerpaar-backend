@@ -2,8 +2,9 @@ import * as helmet from 'helmet';
 import { NestFactory } from '@nestjs/core';
 import { NestApplicationOptions, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
-import { setupOpenApi } from './openapi';
+import { AppConfigService } from './config/app-config.service';
 import { CorsConfigService } from './cors/cors-config.service';
+import { setupOpenApi } from './openapi';
 import { readHttpsCerts } from './https';
 
 async function appOptions(): Promise<NestApplicationOptions> {
@@ -17,7 +18,8 @@ async function appOptions(): Promise<NestApplicationOptions> {
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, await appOptions());
 
-  app.use(helmet());
+  const appConfigService = app.get(AppConfigService);
+  app.setGlobalPrefix(appConfigService.prefix);
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -26,12 +28,14 @@ async function bootstrap(): Promise<void> {
     }),
   );
 
-  setupOpenApi(app);
+  setupOpenApi(app, appConfigService.openApiPath);
 
   const corsConfigService = app.get(CorsConfigService);
   app.enableCors(corsConfigService.createCorsOptions());
 
-  await app.listen(3000);
+  app.use(helmet());
+
+  await app.listen(appConfigService.port);
 }
 
 bootstrap().then(undefined, (error) => {
