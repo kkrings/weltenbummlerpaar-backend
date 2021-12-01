@@ -1,17 +1,21 @@
 import * as helmet from 'helmet';
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { NestApplicationOptions, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { setupOpenApi } from './openapi';
 import { CorsConfigService } from './cors/cors-config.service';
 import { readHttpsCerts } from './https';
 
-async function bootstrap(): Promise<void> {
+async function appOptions(): Promise<NestApplicationOptions> {
   const httpsCerts = await readHttpsCerts();
 
-  const app = await NestFactory.create(AppModule, {
-    httpsOptions: { ...httpsCerts },
-  });
+  return httpsCerts.key && httpsCerts.cert
+    ? { httpsOptions: { ...httpsCerts } }
+    : {};
+}
+
+async function bootstrap(): Promise<void> {
+  const app = await NestFactory.create(AppModule, await appOptions());
 
   app.use(helmet());
 
