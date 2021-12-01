@@ -68,10 +68,7 @@ its *ecosystem* file; see `app.config.js`:
           WELTENBUMMLERPAAR_BACKEND_APP_PREFIX: 'some global app prefix',
           WELTENBUMMLERPAAR_BACKEND_DATABASE_URI: 'same MongoDB URI as above',
           WELTENBUMMLERPAAR_BACKEND_DATABASE_AUTO_INDEX: 'false',
-          WELTENBUMMLERPAAR_BACKEND_HTTPS_CERT: 'path to SSL cert',
-          WELTENBUMMLERPAAR_BACKEND_HTTPS_KEY:: 'path to SSL key',
           WELTENBUMMLERPAAR_BACKEND_JWT_SECRET: 'some secret',
-          WELTENBUMMLERPAAR_BACKEND_CORS_ORIGINS: '["some client URL"]'
         },
       }],
     };
