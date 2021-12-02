@@ -1,8 +1,5 @@
 # Weltenbummlerpaar Backend
 
-[![Build Status](https://travis-ci.com/kkrings/weltenbummlerpaar-backend.svg?branch=main)](
-https://travis-ci.com/kkrings/weltenbummlerpaar-backend)
-
 This project contains the [Nest][]-based back end of the *Weltenbummlerpaar*
 travel diary web application. It provides a *RESTful API* for e.g. reading and
 storing diary entries from or to a [MongoDB][] database, respectively.
@@ -31,26 +28,41 @@ The first step is to download the back-end application's latest
 
     tar -xzvf weltenbummlerpaar-backend-vx.x.x.tar.gz
     mkdir -p www/weltenbummlerpaar/static
-    mv weltenbummlerpaar-backend-vx.x.x www/weltenbummlerpaar/rest
+    mv weltenbummlerpaar-backend-vx.x.x www/weltenbummlerpaar/api
     rm weltenbummlerpaar-backend-vx.x.x.tar.gz
+    cd www/weltenbummlerpaar/api
 
 [Releases]:https://github.com/kkrings/weltenbummlerpaar-backend/releases
 
 In this example, the `static` sub folder would contain the front-end
 application.
 
-The second step is to install the application's dependencies:
+The second step is to configure the application by setting environment
+variables in a *.env* file:
 
-    cd www/weltenbummlerpaar/rest
+    WELTENBUMMLERPAAR_BACKEND_APP_PORT='3000'
+    WELTENBUMMLERPAAR_BACKEND_APP_PREFIX='api'
+    WELTENBUMMLERPAAR_BACKEND_DATABASE_URI='some MongoDB URI'
+    WELTENBUMMLERPAAR_BACKEND_DATABASE_AUTO_INDEX='false'
+    WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION='some path'
+    WELTENBUMMLERPAAR_BACKEND_JWT_SECRET='some secret'
+    WELTENBUMMLERPAAR_BACKEND_CORS_ORIGINS='[]'
+
+The third step is to install the application's dependencies:
+
     npm install
 
-The third step is to inject an administration user into the *MongoDB* database:
+The fourth step is to build the application:
+
+    npm run build
+
+The fifth step is to inject an administration user into the *MongoDB* database:
 
     npm run register:admin -- \
       --username 'some user name' \
       --password 'some password'
 
-The fifth step is to start the application via the [PM2][] process manager. It
+The sixth step is to start the application via the [PM2][] process manager. It
 allows to configure all of the application's required environment variables in
 its *ecosystem* file; see `app.config.js`:
 
@@ -64,11 +76,6 @@ its *ecosystem* file; see `app.config.js`:
         max_memory_restart: '1G',
         env: {
           NODE_ENV: 'production',
-          WELTENBUMMLERPAAR_BACKEND_APP_PORT: 'some port number',
-          WELTENBUMMLERPAAR_BACKEND_APP_PREFIX: 'some global app prefix',
-          WELTENBUMMLERPAAR_BACKEND_DATABASE_URI: 'same MongoDB URI as above',
-          WELTENBUMMLERPAAR_BACKEND_DATABASE_AUTO_INDEX: 'false',
-          WELTENBUMMLERPAAR_BACKEND_JWT_SECRET: 'some secret',
         },
       }],
     };
@@ -79,7 +86,7 @@ The *MongoDB URI* usually contains both the user name and password of the
 *MongoDB* user that is allowed to read and write from and to the dedicated
 database containing the diary entries, respectively. This user should not be
 mistaken with the application's administration user, which was created in the
-third step.
+fifth step.
 
 You also have to make sure that the user that is running the application, which
 should not be *root*, is allowed to read both the public *SSL* cert and the
@@ -90,36 +97,17 @@ After its configuration, the application can be started:
     pm2 start app.config.js
 
 The last step is to change the configuration of the *NGINX* server in way that
-requests to the `rest` endpoint are redirected to the port the application is
+requests to the `api` endpoint are redirected to the port the application is
 listening on:
 
     server {
       ...
 
-      location /rest/ {
+      location /api/ {
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
-        proxy_pass https://localhost:same port number as above;
+        proxy_pass https://localhost:3000;
       }
 
       ...
     }
-
-
-## Development
-
-The back-end application's source code is hosted on [GitHub][Backend]:
-
-    git clone https://github.com/kkrings/weltenbummlerpaar-backend.git
-    cd weltenbummlerpaar-backend
-    npm install
-
-[Backend]: https://github.com/kkrings/weltenbummlerpaar-backend/
-
-It is tested via the end-to-end tests of the front-end application. These tests
-require the back-end application to be running, preferable with an empty local
-*MongoDB* database:
-
-    mongod --dbpath 'path to directory for creating local database'
-    npm run register:admin -- --username admin --password admin
-    npm run start:dev
