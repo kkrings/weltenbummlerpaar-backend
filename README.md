@@ -38,7 +38,7 @@ In this example, the `static` sub folder would contain the front-end
 application.
 
 The second step is to configure the application by setting environment
-variables in a *.env* file:
+variables in a `.env` file:
 
     WELTENBUMMLERPAAR_BACKEND_APP_PORT='3000'
     WELTENBUMMLERPAAR_BACKEND_APP_PREFIX='api'
@@ -64,7 +64,7 @@ The fifth step is to inject an administration user into the *MongoDB* database:
 
 The sixth step is to start the application via the [PM2][] process manager. It
 allows to configure all of the application's required environment variables in
-its *ecosystem* file; see `app.config.js`:
+its *ecosystem* file `app.config.js`:
 
     module.exports = {
       apps : [{
