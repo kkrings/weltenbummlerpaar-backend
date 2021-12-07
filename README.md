@@ -55,28 +55,6 @@ The application requires to once inject an administration user into the
       --username 'some user name' \
       --password 'some password'
 
-
-## Application start
-
-The HTTP(s) server can either be started in development mode:
-
-    npm run start:dev
-
-or in production mode:
+The HTTP(s) server can either be started (in production mode):
 
     npm run start:prod
-
-
-## Testing
-
-Unit tests are executed via:
-
-    npm run test
-
-End-to-end tests are executed via:
-
-    npm run test:e2e
-
-A test coverage report is created via:
-
-    npm run test:cov
