@@ -55,6 +55,6 @@ The application requires to once inject an administration user into the
       --username 'some user name' \
       --password 'some password'
 
-The HTTP(s) server can either be started (in production mode):
+The HTTP(s) server is started (in production mode):
 
     npm run start:prod
