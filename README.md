@@ -28,7 +28,7 @@ variables are required:
 
 The following variables are optional:
 
-    WELTENBUMMLERPAAR_BACKEND_APP_PREFIX='api'
+    WELTENBUMMLERPAAR_BACKEND_APP_PREFIX='rest'
     WELTENBUMMLERPAAR_BACKEND_HTTPS_CERT='path to public SSL key'
     WELTENBUMMLERPAAR_BACKEND_HTTPS_KEY='path to private SSL key'
     WELTENBUMMLERPAAR_BACKEND_STATIC_FILES_ROOT_PATH='path to static files'
