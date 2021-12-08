@@ -36,5 +36,8 @@ lerna-debug.log*
 # Configuration
 .env
 
+# PM2
+app.config.js
+
 # Static content
 /public
