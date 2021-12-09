@@ -14,7 +14,7 @@ services:
 
 before_install:
   - cd ..
-  - git clone https://github.com/kkrings/weltenbummlerpaar.git
+  - git clone -b legacy https://github.com/kkrings/weltenbummlerpaar.git
 
 install:
   - npm install pm2 -g
