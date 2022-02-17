@@ -43,7 +43,7 @@ describe('CorsConfigService', () => {
     });
 
     it('CORS origins shoud have been set to CORS origins array', () => {
-      expect(corsOptions.origins).toEqual(corsOrigins);
+      expect(corsOptions.origin).toEqual(corsOrigins);
     });
   });
 
@@ -62,7 +62,7 @@ describe('CorsConfigService', () => {
     });
 
     it('CORS origins shoud have been set to false', () => {
-      expect(corsOptions.origins).toEqual(false);
+      expect(corsOptions.origin).toEqual(false);
     });
   });
 

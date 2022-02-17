@@ -3,7 +3,7 @@ import { ConfigType } from '@nestjs/config';
 import corsConfig from './cors.config';
 
 export interface CorsOptions {
-  origins: string[] | boolean;
+  origin: string[] | boolean;
   methods: string[];
 }
 
@@ -15,7 +15,7 @@ export class CorsConfigService {
   ) {}
 
   createCorsOptions(): CorsOptions {
-    return { origins: this.corsOrigins, methods: this.config.methods };
+    return { origin: this.corsOrigins, methods: this.config.methods };
   }
 
   private get corsOrigins(): string[] | boolean {
