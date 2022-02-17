@@ -1,4 +1,4 @@
-import * as helmet from 'helmet';
+import helmet from 'helmet';
 import { NestFactory } from '@nestjs/core';
 import { NestApplicationOptions, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';

@@ -9,7 +9,5 @@ export default registerAs('database', () => ({
   uri: process.env.WELTENBUMMLERPAAR_BACKEND_DATABASE_URI,
   options: {
     autoIndex: transformAutoIndex(),
-    useCreateIndex: true,
-    useFindAndModify: false,
   },
 }));
