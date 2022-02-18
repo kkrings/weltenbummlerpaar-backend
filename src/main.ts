@@ -31,9 +31,11 @@ async function bootstrap(): Promise<void> {
   setupOpenApi(app, appConfigService.openApiPath);
 
   const corsConfigService = app.get(CorsConfigService);
-  app.enableCors(corsConfigService.createCorsOptions());
+  const corsOptions = corsConfigService.createCorsOptions();
+  const corpOptions = corsConfigService.createCorpOptions(corsOptions);
 
-  app.use(helmet());
+  app.enableCors(corsOptions);
+  app.use(helmet(corpOptions));
 
   await app.listen(appConfigService.port);
 }

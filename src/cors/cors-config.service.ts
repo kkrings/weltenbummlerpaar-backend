@@ -7,6 +7,14 @@ export interface CorsOptions {
   methods: string[];
 }
 
+export interface Corp {
+  policy: 'same-origin' | 'cross-origin';
+}
+
+export interface CorpOptions {
+  crossOriginResourcePolicy: Corp;
+}
+
 @Injectable()
 export class CorsConfigService {
   constructor(
@@ -16,6 +24,18 @@ export class CorsConfigService {
 
   createCorsOptions(): CorsOptions {
     return { origin: this.corsOrigins, methods: this.config.methods };
+  }
+
+  createCorpOptions(corsOptions: CorsOptions): CorpOptions {
+    const policy = this.corsIsEnabled(corsOptions)
+      ? 'cross-origin'
+      : 'same-origin';
+
+    return { crossOriginResourcePolicy: { policy } };
+  }
+
+  corsIsEnabled(corsOptions: CorsOptions): boolean {
+    return corsOptions.origin !== false;
   }
 
   private get corsOrigins(): string[] | boolean {

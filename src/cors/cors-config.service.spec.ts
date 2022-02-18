@@ -1,7 +1,11 @@
 import { ConfigModule } from '@nestjs/config';
 import { TestingModule, Test, TestingModuleBuilder } from '@nestjs/testing';
 import { env } from 'process';
-import { CorsConfigService, CorsOptions } from './cors-config.service';
+import {
+  CorpOptions,
+  CorsConfigService,
+  CorsOptions,
+} from './cors-config.service';
 import corsConfig from './cors.config';
 
 describe('CorsConfigService', () => {
@@ -9,6 +13,7 @@ describe('CorsConfigService', () => {
   let service: CorsConfigService;
   let oldCorsOrigins: string;
   let corsOptions: CorsOptions;
+  let corpOptions: CorpOptions;
 
   beforeEach(() => {
     oldCorsOrigins = env.WELTENBUMMLERPAAR_BACKEND_CORS_ORIGINS;
@@ -42,8 +47,18 @@ describe('CorsConfigService', () => {
       corsOptions = service.createCorsOptions();
     });
 
+    beforeEach(() => {
+      corpOptions = service.createCorpOptions(corsOptions);
+    });
+
     it('CORS origins shoud have been set to CORS origins array', () => {
       expect(corsOptions.origin).toEqual(corsOrigins);
+    });
+
+    it("CORP should have been set to 'cross-origin'", () => {
+      expect(corpOptions.crossOriginResourcePolicy.policy).toEqual(
+        'cross-origin',
+      );
     });
   });
 
@@ -61,8 +76,18 @@ describe('CorsConfigService', () => {
       corsOptions = service.createCorsOptions();
     });
 
+    beforeEach(() => {
+      corpOptions = service.createCorpOptions(corsOptions);
+    });
+
     it('CORS origins shoud have been set to false', () => {
       expect(corsOptions.origin).toEqual(false);
+    });
+
+    it("CORP should have been set to 'same-origin'", () => {
+      expect(corpOptions.crossOriginResourcePolicy.policy).toEqual(
+        'same-origin',
+      );
     });
   });
 
