@@ -1,5 +1,6 @@
 import { registerAs } from '@nestjs/config';
+import { isRequired } from '../../config/config';
 
 export default registerAs('jwt', () => ({
-  secret: process.env.WELTENBUMMLERPAAR_BACKEND_JWT_SECRET,
+  secret: isRequired('WELTENBUMMLERPAAR_BACKEND_JWT_SECRET'),
 }));

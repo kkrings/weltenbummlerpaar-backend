@@ -1,6 +1,7 @@
 import { registerAs } from '@nestjs/config';
+import { isRequired } from '../config/config';
 
 export default registerAs('cors', () => ({
-  origins: process.env.WELTENBUMMLERPAAR_BACKEND_CORS_ORIGINS,
+  origins: isRequired('WELTENBUMMLERPAAR_BACKEND_CORS_ORIGINS'),
   methods: ['DELETE', 'GET', 'PATCH', 'POST'],
 }));

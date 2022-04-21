@@ -24,15 +24,19 @@ export class DiaryEntriesDBService extends DiaryEntriesDBServiceBase {
   }
 
   async findMany(params?: FindManyQueryParams): Promise<DiaryEntry[]> {
-    const { searchTags, skipDiaryEntries, numDiaryEntries } = params;
+    const searchTags = params?.searchTags;
 
     let query = this.diaryEntryModel
       .find(searchTags ? { searchTags: { $all: searchTags } } : {})
       .sort({ createdAt: -1 });
 
+    const skipDiaryEntries = params?.skipDiaryEntries;
+
     if (skipDiaryEntries) {
       query = query.skip(skipDiaryEntries);
     }
+
+    const numDiaryEntries = params?.numDiaryEntries;
 
     if (numDiaryEntries) {
       query = query.limit(numDiaryEntries);

@@ -55,3 +55,19 @@ export class Config {
   @IsString()
   WELTENBUMMLERPAAR_BACKEND_STATIC_FILES_ROOT_PATH?: string;
 }
+
+export class IsRequiredError extends Error {
+  constructor(name: string) {
+    super(`Environment variable '${name}' needs to be defined.`);
+  }
+}
+
+export const isRequired = (name: string): string => {
+  const value = process.env[name];
+
+  if (value === undefined) {
+    throw new IsRequiredError(name);
+  }
+
+  return value;
+};

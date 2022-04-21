@@ -17,7 +17,7 @@ export class SearchTagsDBService extends SearchTagsDBServiceBase {
   }
 
   async findMany(params?: FindManyQueryParams): Promise<SearchTag[]> {
-    const { searchTag } = params;
+    const searchTag = params?.searchTag;
 
     return await this.searchTagModel
       .find(

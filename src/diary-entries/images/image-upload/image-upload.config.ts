@@ -1,4 +1,5 @@
 import { registerAs } from '@nestjs/config';
+import { isRequired } from 'src/config/config';
 
 export interface ImageManipulationConfig {
   imageWidth: number;
@@ -10,10 +11,13 @@ export interface ImageUploadConfig {
   manipulation: ImageManipulationConfig;
 }
 
+const getImageUploadDestination = () =>
+  isRequired('WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION');
+
 export default registerAs(
   'imageUpload',
   (): ImageUploadConfig => ({
-    destination: process.env.WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION,
+    destination: getImageUploadDestination(),
     manipulation: { imageWidth: 2500, imageQuality: 75 },
   }),
 );
