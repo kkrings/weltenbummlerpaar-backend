@@ -1,4 +1,11 @@
-import { ArrayUnique, IsArray, IsString } from 'class-validator';
+import {
+  ArrayUnique,
+  IsArray,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { IsDateRange } from '../date-range/date-range.validation.decorator';
+import { DateRangeDto } from '../date-range/dto/date-range.dto';
 import { asImageDto, ImageDto } from '../images/dto/image.dto';
 import { DiaryEntry } from '../schemas/diary-entry.schema';
 
@@ -20,6 +27,13 @@ export class DiaryEntryDto {
    */
   @IsString()
   location: string;
+
+  /**
+   * The time period, the diary entry covers
+   */
+  @ValidateNested()
+  @IsDateRange()
+  dateRange?: DateRangeDto;
 
   /**
    * Diary entry's content
@@ -66,6 +80,7 @@ export function asDiaryEntryDto(diaryEntry: DiaryEntry): DiaryEntryDto {
     id: diaryEntry._id.toHexString(),
     title: diaryEntry.title,
     location: diaryEntry.location,
+    dateRange: diaryEntry.dateRange,
     body: diaryEntry.body,
     searchTags: diaryEntry.searchTags,
     images: images,

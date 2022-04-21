@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { BaseSchema } from '../../schemas/base.schema';
 import { Image } from '../images/schemas/image.schema';
+import { DateRange } from '../date-range/schemas/date-range.schema';
 
 export type DiaryEntryDocument = DiaryEntry & mongoose.Document;
 
@@ -12,6 +13,9 @@ export class DiaryEntry extends BaseSchema {
 
   @Prop({ required: true })
   location: string;
+
+  @Prop()
+  dateRange?: DateRange;
 
   @Prop({ required: true })
   body: string;
