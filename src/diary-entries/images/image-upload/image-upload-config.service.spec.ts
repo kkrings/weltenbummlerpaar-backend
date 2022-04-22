@@ -9,7 +9,7 @@ import { ImageUploadConfigService } from './image-upload-config.service';
 import imageUploadConfig, { ImageUploadConfig } from './image-upload.config';
 
 describe('ImageUploadConfigService', () => {
-  let oldDestination: string;
+  let oldDestination: string | undefined;
   let service: ImageUploadConfigService;
 
   const mockConfig: ImageUploadConfig = {

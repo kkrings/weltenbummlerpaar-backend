@@ -1,5 +1,5 @@
 import { registerAs } from '@nestjs/config';
-import { isRequired } from 'src/config/config';
+import { isRequired } from '../../../config/config';
 
 export interface ImageManipulationConfig {
   imageWidth: number;

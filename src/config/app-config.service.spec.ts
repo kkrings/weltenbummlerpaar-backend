@@ -7,8 +7,8 @@ import appConfig from './app.config';
 describe('AppConfigService', () => {
   const port = 3000;
 
-  let oldPort: string;
-  let oldPrefix: string;
+  let oldPort: string | undefined;
+  let oldPrefix: string | undefined;
 
   let service: AppConfigService;
 

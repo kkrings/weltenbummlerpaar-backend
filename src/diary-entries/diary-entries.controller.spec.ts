@@ -333,7 +333,7 @@ describe('DiaryEntriesController', () => {
     it('diary entry should have been returned', () => {
       const expectedDiaryEntryDto: DiaryEntryDto = {
         id: updateOneQueryParams.id,
-        title: updateDiaryEntryDto.title,
+        title: updateDiaryEntryDto.title ?? '',
         location: mockService.diaryEntry.location,
         body: mockService.diaryEntry.body,
         searchTags: mockService.diaryEntry.searchTags,

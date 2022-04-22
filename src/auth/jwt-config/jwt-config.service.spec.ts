@@ -8,7 +8,7 @@ import jwtConfig from './jwt.config';
 describe('JwtConfigService', () => {
   const jwtSecret = 'some secret';
 
-  let oldJwtSecret: string;
+  let oldJwtSecret: string | undefined;
   let service: JwtConfigService;
   let jwtOptions: JwtModuleOptions;
 

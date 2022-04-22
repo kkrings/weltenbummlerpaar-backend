@@ -1,4 +1,3 @@
-import { Express } from 'express';
 import { FileFilterCallback } from 'multer';
 import {
   Inject,

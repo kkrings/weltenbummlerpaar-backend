@@ -6,7 +6,7 @@ import { StaticFilesConfigService } from './static-files-config.service';
 import staticFilesConfig from './static-files.config';
 
 describe('StaticFilesConfigService', () => {
-  let oldRootPath: string;
+  let oldRootPath: string | undefined;
   let moduleBuilder: TestingModuleBuilder;
   let service: StaticFilesConfigService;
   let staticFilesOptions: ServeStaticModuleOptions[];

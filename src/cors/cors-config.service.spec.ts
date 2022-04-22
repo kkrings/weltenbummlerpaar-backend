@@ -11,7 +11,7 @@ import corsConfig from './cors.config';
 describe('CorsConfigService', () => {
   let moduleBuilder: TestingModuleBuilder;
   let service: CorsConfigService;
-  let oldCorsOrigins: string;
+  let oldCorsOrigins: string | undefined;
   let corsOptions: CorsOptions;
   let corpOptions: CorpOptions;
 

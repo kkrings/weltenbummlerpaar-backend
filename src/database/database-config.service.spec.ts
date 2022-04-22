@@ -6,8 +6,8 @@ import { DatabaseConfigService } from './database-config.service';
 import databaseConfig from './database.config';
 
 describe('DatabaseConfigService', () => {
-  let oldDatabaseUri: string;
-  let oldDatabaseAutoIndex: string;
+  let oldDatabaseUri: string | undefined;
+  let oldDatabaseAutoIndex: string | undefined;
   let databaseOptions: MongooseModuleOptions;
 
   const loadDatabaseOptions = async () => {

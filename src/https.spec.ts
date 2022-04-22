@@ -69,8 +69,8 @@ describe('readHttpsCerts', () => {
     });
 
     describe('overriden with non-existing cert and key via env', () => {
-      let oldKeyPath: string;
-      let oldCertPath: string;
+      let oldKeyPath: string | undefined;
+      let oldCertPath: string | undefined;
 
       beforeAll(() => {
         const keyPath = join(workDir, 'some_other.key');
