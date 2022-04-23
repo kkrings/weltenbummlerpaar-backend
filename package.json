@@ -1,6 +1,6 @@
 {
   "name": "weltenbummlerpaar-backend",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Travel diary web application - Nest-based back end",
   "author": "Kai Krings <kai.krings@posteo.de>",
   "repository": "github:kkrings/weltenbummlerpaar-backend",
