@@ -1,13 +1,15 @@
 import { MongoClient } from 'mongodb';
 import { insertDiaryEntries } from './diary-entries';
+import { insertImages } from './images';
 import { insertSearchTags } from './search-tags';
 
 export async function setupDB(url: string): Promise<TeardownDB> {
   const connection = await MongoClient.connect(url);
 
-  const datebase = connection.db();
-  await insertDiaryEntries(datebase);
-  await insertSearchTags(datebase);
+  const database = connection.db();
+  await insertDiaryEntries(database);
+  await insertSearchTags(database);
+  await insertImages(database);
 
   return async () => await teardownDB(connection);
 }
