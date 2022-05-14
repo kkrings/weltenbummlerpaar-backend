@@ -1,18 +1,14 @@
 name: Weltenbummlerpaar Backend CI
 on:
-  push:
-    branches:
-    - main
   pull_request:
     branches:
     - main
 jobs:
-  build:
+  Build, Test, and Lint:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Build, Test, and Lint
-      uses: actions/setup-node@v2
+    - uses: actions/setup-node@v2
       with:
         node-version: 16.x
         cache: 'npm'
@@ -20,3 +16,12 @@ jobs:
     - run: npm run build
     - run: npm run lint
     - run: npm run test
+    - uses: supercharge/mongodb-github-action@1.7.0
+    - run: npm run test:e2e
+      env:
+        WELTENBUMMLERPAAR_BACKEND_APP_PORT: '3000'
+        WELTENBUMMLERPAAR_BACKEND_CORS_ORIGINS: '[]'
+        WELTENBUMMLERPAAR_BACKEND_DATABASE_URI: 'mongodb://localhost:27017/weltenbummlerpaar'
+        WELTENBUMMLERPAAR_BACKEND_DATABASE_AUTO_INDEX: 'true'
+        WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION: './public/image-uploads'
+        WELTENBUMMLERPAAR_BACKEND_JWT_SECRET: 'some secret'
