@@ -44,6 +44,9 @@ After configuring the application, its dependencies need to be installed:
 
     npm install
 
+Note that the application depends on Node packages that live in GitHub's npm
+registry, into which you need to login first.
+
 The next step is to build the application:
 
     npm run build
