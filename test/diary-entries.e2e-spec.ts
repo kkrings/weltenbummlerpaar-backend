@@ -1,10 +1,13 @@
 import * as request from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
+import {
+  getDiaryEntries,
+  setupDB,
+  TeardownDB,
+} from '@kkrings/weltenbummlerpaar-e2e-data';
 import { AppModule } from './../src/app.module';
 import { DatabaseConfigService } from './../src/database/database-config.service';
-import { setupDB, TeardownDB } from './data/database';
-import { diaryEntriesOutput } from './data/diary-entries';
 
 describe('DiaryEntriesController (e2e)', () => {
   let app: INestApplication;
@@ -28,7 +31,7 @@ describe('DiaryEntriesController (e2e)', () => {
   it('/ (GET)', async () => {
     const response = await request(app.getHttpServer()).get('/diary-entries');
     expect(response.statusCode).toEqual(200);
-    expect(response.body).toEqual(diaryEntriesOutput.reverse());
+    expect(response.body).toEqual(getDiaryEntries().reverse());
   });
 
   afterEach(async () => {

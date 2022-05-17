@@ -7,6 +7,8 @@ on:
 jobs:
   Build_Test_and_Lint:
     runs-on: ubuntu-latest
+    permissions:
+      packages: read
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
@@ -20,6 +22,7 @@ jobs:
     - uses: supercharge/mongodb-github-action@1.7.0
     - run: npm run test:e2e
       env:
+        NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
         WELTENBUMMLERPAAR_BACKEND_APP_PORT: '3000'
         WELTENBUMMLERPAAR_BACKEND_CORS_ORIGINS: '[]'
         WELTENBUMMLERPAAR_BACKEND_DATABASE_URI: 'mongodb://localhost:27017/weltenbummlerpaar'
