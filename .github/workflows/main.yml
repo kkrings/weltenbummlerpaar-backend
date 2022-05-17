@@ -16,13 +16,14 @@ jobs:
         node-version: 16.x
         cache: 'npm'
     - run: npm ci
+      env:
+        NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
     - run: npm run build
     - run: npm run lint
     - run: npm run test
     - uses: supercharge/mongodb-github-action@1.7.0
     - run: npm run test:e2e
       env:
-        NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
         WELTENBUMMLERPAAR_BACKEND_APP_PORT: '3000'
         WELTENBUMMLERPAAR_BACKEND_CORS_ORIGINS: '[]'
         WELTENBUMMLERPAAR_BACKEND_DATABASE_URI: 'mongodb://localhost:27017/weltenbummlerpaar'
