@@ -16,7 +16,6 @@
 		"mongodb.mongodb-vscode" 
 	],
 	"forwardPorts": [3000],
-	"postCreateCommand": "npm install",
 	"remoteUser": "node",
 	"features": {
 		"git": "os-provided"
