@@ -104,7 +104,7 @@
     "testEnvironment": "node"
   },
   "lint-staged": {
-    "src/**/*.ts": [
+    "{src,test}/**/*.ts": [
       "eslint --fix",
       "prettier --write"
     ]
