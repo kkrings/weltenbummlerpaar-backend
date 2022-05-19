@@ -1,10 +1,8 @@
-import helmet from 'helmet';
 import { NestFactory } from '@nestjs/core';
-import { NestApplicationOptions, ValidationPipe } from '@nestjs/common';
+import { NestApplicationOptions } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { AppConfigService } from './config/app-config.service';
-import { CorsConfigService } from './cors/cors-config.service';
-import { setupOpenApi } from './openapi';
+import { setupPipes, setupOpenApi, setupCors } from './setup';
 import { readHttpsCerts } from './https';
 
 async function appOptions(): Promise<NestApplicationOptions> {
@@ -21,21 +19,9 @@ async function bootstrap(): Promise<void> {
   const appConfigService = app.get(AppConfigService);
   app.setGlobalPrefix(appConfigService.prefix);
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      transformOptions: { enableImplicitConversion: true },
-    }),
-  );
-
+  setupPipes(app);
   setupOpenApi(app, appConfigService.openApiPath);
-
-  const corsConfigService = app.get(CorsConfigService);
-  const corsOptions = corsConfigService.createCorsOptions();
-  const corpOptions = corsConfigService.createCorpOptions(corsOptions);
-
-  app.enableCors(corsOptions);
-  app.use(helmet(corpOptions));
+  setupCors(app);
 
   await app.listen(appConfigService.port);
 }
