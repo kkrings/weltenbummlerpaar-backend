@@ -1,10 +1,7 @@
 import * as request from 'supertest';
-import {
-  getDiaryEntries,
-  TeardownDB,
-} from '@kkrings/weltenbummlerpaar-e2e-data';
+import { getDiaryEntries } from '@kkrings/weltenbummlerpaar-e2e-data';
 import { INestApplication } from '@nestjs/common';
-import { setupApp, setupDB } from './setup';
+import { setupApp, setupDB, TeardownDB } from './setup';
 
 describe('DiaryEntriesController.findMany (e2e)', () => {
   let app: INestApplication;

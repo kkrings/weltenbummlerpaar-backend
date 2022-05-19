@@ -1,13 +1,12 @@
 import * as request from 'supertest';
-import {
-  TeardownDB,
-  setupDB as _setupDB,
-} from '@kkrings/weltenbummlerpaar-e2e-data';
+import * as data from '@kkrings/weltenbummlerpaar-e2e-data';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from './../src/app.module';
 import { DatabaseConfigService } from '../src/database/database-config.service';
 import { setupPipes } from './../src/setup';
+
+export type TeardownDB = data.TeardownDB;
 
 export async function setupApp(): Promise<INestApplication> {
   const module = await Test.createTestingModule({
@@ -25,7 +24,7 @@ export async function setupApp(): Promise<INestApplication> {
 export async function setupDB(app: INestApplication): Promise<TeardownDB> {
   const config = app.get(DatabaseConfigService).createMongooseOptions();
   expect(config.uri).toBeDefined();
-  return await _setupDB(config.uri as string);
+  return await data.setupDB(config.uri as string);
 }
 
 export async function login(app: INestApplication): Promise<string> {
