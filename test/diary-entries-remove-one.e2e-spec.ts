@@ -1,8 +1,5 @@
 import * as request from 'supertest';
-import {
-  DiaryEntryDto,
-  getDiaryEntries,
-} from '@kkrings/weltenbummlerpaar-e2e-data';
+import * as data from '@kkrings/weltenbummlerpaar-e2e-data';
 import { INestApplication } from '@nestjs/common';
 import { login, setupApp, setupDB, TeardownDB } from './setup';
 
@@ -24,11 +21,11 @@ describe('DiaryEntriesController.removeOne', () => {
   });
 
   describe('/{id} (DELETE)', () => {
-    let diaryEntry: DiaryEntryDto;
+    let diaryEntry: data.DiaryEntryDto;
     let response: request.Response;
 
     beforeEach(() => {
-      diaryEntry = getDiaryEntries()[0];
+      diaryEntry = data.getDiaryEntries()[0];
     });
 
     beforeEach(async () => {
