@@ -3,10 +3,10 @@ import * as data from '@kkrings/weltenbummlerpaar-e2e-data';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from './../src/app.module';
-import { DatabaseConfigService } from '../src/database/database-config.service';
 import { setupPipes } from './../src/setup';
+import { getDatabaseUri, getImageUploadDir } from './utils';
 
-export type TeardownDB = data.TeardownDB;
+export type TeardownData = data.Teardown;
 
 export async function setupApp(): Promise<INestApplication> {
   const module = await Test.createTestingModule({
@@ -21,10 +21,11 @@ export async function setupApp(): Promise<INestApplication> {
   return app;
 }
 
-export async function setupDB(app: INestApplication): Promise<TeardownDB> {
-  const config = app.get(DatabaseConfigService).createMongooseOptions();
-  expect(config.uri).toBeDefined();
-  return await data.setupDB(config.uri as string);
+export async function setupData(app: INestApplication): Promise<TeardownData> {
+  return await data.setupData({
+    url: getDatabaseUri(app),
+    storage: getImageUploadDir(app),
+  });
 }
 
 export async function login(app: INestApplication): Promise<string> {

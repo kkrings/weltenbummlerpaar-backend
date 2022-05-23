@@ -1,18 +1,18 @@
 import * as request from 'supertest';
 import { getDiaryEntries } from '@kkrings/weltenbummlerpaar-e2e-data';
 import { INestApplication } from '@nestjs/common';
-import { setupApp, setupDB, TeardownDB } from './setup';
+import { setupApp, setupData, TeardownData } from './setup';
 
 describe('DiaryEntriesController.count (e2e)', () => {
   let app: INestApplication;
-  let teardownDB: TeardownDB;
+  let teardownData: TeardownData;
 
   beforeEach(async () => {
     app = await setupApp();
   });
 
   beforeEach(async () => {
-    teardownDB = await setupDB(app);
+    teardownData = await setupData(app);
   });
 
   it('/count', async () => {
@@ -55,6 +55,6 @@ describe('DiaryEntriesController.count (e2e)', () => {
   });
 
   afterEach(async () => {
-    await teardownDB();
+    await teardownData();
   });
 });

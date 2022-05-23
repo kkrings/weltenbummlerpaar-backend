@@ -47,7 +47,7 @@ describe('DiaryEntriesController.create (e2e)', () => {
     });
   });
 
-  describe('/ (POST), with valid date range', () => {
+  describe('/ (POST); valid date range', () => {
     let createDiaryEntryDto: CreateDiaryEntryDto;
     let response: request.Response;
 
@@ -83,6 +83,113 @@ describe('DiaryEntriesController.create (e2e)', () => {
         body: response.body.body,
         searchTags: response.body.searchTags,
       }).toEqual(createDiaryEntryDto);
+    });
+  });
+
+  describe('/ (POST); invalid start date', () => {
+    let response: request.Response;
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .post('/diary-entries')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          title: 'some title',
+          location: 'some location',
+          dateRange: {
+            dateMin: 'invalid start date',
+            dateMax: '2020-02-14',
+          },
+          body: 'some body',
+          searchTags: ['some search tag'],
+        });
+    });
+
+    it('status code should be equal to 400', () => {
+      expect(response.statusCode).toEqual(400);
+    });
+  });
+
+  describe('/ (POST); invalid end date', () => {
+    let response: request.Response;
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .post('/diary-entries')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          title: 'some title',
+          location: 'some location',
+          dateRange: {
+            dateMin: '2020-02-14',
+            dateMax: 'invalid end date',
+          },
+          body: 'some body',
+          searchTags: ['some search tag'],
+        });
+    });
+
+    it('status code should be equal to 400', () => {
+      expect(response.statusCode).toEqual(400);
+    });
+  });
+
+  describe('/ (POST); invalid date range', () => {
+    let response: request.Response;
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .post('/diary-entries')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          title: 'some title',
+          location: 'some location',
+          dateRange: {
+            dateMin: '2020-02-14',
+            dateMax: '2020-02-13',
+          },
+          body: 'some body',
+          searchTags: ['some search tag'],
+        });
+    });
+
+    it('status code should be equal to 400', () => {
+      expect(response.statusCode).toEqual(400);
+    });
+  });
+
+  describe('/ (POST); invalid search tags', () => {
+    let response: request.Response;
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .post('/diary-entries')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          title: 'some title',
+          location: 'some location',
+          body: 'some body',
+          searchTags: ['some search tag', 'some search tag'],
+        });
+    });
+
+    it('status code should be equal to 400', () => {
+      expect(response.statusCode).toEqual(400);
+    });
+  });
+
+  describe('/ (POST); invalid diary entry', () => {
+    let response: request.Response;
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .post('/diary-entries')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({});
+    });
+
+    it('status code should be equal to 400', () => {
+      expect(response.statusCode).toEqual(400);
     });
   });
 
