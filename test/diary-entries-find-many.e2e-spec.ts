@@ -1,18 +1,18 @@
 import * as request from 'supertest';
 import { getDiaryEntries } from '@kkrings/weltenbummlerpaar-e2e-data';
 import { INestApplication } from '@nestjs/common';
-import { setupApp, setupDB, TeardownDB } from './setup';
+import { setupApp, setupData, TeardownData } from './setup';
 
 describe('DiaryEntriesController.findMany (e2e)', () => {
   let app: INestApplication;
-  let teardownDB: TeardownDB;
+  let teardownDB: TeardownData;
 
   beforeEach(async () => {
     app = await setupApp();
   });
 
   beforeEach(async () => {
-    teardownDB = await setupDB(app);
+    teardownDB = await setupData(app);
   });
 
   it('/', async () => {

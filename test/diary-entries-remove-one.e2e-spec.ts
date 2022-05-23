@@ -1,12 +1,12 @@
 import * as request from 'supertest';
 import * as data from '@kkrings/weltenbummlerpaar-e2e-data';
 import { INestApplication } from '@nestjs/common';
-import { login, setupApp, setupDB, TeardownDB } from './setup';
+import { login, setupApp, setupData, TeardownData } from './setup';
 
 describe('DiaryEntriesController.removeOne', () => {
   let app: INestApplication;
   let accessToken: string;
-  let teardownDB: TeardownDB;
+  let teardownDB: TeardownData;
 
   beforeEach(async () => {
     app = await setupApp();
@@ -17,7 +17,7 @@ describe('DiaryEntriesController.removeOne', () => {
   });
 
   beforeEach(async () => {
-    teardownDB = await setupDB(app);
+    teardownDB = await setupData(app);
   });
 
   describe('/{id} (DELETE)', () => {
