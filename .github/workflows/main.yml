@@ -15,7 +15,7 @@ jobs:
       WELTENBUMMLERPAAR_BACKEND_CORS_ORIGINS: '[]'
       WELTENBUMMLERPAAR_BACKEND_DATABASE_URI: 'mongodb://localhost:27017/weltenbummlerpaar'
       WELTENBUMMLERPAAR_BACKEND_DATABASE_AUTO_INDEX: 'true'
-      WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION: './public/image-uploads'
+      WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION: '/tmp/weltenbummlerpaar/image-uploads'
       WELTENBUMMLERPAAR_BACKEND_JWT_SECRET: 'some secret'
     steps:
     - uses: actions/checkout@v3
@@ -32,4 +32,5 @@ jobs:
     - run: npm run test
     - uses: supercharge/mongodb-github-action@1.7.0
     - run: npm run register:admin -- --username admin --password admin
+    - run: mkdir -p $WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION
     - run: npm run test:e2e
