@@ -5,14 +5,14 @@ import { setupApp, setupData, TeardownData } from './setup';
 
 describe('DiaryEntriesController.fineOne', () => {
   let app: INestApplication;
-  let teardownDB: TeardownData;
+  let teardownData: TeardownData;
 
   beforeEach(async () => {
     app = await setupApp();
   });
 
   beforeEach(async () => {
-    teardownDB = await setupData(app);
+    teardownData = await setupData(app);
   });
 
   describe('/{id} (GET)', () => {
@@ -67,6 +67,6 @@ describe('DiaryEntriesController.fineOne', () => {
   });
 
   afterEach(async () => {
-    await teardownDB();
+    await teardownData();
   });
 });

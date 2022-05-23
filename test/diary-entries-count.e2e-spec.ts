@@ -5,14 +5,14 @@ import { setupApp, setupData, TeardownData } from './setup';
 
 describe('DiaryEntriesController.count (e2e)', () => {
   let app: INestApplication;
-  let teardownDB: TeardownData;
+  let teardownData: TeardownData;
 
   beforeEach(async () => {
     app = await setupApp();
   });
 
   beforeEach(async () => {
-    teardownDB = await setupData(app);
+    teardownData = await setupData(app);
   });
 
   it('/count', async () => {
@@ -55,6 +55,6 @@ describe('DiaryEntriesController.count (e2e)', () => {
   });
 
   afterEach(async () => {
-    await teardownDB();
+    await teardownData();
   });
 });

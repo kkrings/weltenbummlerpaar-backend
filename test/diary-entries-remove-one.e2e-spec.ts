@@ -6,7 +6,7 @@ import { login, setupApp, setupData, TeardownData } from './setup';
 describe('DiaryEntriesController.removeOne', () => {
   let app: INestApplication;
   let accessToken: string;
-  let teardownDB: TeardownData;
+  let teardownData: TeardownData;
 
   beforeEach(async () => {
     app = await setupApp();
@@ -17,7 +17,7 @@ describe('DiaryEntriesController.removeOne', () => {
   });
 
   beforeEach(async () => {
-    teardownDB = await setupData(app);
+    teardownData = await setupData(app);
   });
 
   describe('/{id} (DELETE)', () => {
@@ -73,6 +73,6 @@ describe('DiaryEntriesController.removeOne', () => {
   });
 
   afterEach(async () => {
-    await teardownDB();
+    await teardownData();
   });
 });

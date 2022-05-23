@@ -5,14 +5,14 @@ import { login, setupApp, setupData, TeardownData } from './setup';
 
 describe('SearchTagsController', () => {
   let app: INestApplication;
-  let teardownDB: TeardownData;
+  let teardownData: TeardownData;
 
   beforeEach(async () => {
     app = await setupApp();
   });
 
   beforeEach(async () => {
-    teardownDB = await setupData(app);
+    teardownData = await setupData(app);
   });
 
   describe('/ (GET)', () => {
@@ -128,6 +128,6 @@ describe('SearchTagsController', () => {
   });
 
   afterEach(async () => {
-    await teardownDB();
+    await teardownData();
   });
 });
