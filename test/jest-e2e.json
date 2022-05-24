@@ -1,4 +1,11 @@
 {
+  "globals": {
+    "ts-jest": {
+      "astTransformers": {
+        "before": ["test/enable-swagger-plugin.js"]
+      }
+    }
+  },
   "maxWorkers": 1,
   "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": ".",
