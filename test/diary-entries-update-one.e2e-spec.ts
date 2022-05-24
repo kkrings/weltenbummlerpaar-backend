@@ -24,22 +24,19 @@ describe('DiaryEntriesController.updateOne', () => {
   });
 
   beforeEach(() => {
-    diaryEntry = data.getDiaryEntries()[0];
+    diaryEntry = data.getDiaryEntries()[2];
   });
 
   beforeEach(() => {
-    updateDiaryEntryDto = {
-      title: 'some updated title',
-      location: 'some updated location',
-      body: 'some updated body',
-      searchTags: ['some updated search tag'],
-    };
+    updateDiaryEntryDto = { title: 'some updated title' };
   });
 
-  describe('/{id} (PATCH)', () => {
+  describe('/{id} (PATCH); patch title', () => {
     let response: request.Response;
 
     beforeEach(async () => {
+      expect(diaryEntry.title).not.toEqual(updateDiaryEntryDto.title);
+
       response = await request(app.getHttpServer())
         .patch(`/diary-entries/${diaryEntry.id}`)
         .set('Authorization', `Bearer ${accessToken}`)
@@ -52,13 +49,20 @@ describe('DiaryEntriesController.updateOne', () => {
         id: response.body.id,
         title: response.body.title,
         location: response.body.location,
+        dateRange: response.body.dateRange,
         body: response.body.body,
         searchTags: response.body.searchTags,
+        previewImage: response.body.previewImage,
         images: response.body.images,
         createdAt: response.body.createdAt,
       }).toEqual({
         id: diaryEntry.id,
-        ...updateDiaryEntryDto,
+        title: updateDiaryEntryDto.title,
+        location: diaryEntry.location,
+        dateRange: diaryEntry.dateRange,
+        body: diaryEntry.body,
+        searchTags: diaryEntry.searchTags,
+        previewImage: diaryEntry.previewImage,
         images: diaryEntry.images,
         createdAt: diaryEntry.createdAt,
       });
@@ -97,6 +101,46 @@ describe('DiaryEntriesController.updateOne', () => {
     });
   });
 
+  describe('/{id} (PATCH); patch preview image', () => {
+    let response: request.Response;
+
+    beforeEach(async () => {
+      expect(diaryEntry.previewImage).not.toEqual(diaryEntry.images[1]);
+
+      response = await request(app.getHttpServer())
+        .patch(`/diary-entries/${diaryEntry.id}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ previewImage: diaryEntry.images[1].id })
+        .expect(200);
+    });
+
+    it('updated diary entry should have been sent', () => {
+      expect({
+        id: response.body.id,
+        title: response.body.title,
+        location: response.body.location,
+        dateRange: response.body.dateRange,
+        body: response.body.body,
+        searchTags: response.body.searchTags,
+        previewImage: response.body.previewImage,
+        images: response.body.images,
+        createdAt: response.body.createdAt,
+      }).toEqual({
+        id: diaryEntry.id,
+        title: diaryEntry.title,
+        location: diaryEntry.location,
+        dateRange: diaryEntry.dateRange,
+        body: diaryEntry.body,
+        searchTags: diaryEntry.searchTags,
+        previewImage: diaryEntry.images[1],
+        images: diaryEntry.images,
+        createdAt: diaryEntry.createdAt,
+      });
+
+      expect(response.body.updated).not.toEqual(diaryEntry.updatedAt);
+    });
+  });
+
   describe('/{id} (PATCH); invalid preview image ID', () => {
     let response: request.Response;
 
@@ -104,10 +148,7 @@ describe('DiaryEntriesController.updateOne', () => {
       response = await request(app.getHttpServer())
         .patch(`/diary-entries/${diaryEntry.id}`)
         .set('Authorization', `Bearer ${accessToken}`)
-        .send({
-          ...updateDiaryEntryDto,
-          previewImage: 'invalidmongoid',
-        });
+        .send({ previewImage: 'invalidmongoid' });
     });
 
     it('status code should be equal to 400', () => {
@@ -122,10 +163,7 @@ describe('DiaryEntriesController.updateOne', () => {
       response = await request(app.getHttpServer())
         .patch(`/diary-entries/${diaryEntry.id}`)
         .set('Authorization', `Bearer ${accessToken}`)
-        .send({
-          ...updateDiaryEntryDto,
-          previewImage: data.getDiaryEntries()[2].previewImage?.id,
-        });
+        .send({ previewImage: data.getDiaryEntries()[1].previewImage?.id });
     });
 
     it('status code should be equal to 404', () => {

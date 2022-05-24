@@ -183,12 +183,7 @@ describe('SearchTagsController', () => {
       return await request(app.getHttpServer())
         .patch(`/diary-entries/${diaryEntry.id}`)
         .set('Authorization', `Bearer ${accessToken}`)
-        .send({
-          // title: diaryEntry.title,
-          // location: diaryEntry.location,
-          // body: diaryEntry.body,
-          searchTags: ['some search tag', 'A New Search Tag'],
-        })
+        .send({ searchTags: ['some search tag', 'A New Search Tag'] })
         .expect(200);
     });
 
