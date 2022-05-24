@@ -25,7 +25,7 @@ describe('SearchTagsController', () => {
         .expect(200);
     });
 
-    it('all search tags should have been sent', () => {
+    it('three search tags should have been sent', () => {
       expect(response.body).toEqual([
         'some other search tag',
         'some search tag',
@@ -43,7 +43,7 @@ describe('SearchTagsController', () => {
         .expect(200);
     });
 
-    it('only two search tags should have been sent', () => {
+    it('two search tags should have been sent', () => {
       expect(response.body).toEqual([
         'some other search tag',
         'some search tag',
@@ -60,7 +60,7 @@ describe('SearchTagsController', () => {
         .expect(200);
     });
 
-    it('only one search tag should have been sent', () => {
+    it('one search tag should have been sent', () => {
       expect(response.body).toEqual(['yet another search tag']);
     });
   });
@@ -86,7 +86,7 @@ describe('SearchTagsController', () => {
         .expect(200);
     });
 
-    it('all search tags should have been sent', () => {
+    it('three search tags should have been sent', () => {
       expect(response.body).toEqual([
         'some other search tag',
         'some search tag',
@@ -116,7 +116,7 @@ describe('SearchTagsController', () => {
         .expect(200);
     });
 
-    it('only two search tags should have been sent', () => {
+    it('two search tags should have been sent', () => {
       expect(response.body).toEqual([
         'some other search tag',
         'some search tag',
@@ -147,9 +147,9 @@ describe('SearchTagsController', () => {
     });
 
     it('four search tags should have been sent', async () => {
-      const response = await request(app.getHttpServer())
-        .get('/search-tags')
-        .expect(200);
+      const response = await request(app.getHttpServer()).get('/search-tags');
+
+      expect(response.statusCode).toEqual(200);
 
       expect(response.body).toEqual([
         'A New Search Tag',
@@ -159,12 +159,51 @@ describe('SearchTagsController', () => {
       ]);
     });
 
-    it("only 'A New Search Tag' should have been sent", async () => {
-      const response = await request(app.getHttpServer())
-        .get('/search-tags?searchTag=NEW')
-        .expect(200);
+    it("'A New Search Tag' should have been sent", async () => {
+      const response = await request(app.getHttpServer()).get(
+        '/search-tags?searchTag=NEW',
+      );
 
+      expect(response.statusCode).toEqual(200);
       expect(response.body).toEqual(['A New Search Tag']);
+    });
+  });
+
+  describe('after #diaryEntries[2] updated', () => {
+    let accessToken: string;
+    let response: request.Response;
+
+    beforeEach(async () => {
+      accessToken = await login(app);
+    });
+
+    beforeEach(async () => {
+      const diaryEntry = data.getDiaryEntries()[2];
+
+      return await request(app.getHttpServer())
+        .patch(`/diary-entries/${diaryEntry.id}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          title: diaryEntry.title,
+          location: diaryEntry.location,
+          body: diaryEntry.body,
+          searchTags: ['some search tag', 'A New Search Tag'],
+        })
+        .expect(200);
+    });
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .get('/search-tags')
+        .expect(200);
+    });
+
+    it('three search tags should have been sent', () => {
+      expect(response.body).toEqual([
+        'A New Search Tag',
+        'some other search tag',
+        'some search tag',
+      ]);
     });
   });
 
