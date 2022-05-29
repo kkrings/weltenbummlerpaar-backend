@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { throwOnNull } from '../../schemas/base.schema';
+import { onlyDefined } from '../../utils/only-defined';
 import { DiaryEntry } from '../schemas/diary-entry.schema';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
@@ -35,7 +36,11 @@ export class ImagesDBService extends ImagesDBServiceBase {
       imageId,
       async () =>
         await this.imageModel
-          .findByIdAndUpdate(imageId, { $set: updateImageDto }, { new: true })
+          .findByIdAndUpdate(
+            imageId,
+            { $set: onlyDefined(updateImageDto) },
+            { new: true },
+          )
           .exec(),
     );
   }

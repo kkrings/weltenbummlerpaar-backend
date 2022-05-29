@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { throwOnNull } from '../schemas/base.schema';
+import { onlyDefined } from '../utils/only-defined';
 import { DiaryEntriesDBServiceBase } from './diary-entries.db.service.base';
 import { CountQueryParams } from './dto/count-query-params.dto';
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto';
@@ -77,7 +78,7 @@ export class DiaryEntriesDBService extends DiaryEntriesDBServiceBase {
         await this.diaryEntryModel
           .findByIdAndUpdate(
             diaryEntryId,
-            { $set: updateDiaryEntryDto as any },
+            { $set: onlyDefined(updateDiaryEntryDto) },
             { new: true },
           )
           .populate('images')
