@@ -48,11 +48,11 @@ export class DiaryEntriesService {
   ): Promise<DiaryEntry> {
     const diaryEntry = await this.findOne(diaryEntryId);
 
-    if (updateDiaryEntryDto.images !== undefined) {
+    if (updateDiaryEntryDto.images != null) {
       this.validateReorderedImageIds(updateDiaryEntryDto.images, diaryEntry);
     }
 
-    if (updateDiaryEntryDto.previewImage !== undefined) {
+    if (updateDiaryEntryDto.previewImage != null) {
       this.validateImageId(updateDiaryEntryDto.previewImage, diaryEntry);
     }
 
@@ -61,7 +61,11 @@ export class DiaryEntriesService {
       updateDiaryEntryDto,
     );
 
-    if (updateDiaryEntryDto.searchTags !== undefined) {
+    if (updateDiaryEntryDto.dateRange === null) {
+      await this.diaryEntriesDBService.unsetDateRange(diaryEntryId);
+    }
+
+    if (updateDiaryEntryDto.searchTags != null) {
       await this.searchTagsService.updateMany(
         updateDiaryEntryDto.searchTags,
         diaryEntry,

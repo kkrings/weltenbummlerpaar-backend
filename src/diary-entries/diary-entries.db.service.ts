@@ -144,4 +144,18 @@ export class DiaryEntriesDBService extends DiaryEntriesDBServiceBase {
           .exec(),
     );
   }
+
+  async unsetDateRange(diaryEntryId: string): Promise<DiaryEntry> {
+    return await throwOnNull(
+      diaryEntryId,
+      async () =>
+        await this.diaryEntryModel
+          .findByIdAndUpdate(diaryEntryId, {
+            $unset: { dateRange: null },
+          })
+          .populate('images')
+          .populate('previewImage')
+          .exec(),
+    );
+  }
 }

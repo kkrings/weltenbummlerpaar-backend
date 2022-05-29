@@ -21,10 +21,14 @@ export class DiaryEntriesDBServiceMock extends DiaryEntriesDBServiceBase {
   async create(createDiaryEntryDto: CreateDiaryEntryDto): Promise<DiaryEntry> {
     const diaryEntry: DiaryEntry = {
       _id: new ObjectId(),
+      title: createDiaryEntryDto.title,
+      location: createDiaryEntryDto.location,
+      dateRange: createDiaryEntryDto.dateRange ?? undefined,
+      body: createDiaryEntryDto.body,
+      searchTags: createDiaryEntryDto.searchTags,
+      images: [],
       createdAt: new Date(),
       updatedAt: new Date(),
-      images: [],
-      ...createDiaryEntryDto,
     };
 
     this.diaryEntriesCollection.push(diaryEntry);
@@ -76,13 +80,21 @@ export class DiaryEntriesDBServiceMock extends DiaryEntriesDBServiceBase {
         diaryEntry.images.filter((image) => image._id.equals(imageId))[0],
     );
 
+    const previewImage = diaryEntry.images
+      .filter((image) =>
+        image._id.equals(updateDiaryEntryDto.previewImage ?? ''),
+      )
+      .shift();
+
     const updatedDiaryEntry: DiaryEntry = {
       _id: diaryEntry._id,
       title: updateDiaryEntryDto.title ?? diaryEntry.title,
       location: updateDiaryEntryDto.location ?? diaryEntry.location,
+      dateRange: updateDiaryEntryDto.dateRange ?? diaryEntry.dateRange,
       body: updateDiaryEntryDto.body ?? diaryEntry.body,
       searchTags: updateDiaryEntryDto.searchTags ?? diaryEntry.searchTags,
       images: images ?? diaryEntry.images,
+      previewImage: previewImage ?? diaryEntry.previewImage,
       createdAt: diaryEntry.createdAt,
       updatedAt: new Date(diaryEntry.createdAt.getTime() + 1000),
     };
@@ -121,6 +133,12 @@ export class DiaryEntriesDBServiceMock extends DiaryEntriesDBServiceBase {
   async unsetPreviewImage(diaryEntryId: string): Promise<DiaryEntry> {
     const diaryEntry = await this.findOne(diaryEntryId);
     diaryEntry.previewImage = undefined;
+    return diaryEntry;
+  }
+
+  async unsetDateRange(diaryEntryId: string): Promise<DiaryEntry> {
+    const diaryEntry = await this.findOne(diaryEntryId);
+    diaryEntry.dateRange = undefined;
     return diaryEntry;
   }
 }
