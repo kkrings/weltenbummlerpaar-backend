@@ -61,10 +61,6 @@ export class DiaryEntriesService {
       updateDiaryEntryDto,
     );
 
-    if (updateDiaryEntryDto.dateRange === null) {
-      await this.diaryEntriesDBService.unsetDateRange(diaryEntryId);
-    }
-
     if (updateDiaryEntryDto.searchTags != null) {
       await this.searchTagsService.updateMany(
         updateDiaryEntryDto.searchTags,
@@ -107,7 +103,9 @@ export class DiaryEntriesService {
     const image = await this.imagesService.removeOne(imageId);
 
     if (diaryEntry.previewImage?._id.equals(image._id) ?? false) {
-      await this.diaryEntriesDBService.unsetPreviewImage(diaryEntryId);
+      await this.diaryEntriesDBService.updateOne(diaryEntryId, {
+        previewImage: null,
+      });
     }
 
     return await this.diaryEntriesDBService.removeImage(diaryEntryId, image);

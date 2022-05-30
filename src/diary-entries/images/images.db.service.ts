@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { getSetFields } from '../../app.utils';
 import { throwOnNull } from '../../schemas/base.schema';
-import { getSetFields } from '../../utils';
 import { DiaryEntry } from '../schemas/diary-entry.schema';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';

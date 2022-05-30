@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { getSetFields } from '../app.utils';
 import { throwOnNull } from '../schemas/base.schema';
-import { getSetFields } from '../utils';
 import { DiaryEntriesDBServiceBase } from './diary-entries.db.service.base';
+import { getDiaryEntryUnsetFields } from './diary-entries.utils';
 import { CountQueryParams } from './dto/count-query-params.dto';
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto';
 import { FindManyQueryParams } from './dto/find-many-query-params.dto';
@@ -78,7 +79,10 @@ export class DiaryEntriesDBService extends DiaryEntriesDBServiceBase {
         await this.diaryEntryModel
           .findByIdAndUpdate(
             diaryEntryId,
-            { $set: getSetFields(updateDiaryEntryDto) },
+            {
+              $set: getSetFields(updateDiaryEntryDto),
+              $unset: getDiaryEntryUnsetFields(updateDiaryEntryDto),
+            },
             { new: true },
           )
           .populate('images')
@@ -125,34 +129,6 @@ export class DiaryEntriesDBService extends DiaryEntriesDBServiceBase {
             { $pull: { images: image._id } },
             { new: true },
           )
-          .populate('images')
-          .populate('previewImage')
-          .exec(),
-    );
-  }
-
-  async unsetPreviewImage(diaryEntryId: string): Promise<DiaryEntry> {
-    return await throwOnNull(
-      diaryEntryId,
-      async () =>
-        await this.diaryEntryModel
-          .findByIdAndUpdate(diaryEntryId, {
-            $unset: { previewImage: undefined },
-          })
-          .populate('images')
-          .populate('previewImage')
-          .exec(),
-    );
-  }
-
-  async unsetDateRange(diaryEntryId: string): Promise<DiaryEntry> {
-    return await throwOnNull(
-      diaryEntryId,
-      async () =>
-        await this.diaryEntryModel
-          .findByIdAndUpdate(diaryEntryId, {
-            $unset: { dateRange: null },
-          })
           .populate('images')
           .populate('previewImage')
           .exec(),

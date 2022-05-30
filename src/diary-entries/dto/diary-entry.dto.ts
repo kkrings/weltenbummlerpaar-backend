@@ -32,8 +32,6 @@ export class DiaryEntryDto {
   /**
    * The time period, the diary entry covers
    */
-  @IsOptional()
-  @ValidateNested()
   @IsDateRange()
   dateRange?: DateRangeDto | null;
 
