@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { nextTick } from 'process';
 import { Readable } from 'stream';
-import { Express } from 'express';
 import { ObjectId } from 'mongodb';
 import { DiaryEntriesController } from './diary-entries.controller';
 import { DiaryEntriesService } from './diary-entries.service';
@@ -282,30 +281,79 @@ describe('DiaryEntriesController', () => {
       id: new ObjectId().toHexString(),
     };
 
-    const findOneSpy = jest.spyOn(mockService, 'findOne');
-
+    let findOneSpy: jest.SpyInstance;
     let diaryEntryDto: DiaryEntryDto;
 
-    beforeEach(async () => {
-      diaryEntryDto = await controller.findOne(findOneQueryParams);
+    beforeEach(() => {
+      findOneSpy = jest.spyOn(mockService, 'findOne');
     });
 
-    it('diary entry should have been returned', () => {
-      const expectedDiaryEntryDto: DiaryEntryDto = {
-        id: findOneQueryParams.id,
-        title: mockService.diaryEntry.title,
-        location: mockService.diaryEntry.location,
-        body: mockService.diaryEntry.body,
-        searchTags: mockService.diaryEntry.searchTags,
-        images: [],
-        createdAt: mockService.diaryEntry.createdAt,
-        updatedAt: mockService.diaryEntry.updatedAt,
-      };
+    describe('without preview image', () => {
+      beforeEach(async () => {
+        diaryEntryDto = await controller.findOne(findOneQueryParams);
+      });
 
-      expect(diaryEntryDto).toEqual(expectedDiaryEntryDto);
+      it('diary entry should have been returned', () => {
+        const expectedDiaryEntryDto: DiaryEntryDto = {
+          id: findOneQueryParams.id,
+          title: mockService.diaryEntry.title,
+          location: mockService.diaryEntry.location,
+          body: mockService.diaryEntry.body,
+          searchTags: mockService.diaryEntry.searchTags,
+          images: [],
+          createdAt: mockService.diaryEntry.createdAt,
+          updatedAt: mockService.diaryEntry.updatedAt,
+        };
+
+        expect(diaryEntryDto).toEqual(expectedDiaryEntryDto);
+      });
     });
 
-    it('DiaryEntriesService.findOne should have been called', () => {
+    describe('with preview image', () => {
+      beforeEach(() => {
+        findOneSpy.mockImplementation(
+          async (diaryEntryId: string): Promise<DiaryEntry> => {
+            const diaryEntry = { ...mockService.diaryEntry };
+            diaryEntry._id = ObjectId.createFromHexString(diaryEntryId);
+            const image = { ...mockService.image };
+            image.diaryEntryId = diaryEntry._id;
+            diaryEntry.images = [image];
+            diaryEntry.previewImage = image;
+            return diaryEntry;
+          },
+        );
+      });
+
+      beforeEach(async () => {
+        diaryEntryDto = await controller.findOne(findOneQueryParams);
+      });
+
+      it('diary entry should have been returned', () => {
+        const imageDto: ImageDto = {
+          id: mockService.image._id.toHexString(),
+          description: mockService.image.description,
+          diaryEntryId: findOneQueryParams.id,
+          createdAt: mockService.image.createdAt,
+          updatedAt: mockService.image.updatedAt,
+        };
+
+        const expectedDiaryEntryDto: DiaryEntryDto = {
+          id: findOneQueryParams.id,
+          title: mockService.diaryEntry.title,
+          location: mockService.diaryEntry.location,
+          body: mockService.diaryEntry.body,
+          searchTags: mockService.diaryEntry.searchTags,
+          images: [imageDto],
+          previewImage: imageDto,
+          createdAt: mockService.diaryEntry.createdAt,
+          updatedAt: mockService.diaryEntry.updatedAt,
+        };
+
+        expect(diaryEntryDto).toEqual(expectedDiaryEntryDto);
+      });
+    });
+
+    afterEach(() => {
       expect(findOneSpy).toHaveBeenCalledWith(findOneQueryParams.id);
     });
   });
