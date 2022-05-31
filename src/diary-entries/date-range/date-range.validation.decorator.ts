@@ -5,12 +5,12 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { DiaryEntryDto } from '../dto/diary-entry.dto';
-import { DateRange } from './schemas/date-range.schema';
+import { DateRangeDto } from './dto/date-range.dto';
 
 @ValidatorConstraint()
 export class IsDateRangeConstraint implements ValidatorConstraintInterface {
-  validate(dateRange?: DateRange): boolean {
-    return dateRange === undefined || dateRange.dateMin <= dateRange.dateMax;
+  validate(dateRangeDto?: DateRangeDto | null): boolean {
+    return dateRangeDto == null || dateRangeDto.dateMin <= dateRangeDto.dateMax;
   }
 
   defaultMessage({ property: dateRange }: ValidationArguments): string {

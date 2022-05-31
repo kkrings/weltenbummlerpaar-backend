@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import {
   ArrayUnique,
   IsArray,
@@ -32,6 +33,9 @@ export class DiaryEntryDto {
   /**
    * The time period, the diary entry covers
    */
+  @IsOptional()
+  @Type(() => DateRangeDto)
+  @ValidateNested()
   @IsDateRange()
   dateRange?: DateRangeDto | null;
 
