@@ -9,6 +9,8 @@ describe('DiaryEntriesController.addImage', () => {
   let app: INestApplication;
   let accessToken: string;
   let teardownData: TeardownData;
+  let diaryEntry: data.DiaryEntryDto;
+  let createImageDto: CreateImageDto;
 
   beforeEach(async () => {
     app = await setupApp();
@@ -22,21 +24,19 @@ describe('DiaryEntriesController.addImage', () => {
     teardownData = await setupData(app);
   });
 
+  beforeEach(() => {
+    diaryEntry = data.getDiaryEntries()[0];
+  });
+
+  beforeEach(() => {
+    createImageDto = {
+      imageUpload: data.getImageFile(),
+      description: 'some description',
+    };
+  });
+
   describe('/{id}/images (POST)', () => {
-    let diaryEntry: data.DiaryEntryDto;
-    let createImageDto: CreateImageDto;
     let response: request.Response;
-
-    beforeEach(() => {
-      diaryEntry = data.getDiaryEntries()[0];
-    });
-
-    beforeEach(() => {
-      createImageDto = {
-        imageUpload: data.getImageFile(),
-        description: 'some description',
-      };
-    });
 
     beforeEach(() => {
       expect(diaryEntry.images).toEqual([]);
@@ -78,6 +78,37 @@ describe('DiaryEntriesController.addImage', () => {
 
       expect(createdImage.description).toEqual(createImageDto.description);
       dateIsGreaterThan(response.body.updatedAt, diaryEntry.updatedAt);
+    });
+  });
+
+  describe('/{id}/images (POST); non-existing diary entry', () => {
+    let response: request.Response;
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .post('/diary-entries/62890e001db53966f0c44142/images')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .attach('imageUpload', createImageDto.imageUpload)
+        .field('description', createImageDto.description);
+    });
+
+    it('status code should be equal to 404', () => {
+      expect(response.statusCode).toEqual(404);
+    });
+  });
+
+  describe('/{id}/images (POST); description missing', () => {
+    let response: request.Response;
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .post(`/diary-entries/${diaryEntry.id}/images`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .attach('imageUpload', createImageDto.imageUpload);
+    });
+
+    it('status code should be equal to 400', () => {
+      expect(response.statusCode).toEqual(400);
     });
   });
 
