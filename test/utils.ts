@@ -13,3 +13,6 @@ export function getImageUploadDir(app: INestApplication): string {
   expect(config.dest).toBeDefined();
   return config.dest as string;
 }
+
+export const dateIsGreaterThan = (left: string, right: string): void =>
+  expect(new Date(left) > new Date(right)).toBeTruthy();
