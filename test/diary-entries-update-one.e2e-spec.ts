@@ -425,6 +425,75 @@ describe('DiaryEntriesController.updateOne', () => {
     });
   });
 
+  describe('/{id} (PATCH); patch search tags', () => {
+    let newSearchTags: string[];
+    let patchSearchTagsDto: UpdateDiaryEntryDto;
+    let response: request.Response;
+
+    beforeEach(() => {
+      newSearchTags = ['some new search tag'];
+    });
+
+    beforeEach(() => {
+      patchSearchTagsDto = { searchTags: newSearchTags };
+    });
+
+    beforeEach(() => {
+      expect(diaryEntry.searchTags).not.toEqual(newSearchTags);
+    });
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .patch(`/diary-entries/${diaryEntry.id}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(patchSearchTagsDto)
+        .expect(200);
+    });
+
+    it('updated diary entry should have been sent', () => {
+      expect({
+        id: response.body.id,
+        title: response.body.title,
+        location: response.body.location,
+        dateRange: response.body.dateRange,
+        body: response.body.body,
+        searchTags: response.body.searchTags,
+        previewImage: response.body.previewImage,
+        images: response.body.images,
+        createdAt: response.body.createdAt,
+      }).toEqual({
+        id: diaryEntry.id,
+        title: diaryEntry.title,
+        location: diaryEntry.location,
+        dateRange: diaryEntry.dateRange,
+        body: diaryEntry.body,
+        searchTags: newSearchTags,
+        previewImage: diaryEntry.previewImage,
+        images: diaryEntry.images,
+        createdAt: diaryEntry.createdAt,
+      });
+
+      expect(response.body.updated).not.toEqual(diaryEntry.updatedAt);
+    });
+  });
+
+  describe('/{id} (PATCH); invalid search tags', () => {
+    let response: request.Response;
+
+    beforeEach(async () => {
+      const searchTag = 'some new search tag';
+
+      response = await request(app.getHttpServer())
+        .patch(`/diary-entries/${diaryEntry.id}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ searchTags: [searchTag, searchTag] });
+    });
+
+    it('status code should be equal to 400', () => {
+      expect(response.statusCode).toEqual(400);
+    });
+  });
+
   afterEach(async () => {
     await app.close();
   });
