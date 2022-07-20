@@ -110,7 +110,7 @@ export class DiaryEntriesDBService extends DiaryEntriesDBServiceBase {
         await this.diaryEntryModel
           .findByIdAndUpdate(
             diaryEntryId,
-            { $push: { images: image._id } },
+            { $push: { images: image._id as any } },
             { new: true },
           )
           .populate('images')
@@ -126,7 +126,7 @@ export class DiaryEntriesDBService extends DiaryEntriesDBServiceBase {
         await this.diaryEntryModel
           .findByIdAndUpdate(
             diaryEntryId,
-            { $pull: { images: image._id } },
+            { $pull: { images: image._id as any } },
             { new: true },
           )
           .populate('images')
