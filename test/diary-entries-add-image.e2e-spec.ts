@@ -81,6 +81,38 @@ describe('DiaryEntriesController.addImage', () => {
     });
   });
 
+  describe('/{id}/images (POST); non-JPEG file', () => {
+    let response: request.Response;
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .post(`/diary-entries/${diaryEntry.id}/images`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .attach('imageUpload', data.getImageFile('png'))
+        .field('description', createImageDto.description);
+    });
+
+    it('status code should be equal to 415', () => {
+      expect(response.statusCode).toEqual(415);
+    });
+  });
+
+  describe('/{id}/images (POST); invalid diary entry ID', () => {
+    let response: request.Response;
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .post('/diary-entries/invalidmongoid/images')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .attach('imageUpload', createImageDto.imageUpload)
+        .field('description', createImageDto.description);
+    });
+
+    it('status code should be equal to 400', () => {
+      expect(response.statusCode).toEqual(400);
+    });
+  });
+
   describe('/{id}/images (POST); non-existing diary entry', () => {
     let response: request.Response;
 
@@ -94,6 +126,21 @@ describe('DiaryEntriesController.addImage', () => {
 
     it('status code should be equal to 404', () => {
       expect(response.statusCode).toEqual(404);
+    });
+  });
+
+  describe('/{id}/images (POST); image upload missing', () => {
+    let response: request.Response;
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .post(`/diary-entries/${diaryEntry.id}/images`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .field('description', createImageDto.description);
+    });
+
+    it('status code should be equal to 400', () => {
+      expect(response.statusCode).toEqual(400);
     });
   });
 
