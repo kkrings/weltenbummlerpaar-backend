@@ -31,7 +31,7 @@ describe('DiaryEntriesController.removeImage', () => {
     let response: request.Response;
 
     beforeEach(() => {
-      imageId = '627fc4e95c21bce26c1f78a5';
+      imageId = diaryEntry.previewImage?.id ?? '';
     });
 
     beforeEach(async () => {
