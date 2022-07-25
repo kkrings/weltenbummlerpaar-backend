@@ -86,6 +86,20 @@ describe('ImagesController.updateOne', () => {
     });
   });
 
+  describe('/{id} (PATCh); not authorized', () => {
+    let response: request.Response;
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .patch(`/images/${image.id}`)
+        .field('description', patchedDescription);
+    });
+
+    it('status code should be equal to 401', () => {
+      expect(response.statusCode).toEqual(401);
+    });
+  });
+
   describe('/{id} (PATCh); non-JPEG file', () => {
     let response: request.Response;
 
