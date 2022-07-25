@@ -179,6 +179,66 @@ describe('DiaryEntriesController.create (e2e)', () => {
   });
 
   describe('/ (POST); invalid diary entry', () => {
+    let createDiaryEntryDto: CreateDiaryEntryDto;
+    let createDiaryEntryRequest: request.Test;
+
+    beforeEach(() => {
+      createDiaryEntryDto = {
+        title: 'some title',
+        location: 'some location',
+        body: 'some body',
+        searchTags: ['some search tag'],
+      };
+    });
+
+    beforeEach(() => {
+      createDiaryEntryRequest = request(app.getHttpServer())
+        .post('/diary-entries')
+        .set('Authorization', `Bearer ${accessToken}`);
+    });
+
+    it('missing title', async () => {
+      await createDiaryEntryRequest
+        .send({
+          location: createDiaryEntryDto.location,
+          body: createDiaryEntryDto.body,
+          searchTags: createDiaryEntryDto.searchTags,
+        })
+        .expect(400);
+    });
+
+    it('missing location', async () => {
+      await createDiaryEntryRequest
+        .send({
+          title: createDiaryEntryDto.title,
+          body: createDiaryEntryDto.body,
+          searchTags: createDiaryEntryDto.searchTags,
+        })
+        .expect(400);
+    });
+
+    it('missing body', async () => {
+      await createDiaryEntryRequest
+        .send({
+          title: createDiaryEntryDto.title,
+          location: createDiaryEntryDto.location,
+          searchTags: createDiaryEntryDto.searchTags,
+        })
+        .expect(400);
+    });
+
+    it('missing search tags', async () => {
+      await createDiaryEntryRequest
+        .send({
+          title: createDiaryEntryDto.title,
+          location: createDiaryEntryDto.location,
+          body: createDiaryEntryDto.body,
+        })
+        .expect(400);
+    });
+  });
+
+  describe('/ (POST); invalid diary entry', () => {
     let response: request.Response;
 
     beforeEach(async () => {
