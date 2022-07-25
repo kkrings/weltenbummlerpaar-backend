@@ -4,7 +4,7 @@ import { INestApplication } from '@nestjs/common';
 import { CreateDiaryEntryDto } from './../src/diary-entries/dto/create-diary-entry.dto';
 import { login, setupApp, setupData, TeardownData } from './setup';
 
-describe('SearchTagsController', () => {
+describe('SearchTagsController.findMany', () => {
   let app: INestApplication;
   let teardownData: TeardownData;
 
