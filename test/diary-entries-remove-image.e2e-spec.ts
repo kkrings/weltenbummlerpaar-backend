@@ -9,6 +9,7 @@ describe('DiaryEntriesController.removeImage', () => {
   let accessToken: string;
   let teardownData: TeardownData;
   let diaryEntry: data.DiaryEntryDto;
+  let imageId: string;
 
   beforeEach(async () => {
     app = await setupApp();
@@ -26,13 +27,13 @@ describe('DiaryEntriesController.removeImage', () => {
     diaryEntry = data.getDiaryEntries()[1];
   });
 
-  describe('/{diaryEntryId}/images/{imageId} (DELETE)', () => {
-    let imageId: string;
-    let response: request.Response;
+  beforeEach(() => {
+    imageId = diaryEntry.previewImage?.id ?? '';
+    expect(imageId).not.toEqual('');
+  });
 
-    beforeEach(() => {
-      imageId = diaryEntry.previewImage?.id ?? '';
-    });
+  describe('/{diaryEntryId}/images/{imageId} (DELETE)', () => {
+    let response: request.Response;
 
     beforeEach(async () => {
       response = await request(app.getHttpServer())
@@ -65,6 +66,71 @@ describe('DiaryEntriesController.removeImage', () => {
       });
 
       dateIsGreaterThan(response.body.updatedAt, diaryEntry.updatedAt);
+    });
+  });
+
+  describe('/{diaryEntryId}/images/{imageId} (DELETE); invalid diary entry ID', () => {
+    let response: request.Response;
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .delete(`/diary-entries/invalidmongoid/images/${imageId}`)
+        .set('Authorization', `Bearer ${accessToken}`);
+    });
+
+    it('status code should be equal to 400', () => {
+      expect(response.statusCode).toEqual(400);
+    });
+  });
+
+  describe('/{diaryEntryId}/images/{imageId} (DELETE); non-existing diary entry', () => {
+    let response: request.Response;
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .delete(`/diary-entries/62890e001db53966f0c44142/images/${imageId}`)
+        .set('Authorization', `Bearer ${accessToken}`);
+    });
+
+    it('status code should be equal to 404', () => {
+      expect(response.statusCode).toEqual(404);
+    });
+  });
+
+  describe('/{diaryEntryId}/images/{imageId} (DELETE); invalid image ID', () => {
+    let response: request.Response;
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .delete(`/diary-entries/${diaryEntry.id}/images/invalidmongoid`)
+        .set('Authorization', `Bearer ${accessToken}`);
+    });
+
+    it('status code should be equal to 400', () => {
+      expect(response.statusCode).toEqual(400);
+    });
+  });
+
+  describe('/{diaryEntryId}/images/{imageId} (DELETE); non-existing image', () => {
+    let response: request.Response;
+
+    beforeEach(() => {
+      diaryEntry = data.getDiaryEntries()[1];
+    });
+
+    beforeEach(() => {
+      imageId = data.getDiaryEntries().at(2)?.previewImage?.id ?? '';
+      expect(imageId).not.toEqual('');
+    });
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .delete(`/diary-entries/${diaryEntry.id}/images/${imageId}`)
+        .set('Authorization', `Bearer ${accessToken}`);
+    });
+
+    it('status code should be equal to 404', () => {
+      expect(response.statusCode).toEqual(404);
     });
   });
 
