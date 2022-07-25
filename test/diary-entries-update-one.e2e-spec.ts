@@ -3,6 +3,7 @@ import * as data from '@kkrings/weltenbummlerpaar-e2e-data';
 import { INestApplication } from '@nestjs/common';
 import { UpdateDiaryEntryDto } from './../src/diary-entries/dto/update-diary-entry.dto';
 import { login, setupApp, setupData, TeardownData } from './setup';
+import { dateIsGreaterThan } from './utils';
 
 describe('DiaryEntriesController.updateOne', () => {
   let app: INestApplication;
@@ -67,7 +68,7 @@ describe('DiaryEntriesController.updateOne', () => {
         createdAt: diaryEntry.createdAt,
       });
 
-      expect(response.body.updated).not.toEqual(diaryEntry.updatedAt);
+      dateIsGreaterThan(response.body.updatedAt, diaryEntry.updatedAt);
     });
   });
 
@@ -157,7 +158,7 @@ describe('DiaryEntriesController.updateOne', () => {
         createdAt: diaryEntry.createdAt,
       });
 
-      expect(response.body.updated).not.toEqual(diaryEntry.updatedAt);
+      dateIsGreaterThan(response.body.updatedAt, diaryEntry.updatedAt);
     });
   });
 
@@ -204,7 +205,7 @@ describe('DiaryEntriesController.updateOne', () => {
         createdAt: diaryEntry.createdAt,
       });
 
-      expect(response.body.updated).not.toEqual(diaryEntry.updatedAt);
+      dateIsGreaterThan(response.body.updatedAt, diaryEntry.updatedAt);
     });
   });
 
@@ -318,7 +319,7 @@ describe('DiaryEntriesController.updateOne', () => {
         createdAt: diaryEntry.createdAt,
       });
 
-      expect(response.body.updated).not.toEqual(diaryEntry.updatedAt);
+      dateIsGreaterThan(response.body.updatedAt, diaryEntry.updatedAt);
     });
   });
 
@@ -391,7 +392,7 @@ describe('DiaryEntriesController.updateOne', () => {
         createdAt: diaryEntry.createdAt,
       });
 
-      expect(response.body.updated).not.toEqual(diaryEntry.updatedAt);
+      dateIsGreaterThan(response.body.updatedAt, diaryEntry.updatedAt);
     });
   });
 
@@ -473,7 +474,7 @@ describe('DiaryEntriesController.updateOne', () => {
         createdAt: diaryEntry.createdAt,
       });
 
-      expect(response.body.updated).not.toEqual(diaryEntry.updatedAt);
+      dateIsGreaterThan(response.body.updatedAt, diaryEntry.updatedAt);
     });
   });
 
