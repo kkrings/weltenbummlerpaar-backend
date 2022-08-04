@@ -24,6 +24,7 @@ import { MongoIdParams } from '../../dto/mongo-id-params.dto';
 import { asImageDto, ImageDto } from './dto/image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
 import { ImagesService } from './images.service';
+import { imageUploadValidation } from './image-upload/image-upload.validation';
 
 @ApiTags(appConstants.apiTags.images)
 @Controller('images')
@@ -43,7 +44,8 @@ export class ImagesController {
     /* eslint-disable @typescript-eslint/indent */
     @Param() params: MongoIdParams,
     @Body() updateImageDto: UpdateImageDto,
-    @UploadedFile() imageUpload?: Express.Multer.File,
+    @UploadedFile(imageUploadValidation(false))
+    imageUpload?: Express.Multer.File,
     /* eslint-enable @typescript-eslint/indent */
   ): Promise<ImageDto> {
     updateImageDto.imageUpload = imageUpload?.path;

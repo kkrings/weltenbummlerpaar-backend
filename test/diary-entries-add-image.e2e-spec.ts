@@ -139,8 +139,24 @@ describe('DiaryEntriesController.addImage', () => {
         .field('description', createImageDto.description);
     });
 
-    it('status code should be equal to 400', () => {
-      expect(response.statusCode).toEqual(400);
+    it('status code should be equal to 415', () => {
+      expect(response.statusCode).toEqual(415);
+    });
+  });
+
+  describe('/{id}/images (POST); invalid image upload', () => {
+    let response: request.Response;
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .post(`/diary-entries/${diaryEntry.id}/images`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .field('imageUpload', 'invalidimageupload')
+        .field('description', createImageDto.description);
+    });
+
+    it('status code should be equal to 415', () => {
+      expect(response.statusCode).toEqual(415);
     });
   });
 

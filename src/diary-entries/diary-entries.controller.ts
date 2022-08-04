@@ -33,6 +33,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { appConstants } from './../app.constants';
 import { FindManyQueryParams } from './dto/find-many-query-params.dto';
 import { CountQueryParams } from './dto/count-query-params.dto';
+import { imageUploadValidation } from './images/image-upload/image-upload.validation';
 
 @ApiTags(appConstants.apiTags.diaryEntries)
 @Controller('diary-entries')
@@ -113,7 +114,7 @@ export class DiaryEntriesController {
   async addImage(
     /* eslint-disable @typescript-eslint/indent */
     @Param() params: MongoIdParams,
-    @UploadedFile() imageUpload: Express.Multer.File,
+    @UploadedFile(imageUploadValidation()) imageUpload: Express.Multer.File,
     @Body() createImageDto: CreateImageDto,
     /* eslint-enable @typescript-eslint/indent */
   ): Promise<DiaryEntryDto> {
