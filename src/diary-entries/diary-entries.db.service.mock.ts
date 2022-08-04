@@ -8,6 +8,7 @@ import { DiaryEntry } from './schemas/diary-entry.schema';
 import { Image } from './images/schemas/image.schema';
 import { FindManyQueryParams } from './dto/find-many-query-params.dto';
 import { CountQueryParams } from './dto/count-query-params.dto';
+import { DateRange } from './date-range/schemas/date-range.schema';
 
 @Injectable()
 export class DiaryEntriesDBServiceMock extends DiaryEntriesDBServiceBase {
@@ -21,10 +22,14 @@ export class DiaryEntriesDBServiceMock extends DiaryEntriesDBServiceBase {
   async create(createDiaryEntryDto: CreateDiaryEntryDto): Promise<DiaryEntry> {
     const diaryEntry: DiaryEntry = {
       _id: new ObjectId(),
+      title: createDiaryEntryDto.title,
+      location: createDiaryEntryDto.location,
+      dateRange: createDiaryEntryDto.dateRange ?? undefined,
+      body: createDiaryEntryDto.body,
+      searchTags: createDiaryEntryDto.searchTags,
+      images: [],
       createdAt: new Date(),
       updatedAt: new Date(),
-      images: [],
-      ...createDiaryEntryDto,
     };
 
     this.diaryEntriesCollection.push(diaryEntry);
@@ -71,18 +76,42 @@ export class DiaryEntriesDBServiceMock extends DiaryEntriesDBServiceBase {
   ): Promise<DiaryEntry> {
     const diaryEntry = await this.findOne(diaryEntryId);
 
+    const getDateRange = (): DateRange | undefined => {
+      if (updateDiaryEntryDto.dateRange === null) {
+        return undefined;
+      } else if (updateDiaryEntryDto.dateRange === undefined) {
+        return diaryEntry.dateRange;
+      } else {
+        return updateDiaryEntryDto.dateRange;
+      }
+    };
+
+    const findImage = (imageId: string): Image | undefined =>
+      diaryEntry.images.filter((image) => image._id.equals(imageId)).shift();
+
     const images = updateDiaryEntryDto.images?.map(
-      (imageId) =>
-        diaryEntry.images.filter((image) => image._id.equals(imageId))[0],
+      (imageId) => findImage(imageId) as Image,
     );
+
+    const getPreviewImage = (): Image | undefined => {
+      if (updateDiaryEntryDto.previewImage === null) {
+        return undefined;
+      } else if (updateDiaryEntryDto.previewImage === undefined) {
+        return diaryEntry.previewImage;
+      } else {
+        return findImage(updateDiaryEntryDto.previewImage);
+      }
+    };
 
     const updatedDiaryEntry: DiaryEntry = {
       _id: diaryEntry._id,
       title: updateDiaryEntryDto.title ?? diaryEntry.title,
       location: updateDiaryEntryDto.location ?? diaryEntry.location,
+      dateRange: getDateRange(),
       body: updateDiaryEntryDto.body ?? diaryEntry.body,
       searchTags: updateDiaryEntryDto.searchTags ?? diaryEntry.searchTags,
       images: images ?? diaryEntry.images,
+      previewImage: getPreviewImage(),
       createdAt: diaryEntry.createdAt,
       updatedAt: new Date(diaryEntry.createdAt.getTime() + 1000),
     };
@@ -115,12 +144,6 @@ export class DiaryEntriesDBServiceMock extends DiaryEntriesDBServiceBase {
       (otherImage) => !otherImage._id.equals(image._id),
     );
 
-    return diaryEntry;
-  }
-
-  async unsetPreviewImage(diaryEntryId: string): Promise<DiaryEntry> {
-    const diaryEntry = await this.findOne(diaryEntryId);
-    diaryEntry.previewImage = undefined;
     return diaryEntry;
   }
 }

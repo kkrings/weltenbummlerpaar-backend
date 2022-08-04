@@ -1,9 +1,10 @@
 import * as request from 'supertest';
 import * as data from '@kkrings/weltenbummlerpaar-e2e-data';
 import { INestApplication } from '@nestjs/common';
+import { CreateDiaryEntryDto } from './../src/diary-entries/dto/create-diary-entry.dto';
 import { login, setupApp, setupData, TeardownData } from './setup';
 
-describe('SearchTagsController', () => {
+describe('SearchTagsController.findMany', () => {
   let app: INestApplication;
   let teardownData: TeardownData;
 
@@ -24,7 +25,7 @@ describe('SearchTagsController', () => {
         .expect(200);
     });
 
-    it('all search tags should have been sent', () => {
+    it('three search tags should have been sent', () => {
       expect(response.body).toEqual([
         'some other search tag',
         'some search tag',
@@ -42,7 +43,7 @@ describe('SearchTagsController', () => {
         .expect(200);
     });
 
-    it('only two search tags should have been sent', () => {
+    it('two search tags should have been sent', () => {
       expect(response.body).toEqual([
         'some other search tag',
         'some search tag',
@@ -59,7 +60,7 @@ describe('SearchTagsController', () => {
         .expect(200);
     });
 
-    it('only one search tag should have been sent', () => {
+    it('one search tag should have been sent', () => {
       expect(response.body).toEqual(['yet another search tag']);
     });
   });
@@ -85,7 +86,7 @@ describe('SearchTagsController', () => {
         .expect(200);
     });
 
-    it('all search tags should have been sent', () => {
+    it('three search tags should have been sent', () => {
       expect(response.body).toEqual([
         'some other search tag',
         'some search tag',
@@ -115,8 +116,86 @@ describe('SearchTagsController', () => {
         .expect(200);
     });
 
-    it('only two search tags should have been sent', () => {
+    it('two search tags should have been sent', () => {
       expect(response.body).toEqual([
+        'some other search tag',
+        'some search tag',
+      ]);
+    });
+  });
+
+  describe('after created new diary entry', () => {
+    let accessToken: string;
+
+    beforeEach(async () => {
+      accessToken = await login(app);
+    });
+
+    beforeEach(async () => {
+      const diaryEntry: CreateDiaryEntryDto = {
+        title: 'new title',
+        location: 'new location',
+        body: 'new body',
+        searchTags: ['some search tag', 'A New Search Tag'],
+      };
+
+      return await request(app.getHttpServer())
+        .post('/diary-entries')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(diaryEntry)
+        .expect(201);
+    });
+
+    it('four search tags should have been sent', async () => {
+      const response = await request(app.getHttpServer()).get('/search-tags');
+
+      expect(response.statusCode).toEqual(200);
+
+      expect(response.body).toEqual([
+        'A New Search Tag',
+        'some other search tag',
+        'some search tag',
+        'yet another search tag',
+      ]);
+    });
+
+    it("'A New Search Tag' should have been sent", async () => {
+      const response = await request(app.getHttpServer()).get(
+        '/search-tags?searchTag=NEW',
+      );
+
+      expect(response.statusCode).toEqual(200);
+      expect(response.body).toEqual(['A New Search Tag']);
+    });
+  });
+
+  describe('after #diaryEntries[2] updated', () => {
+    let accessToken: string;
+    let response: request.Response;
+
+    beforeEach(async () => {
+      accessToken = await login(app);
+    });
+
+    beforeEach(async () => {
+      const diaryEntry = data.getDiaryEntries()[2];
+
+      return await request(app.getHttpServer())
+        .patch(`/diary-entries/${diaryEntry.id}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ searchTags: ['some search tag', 'A New Search Tag'] })
+        .expect(200);
+    });
+
+    beforeEach(async () => {
+      response = await request(app.getHttpServer())
+        .get('/search-tags')
+        .expect(200);
+    });
+
+    it('three search tags should have been sent', () => {
+      expect(response.body).toEqual([
+        'A New Search Tag',
         'some other search tag',
         'some search tag',
       ]);

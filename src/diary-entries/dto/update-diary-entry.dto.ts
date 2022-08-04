@@ -17,5 +17,5 @@ export class UpdateDiaryEntryDto extends PartialType(CreateDiaryEntryDto) {
    */
   @IsOptional()
   @IsMongoId()
-  previewImage?: string;
+  previewImage?: string | null;
 }

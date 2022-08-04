@@ -84,17 +84,19 @@ describe('DiaryEntriesService', () => {
   });
 
   describe('create', () => {
-    const createDiaryEntryDto: CreateDiaryEntryDto = {
-      title: 'some title',
-      location: 'some location',
-      body: 'some body',
-      searchTags: ['some tag'],
-    };
-
+    let baseCreateDiaryEntryDto: CreateDiaryEntryDto;
     let diaryEntry: DiaryEntry;
     let diaryEntryInDB: DiaryEntry;
-
     let addDiaryEntryToManySpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      baseCreateDiaryEntryDto = {
+        title: 'some title',
+        location: 'some location',
+        body: 'some body',
+        searchTags: ['some tag'],
+      };
+    });
 
     beforeEach(() => {
       addDiaryEntryToManySpy = jest.spyOn(
@@ -103,33 +105,76 @@ describe('DiaryEntriesService', () => {
       );
     });
 
-    beforeEach(async () => {
-      diaryEntry = await diaryEntriesService.create(createDiaryEntryDto);
+    describe('without date range', () => {
+      let createDiaryEntryDto: CreateDiaryEntryDto;
+
+      beforeEach(() => {
+        createDiaryEntryDto = baseCreateDiaryEntryDto;
+      });
+
+      beforeEach(async () => {
+        diaryEntry = await diaryEntriesService.create(createDiaryEntryDto);
+      });
+
+      beforeEach(() => {
+        expect(diaryEntriesCollection.length).toEqual(1);
+        diaryEntryInDB = diaryEntriesCollection[0];
+      });
+
+      it('diary entry should have been created', () => {
+        const createdDiaryEntry: CreateDiaryEntryDto = {
+          title: diaryEntryInDB.title,
+          location: diaryEntryInDB.location,
+          body: diaryEntryInDB.body,
+          searchTags: diaryEntryInDB.searchTags,
+        };
+
+        expect(createdDiaryEntry).toEqual(createDiaryEntryDto);
+      });
     });
 
-    beforeEach(() => {
-      expect(diaryEntriesCollection.length).toEqual(1);
-      diaryEntryInDB = diaryEntriesCollection[0];
+    describe('with date range', () => {
+      let createDiaryEntryDto: CreateDiaryEntryDto;
+
+      beforeEach(() => {
+        createDiaryEntryDto = {
+          ...baseCreateDiaryEntryDto,
+          dateRange: {
+            dateMin: new Date(2020, 2, 14),
+            dateMax: new Date(2020, 2, 14),
+          },
+        };
+      });
+
+      beforeEach(async () => {
+        diaryEntry = await diaryEntriesService.create(createDiaryEntryDto);
+      });
+
+      beforeEach(() => {
+        expect(diaryEntriesCollection.length).toEqual(1);
+        diaryEntryInDB = diaryEntriesCollection[0];
+      });
+
+      it('diary entry should have been created', () => {
+        const createdDiaryEntry: CreateDiaryEntryDto = {
+          title: diaryEntryInDB.title,
+          location: diaryEntryInDB.location,
+          dateRange: diaryEntryInDB.dateRange,
+          body: diaryEntryInDB.body,
+          searchTags: diaryEntryInDB.searchTags,
+        };
+
+        expect(createdDiaryEntry).toEqual(createDiaryEntryDto);
+      });
     });
 
-    it('diary entry should have been created', () => {
-      const createdDiaryEntry: CreateDiaryEntryDto = {
-        title: diaryEntryInDB.title,
-        location: diaryEntryInDB.location,
-        body: diaryEntryInDB.body,
-        searchTags: diaryEntryInDB.searchTags,
-      };
-
-      expect(createdDiaryEntry).toEqual(createDiaryEntryDto);
-    });
-
-    it('diary entry in database should have been returned', () => {
+    afterEach(() => {
       expect(diaryEntry).toEqual(diaryEntryInDB);
     });
 
-    it('addDiaryEntryToMany should have been called', () => {
+    afterEach(() => {
       expect(addDiaryEntryToManySpy).toHaveBeenCalledWith(
-        createDiaryEntryDto.searchTags,
+        baseCreateDiaryEntryDto.searchTags,
         diaryEntry,
       );
     });
@@ -580,6 +625,159 @@ describe('DiaryEntriesService', () => {
 
           await expect(diaryEntryPromise).rejects.toEqual(notFoundException);
         });
+      });
+
+      describe('set preview image', () => {
+        let updateDiaryEntryDto: UpdateDiaryEntryDto;
+        let updatedDiaryEntry: DiaryEntry;
+        let diaryEntryInDB: DiaryEntry;
+
+        beforeEach(() => {
+          updateDiaryEntryDto = {
+            previewImage: images[0]._id.toHexString(),
+          };
+        });
+
+        beforeEach(async () => {
+          updatedDiaryEntry = await diaryEntriesService.updateOne(
+            diaryEntry._id.toHexString(),
+            updateDiaryEntryDto,
+          );
+        });
+
+        beforeEach(() => {
+          diaryEntryInDB = diaryEntriesCollection[0];
+        });
+
+        it('diary entry in database should have been returned', () => {
+          expect(updatedDiaryEntry).toEqual(diaryEntryInDB);
+        });
+
+        it('diary entry in database should have been updated', () => {
+          const expectedDiaryEntry = {
+            _id: diaryEntry._id,
+            title: diaryEntry.title,
+            location: diaryEntry.location,
+            body: diaryEntry.body,
+            searchTags: diaryEntry.searchTags,
+            images: diaryEntry.images,
+            previewImage: diaryEntry.images[0],
+            createdAt: diaryEntry.createdAt,
+            updatedAt: diaryEntryInDB.updatedAt,
+          };
+
+          expect(diaryEntryInDB).toEqual(expectedDiaryEntry);
+        });
+
+        it('updatedAt of diary entry in database should have been updated', () => {
+          expect(diaryEntryInDB.updatedAt).not.toEqual(diaryEntry.updatedAt);
+        });
+      });
+    });
+
+    describe('set date range', () => {
+      const updateDiaryEntryDto: UpdateDiaryEntryDto = {
+        dateRange: {
+          dateMin: new Date(2020, 2, 14),
+          dateMax: new Date(2020, 2, 14),
+        },
+      };
+
+      let updatedDiaryEntry: DiaryEntry;
+      let diaryEntryInDB: DiaryEntry;
+
+      beforeEach(() => {
+        diaryEntriesCollection.push({ ...diaryEntry });
+        searchTagsCollection.push({ ...searchTag });
+      });
+
+      beforeEach(async () => {
+        updatedDiaryEntry = await diaryEntriesService.updateOne(
+          diaryEntry._id.toHexString(),
+          updateDiaryEntryDto,
+        );
+      });
+
+      beforeEach(() => {
+        diaryEntryInDB = diaryEntriesCollection[0];
+      });
+
+      it('diary entry in database should have been returned', () => {
+        expect(updatedDiaryEntry).toEqual(diaryEntryInDB);
+      });
+
+      it('diary entry in database should have been updated', () => {
+        const expectedDiaryEntry = {
+          _id: diaryEntry._id,
+          title: diaryEntry.title,
+          location: diaryEntry.location,
+          dateRange: updateDiaryEntryDto.dateRange,
+          body: diaryEntry.body,
+          searchTags: diaryEntry.searchTags,
+          images: diaryEntry.images,
+          createdAt: diaryEntry.createdAt,
+          updatedAt: diaryEntryInDB.updatedAt,
+        };
+
+        expect(diaryEntryInDB).toEqual(expectedDiaryEntry);
+      });
+
+      it('updatedAt of diary entry in database should have been updated', () => {
+        expect(diaryEntryInDB.updatedAt).not.toEqual(diaryEntry.updatedAt);
+      });
+    });
+
+    describe('unset date range', () => {
+      const updateDiaryEntryDto: UpdateDiaryEntryDto = {
+        dateRange: null,
+      };
+
+      let updatedDiaryEntry: DiaryEntry;
+      let diaryEntryInDB: DiaryEntry;
+
+      beforeEach(() => {
+        diaryEntriesCollection.push({
+          ...diaryEntry,
+          dateRange: {
+            dateMin: new Date(2020, 2, 14),
+            dateMax: new Date(2020, 2, 14),
+          },
+        });
+        searchTagsCollection.push({ ...searchTag });
+      });
+
+      beforeEach(async () => {
+        updatedDiaryEntry = await diaryEntriesService.updateOne(
+          diaryEntry._id.toHexString(),
+          updateDiaryEntryDto,
+        );
+      });
+
+      beforeEach(() => {
+        diaryEntryInDB = diaryEntriesCollection[0];
+      });
+
+      it('diary entry in database should have been returned', () => {
+        expect(updatedDiaryEntry).toEqual(diaryEntryInDB);
+      });
+
+      it('diary entry in database should have been updated', () => {
+        const expectedDiaryEntry = {
+          _id: diaryEntry._id,
+          title: diaryEntry.title,
+          location: diaryEntry.location,
+          body: diaryEntry.body,
+          searchTags: diaryEntry.searchTags,
+          images: diaryEntry.images,
+          createdAt: diaryEntry.createdAt,
+          updatedAt: diaryEntryInDB.updatedAt,
+        };
+
+        expect(diaryEntryInDB).toEqual(expectedDiaryEntry);
+      });
+
+      it('updatedAt of diary entry in database should have been updated', () => {
+        expect(diaryEntryInDB.updatedAt).not.toEqual(diaryEntry.updatedAt);
       });
     });
   });

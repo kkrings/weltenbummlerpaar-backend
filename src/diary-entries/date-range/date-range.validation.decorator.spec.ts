@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { validate, ValidationError } from 'class-validator';
 import { ObjectId } from 'mongodb';
 import { DiaryEntryDto } from '../dto/diary-entry.dto';

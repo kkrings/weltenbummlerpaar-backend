@@ -48,11 +48,11 @@ export class DiaryEntriesService {
   ): Promise<DiaryEntry> {
     const diaryEntry = await this.findOne(diaryEntryId);
 
-    if (updateDiaryEntryDto.images !== undefined) {
+    if (updateDiaryEntryDto.images != null) {
       this.validateReorderedImageIds(updateDiaryEntryDto.images, diaryEntry);
     }
 
-    if (updateDiaryEntryDto.previewImage !== undefined) {
+    if (updateDiaryEntryDto.previewImage != null) {
       this.validateImageId(updateDiaryEntryDto.previewImage, diaryEntry);
     }
 
@@ -61,7 +61,7 @@ export class DiaryEntriesService {
       updateDiaryEntryDto,
     );
 
-    if (updateDiaryEntryDto.searchTags !== undefined) {
+    if (updateDiaryEntryDto.searchTags != null) {
       await this.searchTagsService.updateMany(
         updateDiaryEntryDto.searchTags,
         diaryEntry,
@@ -103,7 +103,9 @@ export class DiaryEntriesService {
     const image = await this.imagesService.removeOne(imageId);
 
     if (diaryEntry.previewImage?._id.equals(image._id) ?? false) {
-      await this.diaryEntriesDBService.unsetPreviewImage(diaryEntryId);
+      await this.diaryEntriesDBService.updateOne(diaryEntryId, {
+        previewImage: null,
+      });
     }
 
     return await this.diaryEntriesDBService.removeImage(diaryEntryId, image);
