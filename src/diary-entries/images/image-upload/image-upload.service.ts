@@ -1,5 +1,5 @@
-import * as Jimp from 'jimp';
 import * as path from 'path';
+import * as sharp from 'sharp';
 import { promises as fs } from 'fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
@@ -17,12 +17,10 @@ export class ImageUploadService extends ImageUploadServiceBase {
   }
 
   async moveImage(imageUploadPath: string, image: Image): Promise<void> {
-    const imageManipulator = await Jimp.read(imageUploadPath);
-
-    await imageManipulator
-      .resize(this.config.manipulation.imageWidth, Jimp.AUTO)
-      .quality(this.config.manipulation.imageQuality)
-      .writeAsync(this.imagePath(image));
+    await sharp(imageUploadPath)
+      .resize(this.config.manipulation.imageWidth)
+      .jpeg({ quality: this.config.manipulation.imageQuality })
+      .toFile(this.imagePath(image));
 
     await this.removeUpload(imageUploadPath);
   }
