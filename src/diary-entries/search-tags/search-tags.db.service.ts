@@ -21,7 +21,7 @@ export class SearchTagsDBService extends SearchTagsDBServiceBase {
 
     return await this.searchTagModel
       .find(
-        searchTag ? { searchTag: { $regex: searchTag, $options: '$i' } } : {},
+        searchTag ? { searchTag: { $regex: searchTag, $options: 'i' } } : {},
       )
       .sort({ searchTag: 'ascending' })
       .exec();
