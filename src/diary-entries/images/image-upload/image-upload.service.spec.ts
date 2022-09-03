@@ -1,4 +1,4 @@
-import * as Jimp from 'jimp';
+import * as sharp from 'sharp';
 import * as os from 'os';
 import * as path from 'path';
 import { promises as fs } from 'fs';
@@ -60,7 +60,14 @@ describe('ImageUploadService', () => {
     });
 
     beforeEach(async () => {
-      await new Jimp(100, 100).writeAsync(uploadPath);
+      await sharp({
+        create: {
+          width: 100,
+          height: 100,
+          channels: 4,
+          background: { r: 255, g: 0, b: 0, alpha: 1 },
+        },
+      }).toFile(uploadPath);
     });
 
     beforeEach(async () => {
@@ -80,14 +87,21 @@ describe('ImageUploadService', () => {
     });
 
     it('should resize image', async () => {
-      const image = await Jimp.read(path.join(imageDir, imageName));
-      expect(image.bitmap.width).toEqual(mockConfig.manipulation.imageWidth);
+      const metadata = await sharp(path.join(imageDir, imageName)).metadata();
+      expect(metadata.width).toEqual(mockConfig.manipulation.imageWidth);
     });
   });
 
   describe('removeImage', () => {
     beforeEach(async () => {
-      await new Jimp(100, 100).writeAsync(path.join(imageDir, imageName));
+      await sharp({
+        create: {
+          width: 100,
+          height: 100,
+          channels: 4,
+          background: { r: 255, g: 0, b: 0, alpha: 1 },
+        },
+      }).toFile(path.join(imageDir, imageName));
     });
 
     beforeEach(async () => {
