@@ -30,7 +30,7 @@ jobs:
     - run: npm run build
     - run: npm run lint
     - run: npm run test
-    - uses: supercharge/mongodb-github-action@1.7.0
+    - uses: supercharge/mongodb-github-action@1.8.0
     - run: npm run register:admin -- --username admin --password admin
     - run: mkdir -p $WELTENBUMMLERPAAR_BACKEND_IMAGE_UPLOAD_DESTINATION
     - run: npm run test:e2e
