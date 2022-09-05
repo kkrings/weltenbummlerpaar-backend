@@ -3,21 +3,15 @@
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "app",
 	"workspaceFolder": "/workspace",
-	"settings": {
-		"editor.renderWhitespace": "all",
-		"editor.rulers": [80],
-		"[typescript]": {
-			"editor.defaultFormatter": "esbenp.prettier-vscode"
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"dbaeumer.vscode-eslint",
+				"esbenp.prettier-vscode",
+				"mongodb.mongodb-vscode" 
+			]
 		}
 	},
-	"extensions": [
-		"dbaeumer.vscode-eslint",
-		"esbenp.prettier-vscode",
-		"mongodb.mongodb-vscode" 
-	],
 	"forwardPorts": [3000],
-	"remoteUser": "node",
-	"features": {
-		"git": "os-provided"
-	}
+	"remoteUser": "node"
 }
