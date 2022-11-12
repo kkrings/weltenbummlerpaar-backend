@@ -52,7 +52,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.4.0",
-    "sharp": "^0.30.7",
+    "sharp": "^0.31.2",
     "swagger-ui-express": "^4.1.6",
     "yargs": "^17.2.1"
   },
@@ -67,7 +67,7 @@
     "@types/node": "^16.10.3",
     "@types/passport-jwt": "^3.0.6",
     "@types/passport-local": "^1.0.34",
-    "@types/sharp": "^0.30.5",
+    "@types/sharp": "^0.31.0",
     "@types/supertest": "^2.0.11",
     "@types/yargs": "^17.0.3",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
