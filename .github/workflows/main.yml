@@ -5,7 +5,7 @@ on:
     branches:
     - main
 jobs:
-  build_lint_test:
+  lint_build_test:
     runs-on: ubuntu-22.04
     permissions:
       contents: read
