@@ -5,8 +5,8 @@ on:
     branches:
     - main
 jobs:
-  Build_Test_and_Lint:
-    runs-on: ubuntu-latest
+  build_lint_test:
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
       packages: read
@@ -21,14 +21,14 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
       with:
-        node-version: 16.x
+        node-version: 18.x
         registry-url: https://npm.pkg.github.com
         cache: 'npm'
     - run: npm ci
       env:
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-    - run: npm run build
     - run: npm run lint
+    - run: npm run build
     - run: npm run test
     - uses: supercharge/mongodb-github-action@1.8.0
     - run: npm run register:admin -- --username admin --password admin
