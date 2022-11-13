@@ -5,9 +5,9 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        VARIANT: 16-bullseye
+        VARIANT: 18-bullseye
     volumes:
-      - ..:/workspace:cached
+      - ../..:/workspaces:cached
     command: sleep infinity
     network_mode: service:db
   db:
@@ -16,4 +16,4 @@ services:
     volumes:
       - mongodb-data:/data/db
 volumes:
-  mongodb-data: null
+  mongodb-data:

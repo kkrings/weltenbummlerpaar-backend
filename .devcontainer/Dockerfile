@@ -1,5 +1,5 @@
-ARG VARIANT=16-bullseye
-FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:0-${VARIANT}
+ARG VARIANT=18-bullseye
+FROM mcr.microsoft.com/devcontainers/javascript-node:0-${VARIANT}
 
 ARG MONGO_TOOLS_VERSION=6.0
 RUN . /etc/os-release \
