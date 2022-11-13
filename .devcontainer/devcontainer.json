@@ -2,7 +2,7 @@
 	"name": "Weltenbummlerpaar Backend",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "app",
-	"workspaceFolder": "/workspace",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -11,7 +11,5 @@
 				"mongodb.mongodb-vscode" 
 			]
 		}
-	},
-	"forwardPorts": [3000],
-	"remoteUser": "node"
+	}
 }
