@@ -15,7 +15,7 @@
   "license": "GPL-3.0-only",
   "private": true,
   "scripts": {
-    "prepare": "husky install",
+    "husky:install": "husky install",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
