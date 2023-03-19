@@ -54,7 +54,7 @@
     "yargs": "^17.2.1"
   },
   "devDependencies": {
-    "@kkrings/weltenbummlerpaar-e2e-data": "^2.1.0",
+    "@kkrings/weltenbummlerpaar-e2e-data": "^2.1.2",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
